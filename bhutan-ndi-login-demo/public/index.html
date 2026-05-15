@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bhutan NDI Login Demo</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f7f7f5;
+        color: #1d2520;
+        font-family: Arial, sans-serif;
+      }
+      main {
+        width: min(94vw, 520px);
+        padding: 28px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 28px;
+      }
+      button, a.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 6px;
+        background: #116149;
+        color: white;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #8b9993;
+        cursor: wait;
+      }
+      .qr {
+        display: none;
+        margin-top: 20px;
+      }
+      .qr img {
+        display: block;
+        width: 280px;
+        height: 280px;
+        max-width: 100%;
+        border: 1px solid #e3e3df;
+      }
+      .status {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 6px;
+        background: #edf3f0;
+      }
+      pre {
+        overflow: auto;
+        max-height: 220px;
+        padding: 12px;
+        border-radius: 6px;
+        background: #f1f1ee;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Login with Bhutan NDI</h1>
+      <button id="login">Login with NDI</button>
+      <div id="qr" class="qr">
+        <p>Scan this QR with the Bhutan NDI demo wallet.</p>
+        <img id="qrImage" alt="Bhutan NDI proof request QR code" />
+        <p><a id="deepLink" class="button" href="#">Open NDI Wallet</a></p>
+      </div>
+      <div id="status" class="status">Ready.</div>
+      <pre id="result" hidden></pre>
+    </main>
+
+    <script>
+      const login = document.querySelector("#login");
+      const qr = document.querySelector("#qr");
+      const qrImage = document.querySelector("#qrImage");
+      const deepLink = document.querySelector("#deepLink");
+      const statusBox = document.querySelector("#status");
+      const result = document.querySelector("#result");
+
+      login.addEventListener("click", async () => {
+        login.disabled = true;
+        statusBox.textContent = "Creating NDI proof request...";
+        result.hidden = true;
+
+        try {
+          const response = await fetch("/api/ndi/login", { method: "POST" });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "Could not create proof request");
+
+          qrImage.src = data.qrDataUrl;
+          deepLink.href = data.deepLinkURL;
+          qr.style.display = "block";
+          statusBox.textContent = "Waiting for wallet approval...";
+          poll(data.threadId);
+        } catch (error) {
+          login.disabled = false;
+          statusBox.textContent = error.message;
+        }
+      });
+
+      async function poll(threadId) {
+        const response = await fetch(`/api/ndi/session/${encodeURIComponent(threadId)}`);
+        const data = await response.json();
+
+        if (data.verified) {
+          statusBox.textContent = "Logged in with Bhutan NDI.";
+          result.hidden = false;
+          result.textContent = JSON.stringify(data.user, null, 2);
+          return;
+        }
+
+        statusBox.textContent = `Waiting for wallet approval... (${data.status})`;
+        setTimeout(() => poll(threadId), 1500);
+      }
+    </script>
+  </body>
+</html>
