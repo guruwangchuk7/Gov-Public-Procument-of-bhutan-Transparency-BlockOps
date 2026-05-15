@@ -45,10 +45,10 @@ import {
 import { activityData, agencies, auditEvents, bids, statusData, suppliers, tenders, txHashes } from "@/data/mockData";
 import { shortHash, statusTone } from "@/utils/formatters";
 
-type Role = "admin" | "agency" | "supplier" | "auditor" | "public";
-type Modal = "tender" | "bid" | "winner" | "transaction" | "demo" | "drawer" | null;
 
-const roleTabs: Record<Role, string[]> = {
+
+
+const roleTabs = {
   admin: ["Overview", "Users", "Agencies", "Suppliers", "Activity"],
   agency: ["Overview", "Draft Tenders", "Published Tenders", "Bid Review", "Awarded"],
   supplier: ["Open Tenders", "My Bids", "Results"],
@@ -56,7 +56,7 @@ const roleTabs: Record<Role, string[]> = {
   public: ["Published Tenders", "Awarded Tenders", "Verified Records"],
 };
 
-const roleMeta: Record<Role, { label: string; href: string; icon: React.ElementType; purpose: string; person: string }> = {
+const roleMeta = {
   admin: { label: "Admin", href: "/dashboard/pmdd", icon: ShieldCheck, purpose: "Manage users, agencies, roles, and verification queues.", person: "PMDD Control" },
   agency: { label: "Agency", href: "/dashboard/agency", icon: Landmark, purpose: "Create tenders, publish records, review bids, and select winners.", person: "MoIT Agency" },
   supplier: { label: "Supplier", href: "/dashboard/bidder", icon: Building2, purpose: "Verify identity, submit bids, and track on-chain confirmation.", person: "Bhutan Tech" },
@@ -142,7 +142,7 @@ export function LandingPage() {
 }
 
 export function LoginPage() {
-  const [selected, setSelected] = useState<Role>("agency");
+  const [selected, setSelected] = useState("agency");
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#FFFFFF_0,#EAF6FF_45%,#FFFFFF_100%)] text-[#111827]">
       <PublicNav />
@@ -161,7 +161,7 @@ export function LoginPage() {
             </div>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-5">
-            {(Object.keys(roleMeta) as Role[]).map((role) => {
+            {(Object.keys(roleMeta)[]).map((role) => {
               const Icon = roleMeta[role].icon;
               const active = selected === role;
               return (
@@ -185,10 +185,10 @@ export function LoginPage() {
   );
 }
 
-export function DashboardExperience({ role }: { role: Role }) {
+export function DashboardExperience({ role }: { role }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
-  const [modal, setModal] = useState<Modal>(null);
+  const [modal, setModal] = useState(null);
   const [toast, setToast] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(roleTabs[role][0]);
@@ -199,7 +199,7 @@ export function DashboardExperience({ role }: { role: Role }) {
     return matchesQuery && matchesFilter;
   });
 
-  function notify(message: string) {
+  function notify(message) {
     setToast(message);
     window.setTimeout(() => setToast(""), 2600);
   }
@@ -245,7 +245,7 @@ export function DashboardExperience({ role }: { role: Role }) {
   );
 }
 
-export function PublicPortal({ embedded = false, notify }: { embedded?: boolean; notify?: (message: string) => void }) {
+export function PublicPortal({ embedded = false, notify }: { embedded?; notify?: (message) => void }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
   const records = tenders.filter((tender) => (status === "All" || tender.status === status) && `${tender.title} ${tender.agency} ${tender.winner}`.toLowerCase().includes(query.toLowerCase()));
@@ -295,8 +295,8 @@ export function PublicPortal({ embedded = false, notify }: { embedded?: boolean;
   return <main className="min-h-screen bg-[radial-gradient(circle_at_top,#FFFFFF_0,#EAF6FF_48%,#FFFFFF_100%)] text-[#111827]"><PublicNav />{content}</main>;
 }
 
-export function TenderDetailPage({ id }: { id: string }) {
-  const [role, setRole] = useState<Role>("agency");
+export function TenderDetailPage({ id }: { id }) {
+  const [role, setRole] = useState("agency");
   const [toast, setToast] = useState("");
   const tender = tenders.find((item) => item.id === id) ?? tenders[0];
   return (
@@ -308,8 +308,8 @@ export function TenderDetailPage({ id }: { id: string }) {
             <p className="text-sm font-semibold text-[#3E82B5]">{tender.id}</p>
             <h1 className="mt-2 text-4xl font-semibold">{tender.title}</h1>
           </div>
-          <select value={role} onChange={(event) => setRole(event.target.value as Role)} className="rounded-2xl border border-[#D8ECFA] bg-white/80 px-4 py-3 text-sm font-semibold">
-            {(Object.keys(roleMeta) as Role[]).map((item) => <option key={item} value={item}>{roleMeta[item].label} view</option>)}
+          <select value={role} onChange={(event) => setRole(event.target.value)} className="rounded-2xl border border-[#D8ECFA] bg-white/80 px-4 py-3 text-sm font-semibold">
+            {(Object.keys(roleMeta)[]).map((item) => <option key={item} value={item}>{roleMeta[item].label} view</option>)}
           </select>
         </div>
         <MotionCard className="p-6">
@@ -352,7 +352,7 @@ export function TenderDetailPage({ id }: { id: string }) {
   );
 }
 
-function AdminDashboard({ notify }: { notify: (message: string) => void }) {
+function AdminDashboard({ notify }: { notify: (message) => void }) {
   return (
     <>
       <KpiGrid items={[["Total Tenders", "168", FileLock2], ["Verified Suppliers", "842", BadgeCheck], ["Active Agencies", "54", Landmark], ["Blockchain Events", "4,218", Network], ["Pending Verifications", "23", AlertTriangle]]} />
@@ -384,7 +384,7 @@ function AdminDashboard({ notify }: { notify: (message: string) => void }) {
   );
 }
 
-function AgencyDashboard({ activeTab, query, setQuery, filter, setFilter, tenders: list, openModal, notify }: { activeTab: string; query: string; setQuery: (value: string) => void; filter: string; setFilter: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
+function AgencyDashboard({ activeTab, query, setQuery, filter, setFilter, tenders: list, openModal, notify }: { activeTab; query; setQuery: (value) => void; filter; setFilter: (value) => void; tenders; openModal: (modal) => void; notify: (message) => void }) {
   const tabbedList = activeTab === "Draft Tenders" ? list.filter((tender) => tender.status === "Draft") : activeTab === "Published Tenders" ? list.filter((tender) => tender.status === "Published" || tender.status === "Closing Soon") : activeTab === "Awarded" ? list.filter((tender) => tender.status === "Awarded") : list;
   return (
     <>
@@ -427,7 +427,7 @@ function AgencyDashboard({ activeTab, query, setQuery, filter, setFilter, tender
   );
 }
 
-function SupplierDashboard({ activeTab, query, setQuery, tenders: list, openModal, notify }: { activeTab: string; query: string; setQuery: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
+function SupplierDashboard({ activeTab, query, setQuery, tenders: list, openModal, notify }: { activeTab; query; setQuery: (value) => void; tenders; openModal: (modal) => void; notify: (message) => void }) {
   return (
     <>
       <KpiGrid items={[["Open Tenders", "21", Search], ["My Submitted Bids", "5", FileCheck2], ["On-chain Confirmed", "4", Network], ["Results Pending", "2", Activity]]} />
@@ -469,7 +469,7 @@ function SupplierDashboard({ activeTab, query, setQuery, tenders: list, openModa
   );
 }
 
-function AuditorDashboard({ notify }: { notify: (message: string) => void }) {
+function AuditorDashboard({ notify }: { notify: (message) => void }) {
   const [result, setResult] = useState<"pending" | "match" | "mismatch">("pending");
   return (
     <>
@@ -562,7 +562,7 @@ function DashboardPreview() {
   );
 }
 
-function MiniChartCard({ title, value, line = false }: { title: string; value: string; line?: boolean }) {
+function MiniChartCard({ title, value, line = false }: { title; value; line? }) {
   const bars = [28, 44, 36, 62, 92, 55, 68];
   return (
     <div className="rounded-[24px] bg-white/84 p-5 shadow-[0_16px_42px_rgba(106,176,227,0.12)]">
@@ -580,7 +580,7 @@ function MiniChartCard({ title, value, line = false }: { title: string; value: s
   );
 }
 
-function PublicNav({ embedded = false }: { embedded?: boolean }) {
+function PublicNav({ embedded = false }: { embedded? }) {
   return (
     <nav className={`${embedded ? "relative" : "sticky top-0"} z-40 ${embedded ? "" : "border-b border-white/70 bg-white/70 px-5 py-4 backdrop-blur-2xl"}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
@@ -602,7 +602,7 @@ function PublicNav({ embedded = false }: { embedded?: boolean }) {
   );
 }
 
-function Sidebar({ role, open, onClose }: { role: Role; open: boolean; onClose: () => void }) {
+function Sidebar({ role, open, onClose }: { role; open; onClose: () => void }) {
   const content = (
     <aside className="flex h-full w-[84px] flex-col items-center border-r border-white/80 bg-white/72 px-3 py-5 shadow-[16px_0_60px_rgba(106,176,227,0.09)] backdrop-blur-2xl">
       <div className="mb-8 flex w-full items-center justify-center">
@@ -637,7 +637,7 @@ function Sidebar({ role, open, onClose }: { role: Role; open: boolean; onClose: 
   );
 }
 
-function Topbar({ role, onMenu, onDemo }: { role: Role; onMenu: () => void; onDemo: () => void }) {
+function Topbar({ role, onMenu, onDemo }: { role; onMenu: () => void; onDemo: () => void }) {
   return (
     <header className="sticky top-0 z-30 px-4 py-5 backdrop-blur-2xl md:px-7">
       <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-3">
@@ -645,7 +645,7 @@ function Topbar({ role, onMenu, onDemo }: { role: Role; onMenu: () => void; onDe
           <button onClick={onMenu} className="rounded-2xl bg-white p-3 shadow-[0_12px_30px_rgba(17,24,39,0.08)] lg:hidden"><Menu className="h-5 w-5" /></button>
           <Link href="/" className="text-2xl font-black tracking-tight text-[#111827]">BGPS</Link>
           <div className="hidden rounded-full bg-[#111827] p-1 text-xs font-semibold text-white md:flex">
-            {(["agency", "supplier", "auditor"] as Role[]).map((item) => (
+            {(["agency", "supplier", "auditor"][]).map((item) => (
               <Link key={item} href={roleMeta[item].href} className={`rounded-full px-4 py-2 transition ${role === item ? "bg-white text-[#111827]" : "text-white/65 hover:text-white"}`}>
                 {roleMeta[item].label}
               </Link>
@@ -657,11 +657,11 @@ function Topbar({ role, onMenu, onDemo }: { role: Role; onMenu: () => void; onDe
           <select
             value={role}
             onChange={(event) => {
-              window.location.href = roleMeta[event.target.value as Role].href;
+              window.location.href = roleMeta[event.target.value].href;
             }}
             className="hidden rounded-full border border-white/80 bg-white/70 px-3 py-2 text-xs font-bold text-[#3E82B5] shadow-[0_10px_28px_rgba(106,176,227,0.12)] outline-none xl:block"
           >
-            {(Object.keys(roleMeta) as Role[]).map((item) => <option key={item} value={item}>{roleMeta[item].label}</option>)}
+            {(Object.keys(roleMeta)[]).map((item) => <option key={item} value={item}>{roleMeta[item].label}</option>)}
           </select>
           <Badge icon={Fingerprint} className="hidden xl:flex">NDI Verified</Badge>
           <Badge icon={WalletCards} className="hidden xl:flex">Rabby</Badge>
@@ -673,9 +673,9 @@ function Topbar({ role, onMenu, onDemo }: { role: Role; onMenu: () => void; onDe
   );
 }
 
-function HeroStrip({ role, onPrimary, onDemo }: { role: Role; onPrimary: () => void; onDemo: () => void }) {
-  const copy = role === "agency" ? "Create, hash, publish, evaluate, and award tenders with visible proof." : role === "supplier" ? "Find tenders, submit a bid, and prove your proposal was anchored on-chain." : role === "auditor" ? "Verify database hashes against Sepolia hashes and spot mismatches fast." : role === "public" ? "Explore awarded tenders and citizen-safe proof records." : "Govern verification, onboarding, and ecosystem health.";
-  const primaryCopy = role === "supplier" ? "Submit Bid" : role === "auditor" ? "Verify Hash" : role === "public" ? "Verify Public Proof" : role === "admin" ? "Review Verification" : "Create Tender";
+function HeroStrip({ role, onPrimary, onDemo }: { role; onPrimary: () => void; onDemo: () => void }) {
+  const copy = role === "agency" ? "Create, hash, publish, evaluate, and award tenders with visible proof."  === "supplier" ? "Find tenders, submit a bid, and prove your proposal was anchored on-chain."  === "auditor" ? "Verify database hashes against Sepolia hashes and spot mismatches fast."  === "public" ? "Explore awarded tenders and citizen-safe proof records." : "Govern verification, onboarding, and ecosystem health.";
+  const primaryCopy = role === "supplier" ? "Submit Bid"  === "auditor" ? "Verify Hash"  === "public" ? "Verify Public Proof"  === "admin" ? "Review Verification" : "Create Tender";
   return (
     <section className="grid gap-5 lg:grid-cols-[1fr_0.56fr]">
         <div>
@@ -703,7 +703,7 @@ function HomeCrumb() {
   return <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#6AB0E3] shadow-[0_8px_20px_rgba(106,176,227,0.16)]"><LayoutDashboard className="h-3 w-3" /></span>;
 }
 
-function TopStat({ label, value, icon: Icon }: { label: string; value: string; icon: React.ElementType }) {
+function TopStat({ label, value, icon: Icon }: { label; value; icon }) {
   return (
     <motion.div whileHover={{ y: -3 }} className="rounded-[22px] border border-white/75 bg-white/78 p-4 shadow-[0_18px_45px_rgba(106,176,227,0.14)] backdrop-blur-xl">
       <div className="flex items-center justify-between gap-3">
@@ -717,7 +717,7 @@ function TopStat({ label, value, icon: Icon }: { label: string; value: string; i
   );
 }
 
-function KpiGrid({ items, compact = false }: { items: [string, string, React.ElementType][]; compact?: boolean }) {
+function KpiGrid({ items, compact = false }: { items: [string, string, React.ElementType][]; compact? }) {
   return (
     <div className={`grid gap-4 ${compact ? "grid-cols-2" : "md:grid-cols-2 xl:grid-cols-4"}`}>
       {items.map(([label, value, Icon], index) => (
@@ -732,7 +732,7 @@ function KpiGrid({ items, compact = false }: { items: [string, string, React.Ele
   );
 }
 
-function VisualTabs({ tabs, active, onChange }: { tabs: string[]; active: string; onChange: (tab: string) => void }) {
+function VisualTabs({ tabs, active, onChange }: { tabs[]; active; onChange: (tab) => void }) {
   return (
     <div className="flex w-full gap-2 overflow-x-auto rounded-full border border-white/80 bg-white/64 p-1.5 shadow-[0_18px_50px_rgba(106,176,227,0.12)] backdrop-blur-xl">
       {tabs.map((tab) => {
@@ -752,7 +752,7 @@ function VisualTabs({ tabs, active, onChange }: { tabs: string[]; active: string
   );
 }
 
-function ChartCard({ title }: { title: string }) {
+function ChartCard({ title }: { title }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setMounted(true));
@@ -805,7 +805,7 @@ function Pipeline() {
   );
 }
 
-function CreateTenderModal({ onClose, onToast }: { onClose: () => void; onToast: (message: string) => void }) {
+function CreateTenderModal({ onClose, onToast }: { onClose: () => void; onToast: (message) => void }) {
   const [hash, setHash] = useState("");
   const [publishing, setPublishing] = useState(false);
   function generate() {
@@ -837,7 +837,7 @@ function CreateTenderModal({ onClose, onToast }: { onClose: () => void; onToast:
   );
 }
 
-function SubmitBidModal({ onClose, onToast }: { onClose: () => void; onToast: (message: string) => void }) {
+function SubmitBidModal({ onClose, onToast }: { onClose: () => void; onToast: (message) => void }) {
   const [hash, setHash] = useState("");
   const [step, setStep] = useState(0);
   const steps = ["Upload proposal", "Generate bid hash", "Confirm with Rabby Wallet", "Store bid hash on Sepolia", "Bid confirmed"];
@@ -876,7 +876,7 @@ function SubmitBidModal({ onClose, onToast }: { onClose: () => void; onToast: (m
   );
 }
 
-function WinnerModal({ onClose, onToast }: { onClose: () => void; onToast: (message: string) => void }) {
+function WinnerModal({ onClose, onToast }: { onClose: () => void; onToast: (message) => void }) {
   return (
     <ModalShell title="Select winner" onClose={onClose}>
       <p className="text-[#6B7280]">Record the award decision with a justification hash and Rabby Wallet transaction simulation.</p>
@@ -893,7 +893,7 @@ function WinnerModal({ onClose, onToast }: { onClose: () => void; onToast: (mess
   );
 }
 
-function TransactionModal({ title, onClose, onToast }: { title: string; onClose: () => void; onToast: (message: string) => void }) {
+function TransactionModal({ title, onClose, onToast }: { title; onClose: () => void; onToast: (message) => void }) {
   const [step, setStep] = useState(0);
   const steps = ["Preparing tender record", "Waiting for Rabby Wallet approval", "Broadcasting to Ethereum Sepolia", "Confirmed on-chain", "Tender published successfully"];
   useEffect(() => {
@@ -950,7 +950,7 @@ function JudgeDemo({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TenderDrawer({ tender, role, onClose, onBid }: { tender: typeof tenders[number]; role: Role; onClose: () => void; onBid: () => void }) {
+function TenderDrawer({ tender, role, onClose, onBid }: { tender[number]; role; onClose: () => void; onBid: () => void }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-[#111827]/20 backdrop-blur-sm" onClick={onClose}>
       <motion.aside initial={{ x: 480 }} animate={{ x: 0 }} exit={{ x: 480 }} transition={{ ease: "easeOut" }} onClick={(event) => event.stopPropagation()} className="ml-auto h-full w-full max-w-xl overflow-y-auto bg-white/90 p-6 shadow-2xl backdrop-blur-2xl">
@@ -969,7 +969,7 @@ function TenderDrawer({ tender, role, onClose, onBid }: { tender: typeof tenders
   );
 }
 
-function ModalShell({ title, children, onClose, wide = false }: { title: string; children: React.ReactNode; onClose: () => void; wide?: boolean }) {
+function ModalShell({ title, children, onClose, wide = false }: { title; children; onClose: () => void; wide? }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-[#111827]/20 p-4 backdrop-blur-md" onClick={onClose}>
       <motion.div initial={{ opacity: 0, scale: 0.96, y: 18 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} onClick={(event) => event.stopPropagation()} className={`max-h-[92vh] w-full overflow-y-auto rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-[0_30px_90px_rgba(17,24,39,0.18)] backdrop-blur-2xl ${wide ? "max-w-5xl" : "max-w-2xl"}`}>
@@ -980,29 +980,29 @@ function ModalShell({ title, children, onClose, wide = false }: { title: string;
   );
 }
 
-function MotionCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function MotionCard({ children, className = "", delay = 0 }: { children; className?; delay? }) {
   return <motion.div variants={fadeUp} initial="hidden" animate="show" whileHover={{ y: -4 }} transition={{ duration: 0.42, delay, ease: "easeOut" }} className={`rounded-[26px] border border-white/80 bg-white/76 shadow-[0_18px_48px_rgba(106,176,227,0.13)] backdrop-blur-[22px] ${className}`}>{children}</motion.div>;
 }
 
-function Badge({ icon: Icon, children, className = "" }: { icon: React.ElementType; children: React.ReactNode; className?: string }) {
+function Badge({ icon: Icon, children, className = "" }: { icon; children; className? }) {
   return <span className={`inline-flex items-center gap-2 rounded-full border border-[#D8ECFA] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#3E82B5] ${className}`}><Icon className="h-4 w-4" />{children}</span>;
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status }: { status }) {
   const tone = statusTone(status);
   const styles = tone === "success" ? "bg-[#ECFDF5] text-[#15803D]" : tone === "warning" ? "bg-[#FFF7ED] text-[#B45309]" : tone === "danger" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EAF6FF] text-[#3E82B5]";
   return <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${styles}`}><span className="h-1.5 w-1.5 rounded-full bg-current" />{status}</span>;
 }
 
-function SearchBox({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) {
+function SearchBox({ value, onChange, placeholder }: { value; onChange: (value) => void; placeholder }) {
   return <div className="relative w-full"><Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B7280]" /><input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="w-full rounded-2xl border border-[#D8ECFA] bg-white/80 py-3 pl-11 pr-4 text-sm outline-none focus:ring-2 focus:ring-[#9CD5FF]" /></div>;
 }
 
-function Filters({ query, setQuery, filter, setFilter, options }: { query: string; setQuery: (value: string) => void; filter: string; setFilter: (value: string) => void; options: string[] }) {
+function Filters({ query, setQuery, filter, setFilter, options }: { query; setQuery: (value) => void; filter; setFilter: (value) => void; options[] }) {
   return <div className="flex flex-col gap-3 md:flex-row"><SearchBox value={query} onChange={setQuery} placeholder="Search tenders" /><select value={filter} onChange={(event) => setFilter(event.target.value)} className="rounded-2xl border border-[#D8ECFA] bg-white/80 px-4 py-3 text-sm font-semibold outline-none">{options.map((item) => <option key={item}>{item}</option>)}</select></div>;
 }
 
-function TenderRow({ tender, onDetail, onAction }: { tender: typeof tenders[number]; onDetail: () => void; onAction: () => void }) {
+function TenderRow({ tender, onDetail, onAction }: { tender[number]; onDetail: () => void; onAction: () => void }) {
   return (
     <div className="grid gap-3 rounded-2xl border border-[#EAF6FF] bg-white/70 p-4 xl:grid-cols-[1.2fr_0.8fr_0.7fr_auto] xl:items-center">
       <div><p className="font-semibold">{tender.title}</p><p className="text-sm text-[#6B7280]">{tender.category} • {tender.agency}</p></div>
@@ -1013,7 +1013,7 @@ function TenderRow({ tender, onDetail, onAction }: { tender: typeof tenders[numb
   );
 }
 
-function AuditEvent({ event, index }: { event: typeof auditEvents[number]; index: number }) {
+function AuditEvent({ event, index }: { event: typeof auditEvents[number]; index }) {
   return (
     <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.06 }} className="rounded-2xl border border-[#EAF6FF] bg-white/70 p-4">
       <div className="flex flex-col justify-between gap-3 md:flex-row">
@@ -1025,20 +1025,20 @@ function AuditEvent({ event, index }: { event: typeof auditEvents[number]; index
   );
 }
 
-function Timeline({ compact = false }: { compact?: boolean }) {
+function Timeline({ compact = false }: { compact? }) {
   const items = ["Tender Created", "Bid Submitted", "Winner Verified"];
   return <div className={compact ? "" : "mt-6 rounded-[24px] bg-[#EAF6FF]/70 p-5"}>{!compact && <SectionTitle title="Status timeline" subtitle="Every milestone has actor, hash, and verification proof." />}<div className={`${compact ? "" : "mt-5"} space-y-3`}>{items.map((item, index) => <div key={item} className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-4 w-4" /></span><div><p className="text-sm font-semibold">{item}</p><p className="text-xs text-[#6B7280]">Verified on Sepolia • {index + 9}:2{index}</p></div></div>)}</div></div>;
 }
 
-function InfoTile({ label, value, icon: Icon }: { label: string; value: string; icon: React.ElementType }) {
+function InfoTile({ label, value, icon: Icon }: { label; value; icon }) {
   return <div className="rounded-2xl border border-[#EAF6FF] bg-white/70 p-4"><Icon className="mb-3 h-5 w-5 text-[#3E82B5]" /><p className="text-xs font-semibold text-[#6B7280]">{label}</p><p className="mt-1 break-words font-semibold">{value}</p></div>;
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+function InfoRow({ label, value }: { label; value }) {
   return <div className="flex items-center justify-between gap-4 border-b border-[#EAF6FF] py-2 last:border-0"><span className="text-[#6B7280]">{label}</span><span className="break-all text-right font-semibold">{value}</span></div>;
 }
 
-function EmptyPanel({ message }: { message: string }) {
+function EmptyPanel({ message }: { message }) {
   return (
     <div className="rounded-[24px] border border-dashed border-[#C1E5FF] bg-[#EAF6FF]/55 p-8 text-center">
       <Sparkles className="mx-auto mb-3 h-6 w-6 text-[#3E82B5]" />
@@ -1048,15 +1048,15 @@ function EmptyPanel({ message }: { message: string }) {
   );
 }
 
-function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionTitle({ title, subtitle }: { title; subtitle? }) {
   return <div><h2 className="text-xl font-semibold">{title}</h2>{subtitle && <p className="mt-1 text-sm text-[#6B7280]">{subtitle}</p>}</div>;
 }
 
-function ProgressStep({ step, active }: { step: string; active: boolean }) {
+function ProgressStep({ step, active }: { step; active }) {
   return <div className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold ${active ? "border-[#C1E5FF] bg-[#EAF6FF] text-[#3E82B5]" : "border-[#EAF6FF] bg-white/60 text-[#6B7280]"}`}><span className={`flex h-6 w-6 items-center justify-center rounded-full ${active ? "bg-[#22C55E] text-white" : "bg-[#EAF6FF]"}`}>{active ? <Check className="h-4 w-4" /> : null}</span>{step}</div>;
 }
 
-function BeforeAfter({ title, items, tone }: { title: string; items: string[]; tone: "warning" | "success" }) {
+function BeforeAfter({ title, items, tone }: { title; items[]; tone: "warning" | "success" }) {
   return <MotionCard className="p-6"><h2 className="text-2xl font-semibold">{title}</h2><div className="mt-5 grid gap-3 sm:grid-cols-2">{items.map((item) => <div key={item} className={`rounded-2xl px-4 py-3 text-sm font-semibold ${tone === "success" ? "bg-[#ECFDF5] text-[#15803D]" : "bg-[#FFF7ED] text-[#B45309]"}`}>{item}</div>)}</div></MotionCard>;
 }
 
@@ -1069,30 +1069,31 @@ function VerifierResult({ result }: { result: "pending" | "match" | "mismatch" }
   return <motion.div key={result} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`rounded-2xl p-4 ${result === "match" ? "bg-[#ECFDF5] text-[#15803D]" : result === "mismatch" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EAF6FF] text-[#3E82B5]"}`}><p className="font-semibold">{copy[0]}</p><p className="text-sm">{copy[1]}</p></motion.div>;
 }
 
-function LabeledInput({ label, placeholder }: { label: string; placeholder: string }) {
+function LabeledInput({ label, placeholder }: { label; placeholder }) {
   return <label className="block text-sm font-semibold">{label}<input placeholder={placeholder} className="mt-2 w-full rounded-2xl border border-[#D8ECFA] bg-white/80 px-4 py-3 outline-none focus:ring-2 focus:ring-[#9CD5FF]" /></label>;
 }
 
-function MockUpload({ label = "Upload document" }: { label?: string }) {
+function MockUpload({ label = "Upload document" }: { label? }) {
   return <div className="mt-4 rounded-2xl border border-dashed border-[#9CD5FF] bg-[#EAF6FF]/50 p-5 text-center"><FilePlus2 className="mx-auto mb-2 h-6 w-6 text-[#3E82B5]" /><p className="font-semibold">{label}</p><p className="text-sm text-[#6B7280]">Mock upload ready for demo flow</p></div>;
 }
 
-function ActionButton({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
+function ActionButton({ children, onClick }: { children; onClick?: () => void }) {
   return <button onClick={onClick} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#111827] px-5 py-3 text-sm font-bold text-white shadow-[0_16px_34px_rgba(17,24,39,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(17,24,39,0.2)] active:scale-95 disabled:opacity-50">{children}</button>;
 }
 
-function SmallButton({ children, onClick, tone = "blue" }: { children: React.ReactNode; onClick?: () => void; tone?: "blue" | "light" }) {
+function SmallButton({ children, onClick, tone = "blue" }: { children; onClick?: () => void; tone?: "blue" | "light" }) {
   return <button onClick={onClick} className={`rounded-full px-4 py-2 text-xs font-bold transition hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 ${tone === "blue" ? "bg-[#6AB0E3] text-white shadow-[0_12px_28px_rgba(106,176,227,0.24)]" : "border border-white/80 bg-white/75 text-[#3E82B5] shadow-[0_10px_24px_rgba(106,176,227,0.12)]"}`}>{children}</button>;
 }
 
-function PillLink({ href, children, icon: Icon, variant = "blue" }: { href: string; children: React.ReactNode; icon: React.ElementType; variant?: "blue" | "light" }) {
+function PillLink({ href, children, icon: Icon, variant = "blue" }: { href; children; icon; variant?: "blue" | "light" }) {
   return <Link href={href} className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-semibold transition hover:-translate-y-0.5 active:scale-95 ${variant === "blue" ? "bg-[#6AB0E3] text-white shadow-[0_18px_40px_rgba(106,176,227,0.35)]" : "border border-white/70 bg-white/70 text-[#3E82B5]"}`}>{children}<Icon className="h-4 w-4" /></Link>;
 }
 
-function SoftBlob({ className }: { className: string }) {
+function SoftBlob({ className }: { className }) {
   return <motion.div animate={{ y: [0, -18, 0], scale: [1, 1.04, 1] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
 }
 
-function Toast({ message }: { message: string }) {
+function Toast({ message }: { message }) {
   return <AnimatePresence>{message && <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 24 }} className="fixed bottom-6 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-3 rounded-2xl border border-white/70 bg-white/90 px-5 py-4 font-semibold text-[#111827] shadow-[0_20px_60px_rgba(17,24,39,0.16)] backdrop-blur-2xl"><Check className="h-5 w-5 text-[#22C55E]" />{message}</motion.div>}</AnimatePresence>;
 }
+
