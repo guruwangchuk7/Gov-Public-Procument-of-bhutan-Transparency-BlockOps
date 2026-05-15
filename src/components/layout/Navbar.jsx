@@ -1,7 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 
-export const Navbar: React.FC = () => {
+/**
+ * Main navigation bar for the application.
+ * @returns {React.JSX.Element}
+ */
+export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/5 px-8 py-4 flex items-center justify-between transition-all duration-500">
       <div className="flex items-center gap-14">

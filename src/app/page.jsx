@@ -86,7 +86,17 @@ export default function Home() {
   );
 }
 
-function DashboardCard({ title, desc, href, icon, color }: { title: string, desc: string, href: string, icon: React.ReactNode, color: string }) {
+/**
+ * Interactive card component for the home page to navigate to different portals.
+ * @param {Object} props
+ * @param {string} props.title - Card title
+ * @param {string} props.desc - Brief description
+ * @param {string} props.href - Destination link
+ * @param {React.ReactNode} props.icon - Icon element
+ * @param {string} props.color - CSS class for the icon background color
+ * @returns {React.JSX.Element}
+ */
+function DashboardCard({ title, desc, href, icon, color }) {
   return (
     <Link href={href} className="group glass-card p-8 block hover:no-underline">
       <div className={`w-16 h-16 ${color} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-black/10`}>

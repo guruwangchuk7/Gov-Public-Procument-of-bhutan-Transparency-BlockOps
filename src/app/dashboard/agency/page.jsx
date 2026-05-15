@@ -113,7 +113,7 @@ export default function AgencyDashboard() {
   );
 }
 
-function TenderItem({ id, title, budget, deadline, bids, status }: any) {
+function TenderItem({ id, title, budget, deadline, bids, status }) {
   return (
     <div className="p-4 border border-slate-100 rounded-xl hover:border-accent/30 transition-all group">
       <div className="flex justify-between items-start mb-2">

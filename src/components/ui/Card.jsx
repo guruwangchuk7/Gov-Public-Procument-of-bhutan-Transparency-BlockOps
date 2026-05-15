@@ -1,14 +1,16 @@
 import React from 'react';
 
-interface CardProps {
-  children: React.ReactNode;
-  title?: string;
-  subtitle?: string;
-  className?: string;
-  headerAction?: React.ReactNode;
-}
-
-export const Card: React.FC<CardProps> = ({ 
+/**
+ * Premium card component for displaying content in a contained area.
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Content to display inside the card
+ * @param {string} [props.title] - Optional title for the card header
+ * @param {string} [props.subtitle] - Optional subtitle below the title
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {React.ReactNode} [props.headerAction] - Optional element (like a button) to show in the header
+ * @returns {React.JSX.Element}
+ */
+export const Card = ({ 
   children, 
   title, 
   subtitle, 

@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,7 +13,7 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Bhutan Procurement Transparency Platform",
   description: "A transparent and accountable government procurement platform powered by blockchain auditability and Bhutan NDI verification.",
   keywords: ["procurement", "transparency", "Bhutan", "government", "blockchain", "NDI"],
@@ -20,13 +21,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-mint text-dark">
-        {children}
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

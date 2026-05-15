@@ -1,12 +1,16 @@
 import React from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
-}
-
-export const Button: React.FC<ButtonProps> = ({ 
+/**
+ * Reusable button component with multiple variants and sizes.
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Button label or icon
+ * @param {'primary' | 'secondary' | 'danger' | 'ghost'} [props.variant] - Visual style of the button
+ * @param {'sm' | 'md' | 'lg'} [props.size] - Physical size of the button
+ * @param {boolean} [props.isLoading] - Shows a loading spinner if true
+ * @param {string} [props.className] - Additional CSS classes
+ * @returns {React.JSX.Element}
+ */
+export const Button = ({ 
   children, 
   variant = 'primary', 
   size = 'md',

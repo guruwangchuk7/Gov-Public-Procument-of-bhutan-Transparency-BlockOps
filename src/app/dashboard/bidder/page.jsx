@@ -81,7 +81,7 @@ export default function BidderDashboard() {
   );
 }
 
-function BidStatusItem({ id, tender, amount, status, date }: any) {
+function BidStatusItem({ id, tender, amount, status, date }) {
   return (
     <div className="flex justify-between items-center p-4 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-accent/30 transition-all">
       <div>
@@ -99,7 +99,7 @@ function BidStatusItem({ id, tender, amount, status, date }: any) {
   );
 }
 
-function OpportunityItem({ title, deadline, category }: any) {
+function OpportunityItem({ title, deadline, category }) {
   return (
     <div className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
       <p className="text-[10px] font-bold text-accent mb-1 uppercase tracking-widest">{category}</p>

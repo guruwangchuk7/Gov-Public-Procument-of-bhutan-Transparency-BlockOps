@@ -2,19 +2,15 @@ import React from 'react';
 import Link from 'next/link';
 import { Navbar } from './Navbar';
 
-interface SidebarItem {
-  label: string;
-  href: string;
-  icon: React.ReactNode;
-}
-
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-  sidebarItems: SidebarItem[];
-  userRole: string;
-}
-
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, sidebarItems, userRole }) => {
+/**
+ * Layout component for dashboard pages with a sidebar and navbar.
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Main content area
+ * @param {Array<{label: string, href: string, icon: React.ReactNode}>} props.sidebarItems - Links for the sidebar
+ * @param {string} props.userRole - Display name for the user's role
+ * @returns {React.JSX.Element}
+ */
+export const DashboardLayout = ({ children, sidebarItems, userRole }) => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50/50">
       <Navbar />

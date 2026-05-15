@@ -38,7 +38,7 @@ export default function TransparencyReports() {
   );
 }
 
-function ReportCard({ title, date, size }: { title: string, date: string, size: string }) {
+function ReportCard({ title, date, size }) {
   return (
     <Card className="p-8 flex flex-col justify-between">
       <div>

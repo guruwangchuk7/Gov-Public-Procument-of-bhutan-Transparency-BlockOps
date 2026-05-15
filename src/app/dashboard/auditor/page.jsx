@@ -67,7 +67,7 @@ export default function AuditorDashboard() {
   );
 }
 
-function TimelineItem({ time, action, detail, status }: any) {
+function TimelineItem({ time, action, detail, status }) {
   return (
     <div className="relative">
       <div className="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-accent ring-4 ring-white shadow-sm"></div>
@@ -83,7 +83,7 @@ function TimelineItem({ time, action, detail, status }: any) {
   );
 }
 
-function HealthItem({ label, value, status }: any) {
+function HealthItem({ label, value, status }) {
   return (
     <div className="flex justify-between items-center py-2 border-b border-slate-50 last:border-0">
       <span className="text-sm text-muted">{label}</span>

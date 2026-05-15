@@ -85,7 +85,7 @@ export default function PMDDDashboard() {
   );
 }
 
-function ActivityItem({ title, desc, time, type }: { title: string, desc: string, time: string, type: string }) {
+function ActivityItem({ title, desc, time, type }) {
   return (
     <div className="flex gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
       <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
