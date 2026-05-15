@@ -48,6 +48,14 @@ import { shortHash, statusTone } from "@/utils/formatters";
 type Role = "admin" | "agency" | "supplier" | "auditor" | "public";
 type Modal = "tender" | "bid" | "winner" | "transaction" | "demo" | "drawer" | null;
 
+const roleTabs: Record<Role, string[]> = {
+  admin: ["Overview", "Users", "Agencies", "Suppliers", "Activity"],
+  agency: ["Overview", "Draft Tenders", "Published Tenders", "Bid Review", "Awarded"],
+  supplier: ["Open Tenders", "My Bids", "Results"],
+  auditor: ["Audit Overview", "Hash Verification", "Flagged Records"],
+  public: ["Published Tenders", "Awarded Tenders", "Verified Records"],
+};
+
 const roleMeta: Record<Role, { label: string; href: string; icon: React.ElementType; purpose: string; person: string }> = {
   admin: { label: "Admin", href: "/dashboard/pmdd", icon: ShieldCheck, purpose: "Manage users, agencies, roles, and verification queues.", person: "PMDD Control" },
   agency: { label: "Agency", href: "/dashboard/agency", icon: Landmark, purpose: "Create tenders, publish records, review bids, and select winners.", person: "MoIT Agency" },
@@ -85,32 +93,31 @@ const fadeUp = {
 
 export function LandingPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,#ffffff_0,#EAF6FF_38%,#F7FCFF_72%)] text-[#111827]">
-      <PublicNav />
-      <section className="relative mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl items-center gap-10 px-5 pb-12 pt-8 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
+    <main className="min-h-screen overflow-hidden bg-[#EEF3F8] p-3 text-[#111827] md:p-7">
+      <section className="relative mx-auto min-h-[calc(100vh-24px)] max-w-[1480px] overflow-hidden rounded-[34px] border border-white/85 bg-[linear-gradient(135deg,#FFFFFF_0%,#EAF6FF_55%,#FFFFFF_100%)] px-5 pb-10 pt-5 shadow-[0_26px_90px_rgba(17,24,39,0.12)] backdrop-blur-2xl md:min-h-[calc(100vh-56px)] md:px-8">
+        <PublicNav embedded />
         <SoftBlob className="-left-24 top-20 h-72 w-72 bg-[#C1E5FF]" />
         <SoftBlob className="right-0 top-40 h-80 w-80 bg-[#9CD5FF]/70" />
-        <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.08 } } }} className="relative z-10">
-          <motion.div variants={fadeUp} className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/70 px-4 py-2 text-sm font-semibold text-[#3E82B5] shadow-[0_16px_40px_rgba(106,176,227,0.16)] backdrop-blur-xl">
-            <Sparkles className="h-4 w-4" /> Verified identity + verifiable records = trusted procurement
+        <div className="relative z-10 grid items-center gap-10 pt-10 lg:grid-cols-[0.88fr_1.12fr]">
+          <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.08 } } }}>
+            <motion.div variants={fadeUp} className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/70 px-4 py-2 text-sm font-bold text-[#3E82B5] shadow-[0_16px_40px_rgba(106,176,227,0.13)] backdrop-blur-xl">
+              <Sparkles className="h-4 w-4" /> Verified identity + verifiable records = trusted procurement
+            </motion.div>
+            <motion.h1 variants={fadeUp} className="max-w-4xl text-5xl font-semibold leading-[1.01] tracking-normal text-[#111827] md:text-7xl">
+              Transparent Procurement, Verified by Identity and Blockchain
+            </motion.h1>
+            <motion.p variants={fadeUp} className="mt-7 max-w-2xl text-lg leading-8 text-[#4B5563]">
+              BGPS helps government agencies, suppliers, auditors, and citizens verify procurement actions through Bhutan NDI identity and tamper-proof blockchain audit trails.
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-9 flex flex-wrap gap-3">
+              <PillLink href="/auth" icon={ArrowRight}>Launch Demo</PillLink>
+              <PillLink href="/public-portal" icon={Globe2} variant="light">View Public Portal</PillLink>
+            </motion.div>
           </motion.div>
-          <motion.h1 variants={fadeUp} className="max-w-4xl text-5xl font-semibold leading-[1.02] tracking-normal text-[#111827] md:text-7xl">
-            Transparent Procurement, Verified by Identity and Blockchain
-          </motion.h1>
-          <motion.p variants={fadeUp} className="mt-7 max-w-2xl text-lg leading-8 text-[#4B5563]">
-            BGPS helps government agencies, suppliers, auditors, and citizens verify procurement actions through Bhutan NDI identity and tamper-proof blockchain audit trails.
-          </motion.p>
-          <motion.div variants={fadeUp} className="mt-9 flex flex-wrap gap-3">
-            <PillLink href="/auth" icon={ArrowRight}>Launch Demo</PillLink>
-            <PillLink href="/public-portal" icon={Globe2} variant="light">View Public Portal</PillLink>
-            <PillLink href="/dashboard/agency?demo=1" icon={Sparkles} variant="light">Watch Judge Flow</PillLink>
+          <motion.div initial={{ opacity: 0, y: 30, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }}>
+            <DashboardPreview />
           </motion.div>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 30, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} className="relative z-10">
-          <DashboardPreview />
-        </motion.div>
-      </section>
-      <section className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
+        </div>
         <div className="grid gap-5 md:grid-cols-5">
           {[
             ["Bhutan NDI Verification", Fingerprint],
@@ -184,6 +191,7 @@ export function DashboardExperience({ role }: { role: Role }) {
   const [modal, setModal] = useState<Modal>(null);
   const [toast, setToast] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(roleTabs[role][0]);
   const selectedTender = tenders[0];
   const filteredTenders = tenders.filter((tender) => {
     const matchesQuery = `${tender.title} ${tender.agency} ${tender.category}`.toLowerCase().includes(query.toLowerCase());
@@ -204,18 +212,19 @@ export function DashboardExperience({ role }: { role: Role }) {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#FFFFFF_0,#EAF6FF_42%,#F8FCFF_100%)] text-[#111827]">
-      <div className="flex min-h-screen">
+    <main className="min-h-screen bg-[#EEF3F8] p-3 text-[#111827] md:p-7">
+      <div className="mx-auto flex min-h-[calc(100vh-24px)] max-w-[1480px] overflow-hidden rounded-[34px] border border-white/85 bg-white/72 shadow-[0_26px_90px_rgba(17,24,39,0.12)] backdrop-blur-2xl md:min-h-[calc(100vh-56px)]">
         <Sidebar role={role} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <section className="min-w-0 flex-1">
+        <section className="min-w-0 flex-1 bg-[linear-gradient(135deg,#FBFDFF_0%,#EAF6FF_56%,#FFFFFF_100%)]">
           <Topbar role={role} onMenu={() => setSidebarOpen(true)} onDemo={() => setModal("demo")} />
-          <div className="mx-auto max-w-[1500px] px-4 py-6 md:px-7">
+          <div className="mx-auto max-w-[1360px] px-4 py-5 md:px-7">
             <AnimatePresence mode="wait">
               <motion.div key={role} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.4, ease: "easeOut" }} className="space-y-6">
                 <HeroStrip role={role} onPrimary={primaryAction} onDemo={() => setModal("demo")} />
+                <VisualTabs tabs={roleTabs[role]} active={activeTab} onChange={setActiveTab} />
                 {role === "admin" && <AdminDashboard notify={notify} />}
-                {role === "agency" && <AgencyDashboard query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} tenders={filteredTenders} openModal={setModal} notify={notify} />}
-                {role === "supplier" && <SupplierDashboard query={query} setQuery={setQuery} tenders={filteredTenders} openModal={setModal} notify={notify} />}
+                {role === "agency" && <AgencyDashboard activeTab={activeTab} query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} tenders={filteredTenders} openModal={setModal} notify={notify} />}
+                {role === "supplier" && <SupplierDashboard activeTab={activeTab} query={query} setQuery={setQuery} tenders={filteredTenders} openModal={setModal} notify={notify} />}
                 {role === "auditor" && <AuditorDashboard notify={notify} />}
                 {role === "public" && <PublicPortal embedded notify={notify} />}
               </motion.div>
@@ -375,7 +384,8 @@ function AdminDashboard({ notify }: { notify: (message: string) => void }) {
   );
 }
 
-function AgencyDashboard({ query, setQuery, filter, setFilter, tenders: list, openModal, notify }: { query: string; setQuery: (value: string) => void; filter: string; setFilter: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
+function AgencyDashboard({ activeTab, query, setQuery, filter, setFilter, tenders: list, openModal, notify }: { activeTab: string; query: string; setQuery: (value: string) => void; filter: string; setFilter: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
+  const tabbedList = activeTab === "Draft Tenders" ? list.filter((tender) => tender.status === "Draft") : activeTab === "Published Tenders" ? list.filter((tender) => tender.status === "Published" || tender.status === "Closing Soon") : activeTab === "Awarded" ? list.filter((tender) => tender.status === "Awarded") : list;
   return (
     <>
       <KpiGrid items={[["Active Tenders", "14", FileLock2], ["Submitted Bids", "48", FileCheck2], ["Pending Approvals", "7", AlertTriangle], ["Awarded Contracts", "BTN 41M", Award]]} />
@@ -388,7 +398,8 @@ function AgencyDashboard({ query, setQuery, filter, setFilter, tenders: list, op
           </div>
           <Filters query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} options={["All", "Published", "Closing Soon", "Evaluating", "Awarded", "Draft"]} />
           <div className="mt-5 space-y-3">
-            {list.map((tender) => <TenderRow key={tender.id} tender={tender} onDetail={() => openModal("drawer")} onAction={() => openModal("transaction")} />)}
+            {tabbedList.map((tender) => <TenderRow key={tender.id} tender={tender} onDetail={() => openModal("drawer")} onAction={() => openModal("transaction")} />)}
+            {tabbedList.length === 0 && <EmptyPanel message={`No records in ${activeTab} yet.`} />}
           </div>
         </MotionCard>
         <MotionCard className="p-5">
@@ -416,11 +427,11 @@ function AgencyDashboard({ query, setQuery, filter, setFilter, tenders: list, op
   );
 }
 
-function SupplierDashboard({ query, setQuery, tenders: list, openModal, notify }: { query: string; setQuery: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
+function SupplierDashboard({ activeTab, query, setQuery, tenders: list, openModal, notify }: { activeTab: string; query: string; setQuery: (value: string) => void; tenders: typeof tenders; openModal: (modal: Modal) => void; notify: (message: string) => void }) {
   return (
     <>
       <KpiGrid items={[["Open Tenders", "21", Search], ["My Submitted Bids", "5", FileCheck2], ["On-chain Confirmed", "4", Network], ["Results Pending", "2", Activity]]} />
-      <MotionCard className="p-5">
+      {activeTab === "Open Tenders" ? <MotionCard className="p-5">
         <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <SectionTitle title="Open tender grid" subtitle="Identity verified with Bhutan NDI. Bid hashes are stored on Sepolia." />
           <SearchBox value={query} onChange={setQuery} placeholder="Search tender opportunities" />
@@ -447,7 +458,7 @@ function SupplierDashboard({ query, setQuery, tenders: list, openModal, notify }
             </MotionCard>
           ))}
         </div>
-      </MotionCard>
+      </MotionCard> : <MotionCard className="p-5"><SectionTitle title={activeTab} subtitle={activeTab === "My Bids" ? "Your submitted bids with wallet and chain status." : "Award decisions and public proof status."} /><div className="mt-5 grid gap-4 md:grid-cols-2">{bids.map((bid) => <div key={bid.hash} className="rounded-[24px] bg-white/70 p-4 shadow-[0_14px_38px_rgba(106,176,227,0.12)]"><p className="font-bold">{bid.tender}</p><p className="mt-1 text-sm text-[#6B7280]">{bid.amount} • {bid.hash}</p><div className="mt-4 flex items-center justify-between"><StatusBadge status={bid.status} /><SmallButton onClick={() => notify("Copied transaction hash")}>Copy Hash</SmallButton></div></div>)}</div></MotionCard>}
       <MotionCard className="p-5">
         <SectionTitle title="Bid tracker" subtitle="Submitted -> Hash Generated -> Wallet Confirmed -> On-chain Confirmed -> Under Review -> Result" />
         <div className="mt-5 grid gap-3 md:grid-cols-6">
@@ -500,9 +511,17 @@ function AuditorDashboard({ notify }: { notify: (message: string) => void }) {
 
 function DashboardPreview() {
   return (
-    <div className="rounded-[32px] border border-white/70 bg-white/60 p-4 shadow-[0_30px_90px_rgba(106,176,227,0.22)] backdrop-blur-2xl md:p-5">
-      <div className="grid gap-4 md:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-[28px] bg-[#EAF6FF]/80 p-5">
+    <div className="rounded-[34px] border border-white/85 bg-white/72 p-4 shadow-[0_30px_90px_rgba(17,24,39,0.13)] backdrop-blur-2xl md:p-5">
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="flex rounded-full bg-[#111827] p-1 text-xs font-bold text-white">
+          {["Dashboard", "Tenders", "Reports"].map((tab, index) => <span key={tab} className={`rounded-full px-4 py-2 ${index === 0 ? "bg-white text-[#111827]" : "text-white/60"}`}>{tab}</span>)}
+        </div>
+        <div className="flex -space-x-2">
+          {["P", "K", "D"].map((item) => <span key={item} className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#EAF6FF] text-xs font-bold text-[#3E82B5]">{item}</span>)}
+        </div>
+      </div>
+      <div className="grid gap-4 md:grid-cols-[0.9fr_0.8fr_1fr]">
+        <div className="rounded-[28px] bg-[#EAF6FF]/90 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
           <div className="flex items-center justify-between">
             <Badge icon={ShieldCheck}>Vendor Verified</Badge>
             <span className="text-xs font-semibold text-[#6B7280]">98%</span>
@@ -517,16 +536,25 @@ function DashboardPreview() {
           <div className="mt-3 h-2 rounded-full bg-white"><motion.div initial={{ width: 0 }} animate={{ width: "98%" }} transition={{ duration: 1 }} className="h-2 rounded-full bg-[#6AB0E3]" /></div>
         </div>
         <div className="grid gap-4">
+          <MiniChartCard title="Activity" value="186" />
+          <MiniChartCard title="Total Awards" value="BTN 41M" line />
+        </div>
+        <div className="grid gap-4">
+          <div className="rounded-[24px] bg-white/84 p-5 shadow-[0_16px_42px_rgba(106,176,227,0.12)]">
+            <p className="text-sm font-bold">Virtual Records</p>
+            <p className="mt-2 text-3xl font-semibold">$6,010.29</p>
+            <div className="mt-5 space-y-3">
+              <div className="h-3 w-3/4 rounded-full bg-[#EAF6FF]"><div className="h-3 w-[72%] rounded-full bg-[#9CD5FF]" /></div>
+              <div className="h-3 w-1/2 rounded-full bg-[#EAF6FF]"><div className="h-3 w-[42%] rounded-full bg-[#C1E5FF]" /></div>
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-4">
-            {["Tender Published", "Bid Hash Stored", "Approval Recorded", "Audit Verified"].map((item, index) => (
-              <motion.div key={item} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + index * 0.08 }} className="rounded-[24px] bg-white/80 p-4 shadow-[0_14px_40px_rgba(106,176,227,0.12)]">
+            {["Bid Hash Stored", "Audit Verified"].map((item, index) => (
+              <motion.div key={item} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + index * 0.08 }} className="rounded-[24px] bg-white/84 p-4 shadow-[0_14px_40px_rgba(106,176,227,0.12)]">
                 <Check className="mb-3 h-5 w-5 text-[#22C55E]" />
                 <p className="text-sm font-semibold">{item}</p>
               </motion.div>
             ))}
-          </div>
-          <div className="rounded-[24px] bg-white/80 p-5">
-            <Timeline compact />
           </div>
         </div>
       </div>
@@ -534,23 +562,41 @@ function DashboardPreview() {
   );
 }
 
-function PublicNav() {
+function MiniChartCard({ title, value, line = false }: { title: string; value: string; line?: boolean }) {
+  const bars = [28, 44, 36, 62, 92, 55, 68];
   return (
-    <nav className="sticky top-0 z-40 border-b border-white/70 bg-white/70 px-5 py-4 backdrop-blur-2xl">
+    <div className="rounded-[24px] bg-white/84 p-5 shadow-[0_16px_42px_rgba(106,176,227,0.12)]">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-bold">{title}</p>
+          <p className="mt-1 text-2xl font-semibold">{value}</p>
+        </div>
+        <span className="rounded-full bg-[#DDFB69] px-3 py-1 text-[10px] font-bold text-[#111827]">98%</span>
+      </div>
+      <div className="mt-5 flex h-20 items-end gap-2">
+        {bars.map((height, index) => <div key={index} className="flex-1 rounded-t-xl bg-[#EEF3F8]" style={{ height: `${line ? 18 + (index % 3) * 15 : height}%` }}><div className={`${index === 4 ? "bg-[#DDFB69]" : "bg-white/0"} h-full rounded-t-xl`} /></div>)}
+      </div>
+    </div>
+  );
+}
+
+function PublicNav({ embedded = false }: { embedded?: boolean }) {
+  return (
+    <nav className={`${embedded ? "relative" : "sticky top-0"} z-40 ${embedded ? "" : "border-b border-white/70 bg-white/70 px-5 py-4 backdrop-blur-2xl"}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF6FF] text-[#3E82B5]"><ShieldCheck className="h-6 w-6" /></div>
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#3E82B5] shadow-[0_12px_30px_rgba(106,176,227,0.12)]"><ShieldCheck className="h-6 w-6" /></div>
           <div>
             <p className="text-lg font-semibold">BGPS</p>
             <p className="text-xs font-semibold text-[#6B7280]">Kingdom of Bhutan</p>
           </div>
         </Link>
-        <div className="hidden items-center gap-6 text-sm font-semibold text-[#6B7280] md:flex">
-          <Link href="/public-portal">Public Portal</Link>
-          <Link href="/auth">Role Login</Link>
-          <Link href="/dashboard/agency">Dashboard</Link>
+        <div className="hidden rounded-full bg-white/70 p-1 text-sm font-bold text-[#6B7280] shadow-[0_14px_36px_rgba(106,176,227,0.12)] backdrop-blur-xl md:flex">
+          <Link className="rounded-full px-4 py-2 hover:bg-[#EAF6FF] hover:text-[#3E82B5]" href="/public-portal">Public Portal</Link>
+          <Link className="rounded-full px-4 py-2 hover:bg-[#EAF6FF] hover:text-[#3E82B5]" href="/auth">Role Login</Link>
+          <Link className="rounded-full px-4 py-2 hover:bg-[#EAF6FF] hover:text-[#3E82B5]" href="/dashboard/agency">Dashboard</Link>
         </div>
-        <Link href="/auth" className="rounded-2xl bg-[#6AB0E3] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_rgba(106,176,227,0.28)]">Launch Demo</Link>
+        <Link href="/auth" className="rounded-full bg-[#111827] px-5 py-3 text-sm font-bold text-white shadow-[0_16px_36px_rgba(17,24,39,0.16)]">Launch Demo</Link>
       </div>
     </nav>
   );
@@ -558,27 +604,28 @@ function PublicNav() {
 
 function Sidebar({ role, open, onClose }: { role: Role; open: boolean; onClose: () => void }) {
   const content = (
-    <aside className="flex h-full w-72 flex-col border-r border-white/70 bg-white/64 p-4 shadow-[20px_0_80px_rgba(106,176,227,0.12)] backdrop-blur-2xl">
-      <div className="mb-5 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF6FF] text-[#3E82B5]"><ShieldCheck className="h-6 w-6" /></div>
-          <div><p className="font-semibold">BGPS</p><p className="text-xs text-[#6B7280]">{roleMeta[role].label} workspace</p></div>
+    <aside className="flex h-full w-[84px] flex-col items-center border-r border-white/80 bg-white/72 px-3 py-5 shadow-[16px_0_60px_rgba(106,176,227,0.09)] backdrop-blur-2xl">
+      <div className="mb-8 flex w-full items-center justify-center">
+        <Link href="/" className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#111827] shadow-[0_12px_34px_rgba(17,24,39,0.08)] transition hover:-translate-y-0.5">
+          <ShieldCheck className="h-6 w-6 text-[#3E82B5]" />
+          <span className="sr-only">BGPS {roleMeta[role].label} workspace</span>
         </Link>
         <button className="lg:hidden" onClick={onClose}><X className="h-5 w-5" /></button>
       </div>
-      <nav className="space-y-1">
+      <nav className="flex flex-1 flex-col items-center gap-3">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           return (
-            <button key={item.label} className={`group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${index === 0 ? "bg-[#EAF6FF] text-[#3E82B5] shadow-[0_14px_34px_rgba(106,176,227,0.16)]" : "text-[#6B7280] hover:bg-white hover:text-[#3E82B5]"}`}>
-              <Icon className="h-5 w-5" /> {item.label}
+            <button key={item.label} title={item.label} className={`group relative flex h-11 w-11 items-center justify-center rounded-2xl text-sm font-semibold transition ${index === 0 ? "bg-[#111827] text-white shadow-[0_16px_30px_rgba(17,24,39,0.18)]" : "bg-white/45 text-[#6B7280] hover:-translate-y-0.5 hover:bg-white hover:text-[#3E82B5] hover:shadow-[0_12px_30px_rgba(106,176,227,0.13)]"}`}>
+              {index === 0 && <motion.span layoutId="sidebar-active" className="absolute inset-0 rounded-2xl bg-[#111827]" />}
+              <Icon className="relative z-10 h-5 w-5" />
+              <span className="sr-only">{item.label}</span>
             </button>
           );
         })}
       </nav>
-      <div className="mt-auto rounded-[24px] bg-[#EAF6FF]/80 p-4">
-        <p className="text-sm font-semibold">On-chain ready</p>
-        <p className="mt-1 text-xs leading-5 text-[#6B7280]">NDI verified, Rabby connected, Sepolia configured.</p>
+      <div className="mt-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[#EAF6FF] text-[#3E82B5]">
+        <Network className="h-5 w-5" />
       </div>
     </aside>
   );
@@ -592,22 +639,34 @@ function Sidebar({ role, open, onClose }: { role: Role; open: boolean; onClose: 
 
 function Topbar({ role, onMenu, onDemo }: { role: Role; onMenu: () => void; onDemo: () => void }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/64 px-4 py-4 backdrop-blur-2xl md:px-7">
-      <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <button onClick={onMenu} className="rounded-2xl bg-white p-3 lg:hidden"><Menu className="h-5 w-5" /></button>
-          <div>
-            <p className="text-xs font-semibold text-[#6B7280]">Home / Dashboard / {roleMeta[role].label}</p>
-            <p className="font-semibold">{roleMeta[role].person}</p>
+    <header className="sticky top-0 z-30 px-4 py-5 backdrop-blur-2xl md:px-7">
+      <div className="mx-auto flex max-w-[1360px] items-center justify-between gap-3">
+        <div className="flex items-center gap-4">
+          <button onClick={onMenu} className="rounded-2xl bg-white p-3 shadow-[0_12px_30px_rgba(17,24,39,0.08)] lg:hidden"><Menu className="h-5 w-5" /></button>
+          <Link href="/" className="text-2xl font-black tracking-tight text-[#111827]">BGPS</Link>
+          <div className="hidden rounded-full bg-[#111827] p-1 text-xs font-semibold text-white md:flex">
+            {(["agency", "supplier", "auditor"] as Role[]).map((item) => (
+              <Link key={item} href={roleMeta[item].href} className={`rounded-full px-4 py-2 transition ${role === item ? "bg-white text-[#111827]" : "text-white/65 hover:text-white"}`}>
+                {roleMeta[item].label}
+              </Link>
+            ))}
           </div>
         </div>
-        <div className="hidden min-w-[260px] max-w-sm flex-1 md:block"><SearchBox value="" onChange={() => undefined} placeholder="Search tenders, tx hashes, suppliers" /></div>
+        <div className="hidden min-w-[240px] max-w-xs flex-1 md:block"><SearchBox value="" onChange={() => undefined} placeholder="Search records" /></div>
         <div className="flex items-center gap-2">
+          <select
+            value={role}
+            onChange={(event) => {
+              window.location.href = roleMeta[event.target.value as Role].href;
+            }}
+            className="hidden rounded-full border border-white/80 bg-white/70 px-3 py-2 text-xs font-bold text-[#3E82B5] shadow-[0_10px_28px_rgba(106,176,227,0.12)] outline-none xl:block"
+          >
+            {(Object.keys(roleMeta) as Role[]).map((item) => <option key={item} value={item}>{roleMeta[item].label}</option>)}
+          </select>
           <Badge icon={Fingerprint} className="hidden xl:flex">NDI Verified</Badge>
-          <Badge icon={WalletCards} className="hidden xl:flex">Rabby Connected</Badge>
-          <Badge icon={Network} className="hidden xl:flex">Sepolia</Badge>
-          <button onClick={onDemo} className="rounded-2xl bg-[#6AB0E3] px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_rgba(106,176,227,0.28)]">Judge Demo</button>
-          <Bell className="h-5 w-5 text-[#6B7280]" />
+          <Badge icon={WalletCards} className="hidden xl:flex">Rabby</Badge>
+          <button onClick={onDemo} className="rounded-full bg-[#6AB0E3] px-5 py-3 text-sm font-bold text-white shadow-[0_16px_36px_rgba(106,176,227,0.28)] transition hover:-translate-y-0.5 active:scale-95">Judge Demo</button>
+          <button className="flex h-11 w-11 items-center justify-center rounded-full bg-white/80 text-[#6B7280] shadow-[0_10px_28px_rgba(17,24,39,0.08)]"><Bell className="h-5 w-5" /></button>
         </div>
       </div>
     </header>
@@ -618,22 +677,43 @@ function HeroStrip({ role, onPrimary, onDemo }: { role: Role; onPrimary: () => v
   const copy = role === "agency" ? "Create, hash, publish, evaluate, and award tenders with visible proof." : role === "supplier" ? "Find tenders, submit a bid, and prove your proposal was anchored on-chain." : role === "auditor" ? "Verify database hashes against Sepolia hashes and spot mismatches fast." : role === "public" ? "Explore awarded tenders and citizen-safe proof records." : "Govern verification, onboarding, and ecosystem health.";
   const primaryCopy = role === "supplier" ? "Submit Bid" : role === "auditor" ? "Verify Hash" : role === "public" ? "Verify Public Proof" : role === "admin" ? "Review Verification" : "Create Tender";
   return (
-    <MotionCard className="overflow-hidden p-6 md:p-7">
-      <div className="grid gap-5 lg:grid-cols-[1fr_0.62fr]">
+    <section className="grid gap-5 lg:grid-cols-[1fr_0.56fr]">
         <div>
-          <Badge icon={Sparkles}>Premium hackathon demo</Badge>
-          <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-5xl">{roleMeta[role].label} dashboard</h1>
-          <p className="mt-4 max-w-2xl text-[#6B7280]">{copy}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-[#9CA3AF]">
+            <HomeCrumb /> Home Page <span>-&gt;</span> Dashboard
+          </div>
+          <h1 className="text-3xl font-semibold leading-tight tracking-normal md:text-5xl">{roleMeta[role].label} Dashboard</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#6B7280] md:text-base">{copy}</p>
+          <div className="mt-5 flex flex-wrap gap-3">
             <ActionButton onClick={onPrimary}>{primaryCopy}</ActionButton>
             <SmallButton tone="light" onClick={onDemo}>Watch Judge Flow</SmallButton>
           </div>
         </div>
-        <div className="rounded-[24px] bg-[#EAF6FF]/70 p-5">
-          <Timeline compact />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">
+          <TopStat label="NDI" value="Verified" icon={Fingerprint} />
+          <TopStat label="Rabby" value="Connected" icon={WalletCards} />
+          <TopStat label="Network" value="Sepolia" icon={Network} />
+          <TopStat label="Trust" value="98%" icon={ShieldCheck} />
         </div>
+    </section>
+  );
+}
+
+function HomeCrumb() {
+  return <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#6AB0E3] shadow-[0_8px_20px_rgba(106,176,227,0.16)]"><LayoutDashboard className="h-3 w-3" /></span>;
+}
+
+function TopStat({ label, value, icon: Icon }: { label: string; value: string; icon: React.ElementType }) {
+  return (
+    <motion.div whileHover={{ y: -3 }} className="rounded-[22px] border border-white/75 bg-white/78 p-4 shadow-[0_18px_45px_rgba(106,176,227,0.14)] backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wide text-[#9CA3AF]">{label}</p>
+          <p className="mt-1 text-sm font-bold text-[#111827]">{value}</p>
+        </div>
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#EAF6FF] text-[#3E82B5]"><Icon className="h-5 w-5" /></span>
       </div>
-    </MotionCard>
+    </motion.div>
   );
 }
 
@@ -648,6 +728,26 @@ function KpiGrid({ items, compact = false }: { items: [string, string, React.Ele
           </div>
         </MotionCard>
       ))}
+    </div>
+  );
+}
+
+function VisualTabs({ tabs, active, onChange }: { tabs: string[]; active: string; onChange: (tab: string) => void }) {
+  return (
+    <div className="flex w-full gap-2 overflow-x-auto rounded-full border border-white/80 bg-white/64 p-1.5 shadow-[0_18px_50px_rgba(106,176,227,0.12)] backdrop-blur-xl">
+      {tabs.map((tab) => {
+        const selected = active === tab;
+        return (
+          <button
+            key={tab}
+            onClick={() => onChange(tab)}
+            className={`relative shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition ${selected ? "text-white" : "text-[#6B7280] hover:text-[#3E82B5]"}`}
+          >
+            {selected && <motion.span layoutId="tab-active-pill" className="absolute inset-0 rounded-full bg-[#111827] shadow-[0_12px_28px_rgba(17,24,39,0.16)]" transition={{ duration: 0.28, ease: "easeOut" }} />}
+            <span className="relative z-10">{tab}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -881,7 +981,7 @@ function ModalShell({ title, children, onClose, wide = false }: { title: string;
 }
 
 function MotionCard({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  return <motion.div variants={fadeUp} initial="hidden" animate="show" whileHover={{ y: -4 }} transition={{ duration: 0.42, delay, ease: "easeOut" }} className={`rounded-[28px] border border-white/70 bg-white/68 shadow-[0_20px_60px_rgba(106,176,227,0.18)] backdrop-blur-[22px] ${className}`}>{children}</motion.div>;
+  return <motion.div variants={fadeUp} initial="hidden" animate="show" whileHover={{ y: -4 }} transition={{ duration: 0.42, delay, ease: "easeOut" }} className={`rounded-[26px] border border-white/80 bg-white/76 shadow-[0_18px_48px_rgba(106,176,227,0.13)] backdrop-blur-[22px] ${className}`}>{children}</motion.div>;
 }
 
 function Badge({ icon: Icon, children, className = "" }: { icon: React.ElementType; children: React.ReactNode; className?: string }) {
@@ -938,6 +1038,16 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return <div className="flex items-center justify-between gap-4 border-b border-[#EAF6FF] py-2 last:border-0"><span className="text-[#6B7280]">{label}</span><span className="break-all text-right font-semibold">{value}</span></div>;
 }
 
+function EmptyPanel({ message }: { message: string }) {
+  return (
+    <div className="rounded-[24px] border border-dashed border-[#C1E5FF] bg-[#EAF6FF]/55 p-8 text-center">
+      <Sparkles className="mx-auto mb-3 h-6 w-6 text-[#3E82B5]" />
+      <p className="font-bold text-[#111827]">{message}</p>
+      <p className="mt-1 text-sm text-[#6B7280]">Switch tabs or use a demo action to create a new mock record.</p>
+    </div>
+  );
+}
+
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return <div><h2 className="text-xl font-semibold">{title}</h2>{subtitle && <p className="mt-1 text-sm text-[#6B7280]">{subtitle}</p>}</div>;
 }
@@ -968,11 +1078,11 @@ function MockUpload({ label = "Upload document" }: { label?: string }) {
 }
 
 function ActionButton({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
-  return <button onClick={onClick} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#6AB0E3] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_36px_rgba(106,176,227,0.28)] transition hover:-translate-y-0.5 active:scale-95">{children}</button>;
+  return <button onClick={onClick} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#111827] px-5 py-3 text-sm font-bold text-white shadow-[0_16px_34px_rgba(17,24,39,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(17,24,39,0.2)] active:scale-95 disabled:opacity-50">{children}</button>;
 }
 
 function SmallButton({ children, onClick, tone = "blue" }: { children: React.ReactNode; onClick?: () => void; tone?: "blue" | "light" }) {
-  return <button onClick={onClick} className={`rounded-xl px-3 py-2 text-xs font-semibold transition active:scale-95 ${tone === "blue" ? "bg-[#6AB0E3] text-white" : "bg-[#EAF6FF] text-[#3E82B5]"}`}>{children}</button>;
+  return <button onClick={onClick} className={`rounded-full px-4 py-2 text-xs font-bold transition hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 ${tone === "blue" ? "bg-[#6AB0E3] text-white shadow-[0_12px_28px_rgba(106,176,227,0.24)]" : "border border-white/80 bg-white/75 text-[#3E82B5] shadow-[0_10px_24px_rgba(106,176,227,0.12)]"}`}>{children}</button>;
 }
 
 function PillLink({ href, children, icon: Icon, variant = "blue" }: { href: string; children: React.ReactNode; icon: React.ElementType; variant?: "blue" | "light" }) {
