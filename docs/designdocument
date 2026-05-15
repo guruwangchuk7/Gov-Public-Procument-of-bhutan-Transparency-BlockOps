@@ -1,0 +1,656 @@
+# Bhutan Procurement Transparency Platform — Frontend Design Document
+
+## Project Overview
+
+A modern government procurement transparency platform inspired by:
+
+* ECODOE B2B E-Procurement Web App UI Design
+* Campaign Creator Dashboard UI
+
+Frontend Stack:
+
+* Next.js
+* TailwindCSS
+* Component-based dashboard architecture
+
+Design Goal:
+Create a clean, modern, trust-focused procurement platform with:
+
+* transparency,
+* accountability,
+* government-grade professionalism,
+* easy navigation,
+* dashboard-heavy workflow.
+
+The UI should feel:
+
+* modern,
+* enterprise-level,
+* trustworthy,
+* lightweight,
+* clean.
+
+---
+
+# Design Inspiration
+
+## Primary Layout Reference
+
+Inspired by:
+ECODOE B2B E-Procurement Web App UI Design
+
+Use:
+
+* dashboard spacing,
+* card layouts,
+* sidebar structure,
+* clean enterprise styling,
+* procurement workflow feel.
+
+---
+
+## Color Theme Inspiration
+
+Inspired by:
+Campaign Creator Dashboard
+
+BUT:
+Use the softer green/eco/government palette from the ECODOE design.
+
+---
+
+# Design Language
+
+## Visual Style
+
+The UI should feel:
+
+* modern government SaaS,
+* transparent,
+* secure,
+* data-driven,
+* blockchain-enabled,
+* clean and minimal.
+
+Avoid:
+
+* overly dark cyberpunk styles,
+* cluttered enterprise tables,
+* excessive gradients,
+* too many colors.
+
+---
+
+# Color Palette
+
+## Primary Colors
+
+| Purpose              | Color   |
+| -------------------- | ------- |
+| Primary Green        | #1E7A5A |
+| Light Green          | #DFF5EA |
+| Soft Mint Background | #F5FBF8 |
+| Dark Text            | #1B1F1D |
+| Secondary Text       | #6B7280 |
+| Border               | #E5E7EB |
+| White Card           | #FFFFFF |
+| Success              | #22C55E |
+| Warning              | #F59E0B |
+| Danger               | #EF4444 |
+
+---
+
+# Typography
+
+## Font
+
+Use:
+
+* Inter
+* or Plus Jakarta Sans
+
+---
+
+## Typography Scale
+
+| Element         | Style                 |
+| --------------- | --------------------- |
+| Page Heading    | text-3xl font-bold    |
+| Section Heading | text-xl font-semibold |
+| Card Title      | text-lg font-semibold |
+| Body Text       | text-sm text-gray-600 |
+| Table Content   | text-sm               |
+
+---
+
+# Global Layout Structure
+
+## Main Layout
+
+```text
+┌────────────────────────────────────┐
+│ Top Navbar                         │
+├──────────────┬─────────────────────┤
+│ Sidebar      │ Main Content Area   │
+│ Navigation   │                     │
+│              │ Cards / Tables      │
+│              │ Charts / Workflow   │
+└──────────────┴─────────────────────┘
+```
+
+---
+
+# Core Frontend Pages
+
+---
+
+# 1. Landing Page
+
+## Goal
+
+Introduce platform mission.
+
+---
+
+## Sections
+
+### Hero Section
+
+Content:
+
+* Headline
+* Short description
+* CTA buttons
+
+Example:
+"Transparent Government Procurement Powered by Trust & Accountability"
+
+Buttons:
+
+* Explore Platform
+* View Transparency Portal
+
+---
+
+### Features Section
+
+Cards:
+
+* Transparent Procurement
+* Audit Trail Verification
+* Procurement Tracking
+* Trusted Vendor Participation
+
+---
+
+### Workflow Section
+
+Simple visual flow:
+
+```text
+Registration → Tender → Bid → Approval → Audit → Transparency
+```
+
+---
+
+### Statistics Section
+
+Cards:
+
+* Active Tenders
+* Approved Vendors
+* Completed Procurements
+* Audit Records
+
+---
+
+# 2. Authentication Pages
+
+## Pages
+
+* Login
+* Registration
+* Pending Approval Status
+
+---
+
+## Layout
+
+Centered authentication card.
+
+Fields:
+
+* Organization Name
+* Email
+* Password
+* Organization Type
+
+Buttons:
+
+* Login
+* Register
+
+---
+
+# 3. PMDD Dashboard
+
+## Goal
+
+Review and approve onboarding requests.
+
+---
+
+## Sidebar Navigation
+
+```text
+Dashboard
+Pending Requests
+Approved Agencies
+Approved Vendors
+Registration History
+Settings
+```
+
+---
+
+## Main Dashboard Widgets
+
+### Statistics Cards
+
+* Pending Agency Requests
+* Pending Vendor Requests
+* Total Approved Agencies
+* Total Approved Vendors
+
+---
+
+## Main Table
+
+Columns:
+
+* Organization Name
+* Type
+* Registration Date
+* Status
+* Action Buttons
+
+Actions:
+
+* Approve
+* Reject
+* View Details
+
+---
+
+# 4. Procuring Agency Dashboard
+
+## Goal
+
+Main procurement workflow dashboard.
+
+---
+
+## Sidebar Navigation
+
+```text
+Dashboard
+Create Tender
+Active Tenders
+Submitted Bids
+Vendor Evaluation
+Approvals
+Procurement History
+```
+
+---
+
+## Dashboard Cards
+
+* Active Tenders
+* Pending Reviews
+* Approved Procurements
+* Procurement Alerts
+
+---
+
+## Tender Management UI
+
+### Create Tender Form
+
+Fields:
+
+* Tender Title
+* Description
+* Budget
+* Submission Deadline
+* Document Upload
+
+Buttons:
+
+* Save Draft
+* Publish Tender
+
+---
+
+## Submitted Bids Table
+
+Columns:
+
+* Vendor Name
+* Bid Amount
+* Submission Date
+* Status
+* Review Action
+
+---
+
+# 5. Bidder Dashboard
+
+## Goal
+
+Vendor procurement participation.
+
+---
+
+## Sidebar Navigation
+
+```text
+Dashboard
+Available Tenders
+My Bids
+Bid Status
+Notifications
+Settings
+```
+
+---
+
+## Dashboard Widgets
+
+* Available Tenders
+* Submitted Bids
+* Approved Bids
+* Pending Results
+
+---
+
+## Tender Cards
+
+Each tender card contains:
+
+* Tender Title
+* Agency Name
+* Budget
+* Deadline
+* View Details Button
+
+---
+
+## Bid Submission Form
+
+Fields:
+
+* Proposal Description
+* Pricing
+* Supporting Documents
+
+Buttons:
+
+* Submit Proposal
+* Save Draft
+
+---
+
+# 6. Auditor Dashboard
+
+## Goal
+
+Audit verification and procurement monitoring.
+
+---
+
+## Sidebar Navigation
+
+```text
+Dashboard
+Audit Logs
+Procurement History
+Approval Records
+Audit Alerts
+Reports
+```
+
+---
+
+## Dashboard Widgets
+
+* Total Procurement Records
+* Pending Reviews
+* Audit Alerts
+* Verified Transactions
+
+---
+
+## Audit Timeline UI
+
+Timeline-style activity feed:
+
+```text
+10:20 AM — Vendor submitted bid
+10:45 AM — Agency reviewed proposal
+11:05 AM — Ministry approval completed
+```
+
+---
+
+## Alerts Panel
+
+Examples:
+
+* Suspicious modification detected
+* Delayed approval process
+* Duplicate vendor activity
+
+---
+
+# 7. Public Transparency Portal
+
+## Goal
+
+Public trust and procurement visibility.
+
+---
+
+## Sections
+
+### Search Bar
+
+Search by:
+
+* Tender ID
+* Agency
+* Vendor
+
+---
+
+## Procurement Cards
+
+Display:
+
+* Tender Title
+* Winning Vendor
+* Approval Date
+* Procurement Status
+
+---
+
+## Transparency Timeline
+
+Example:
+
+```text
+Tender Published
+↓
+Vendor Submitted Bid
+↓
+Approval Completed
+↓
+Tender Awarded
+```
+
+---
+
+# Shared UI Components
+
+## Reusable Components
+
+### Cards
+
+Use:
+
+* rounded-2xl
+* subtle shadow
+* white background
+
+---
+
+### Tables
+
+Modern clean table style:
+
+* light borders
+* soft hover effect
+* rounded corners
+
+---
+
+### Buttons
+
+Primary Button:
+
+* green background
+* white text
+* rounded-xl
+
+Secondary Button:
+
+* light background
+* green text
+
+Danger Button:
+
+* red background
+
+---
+
+### Status Badges
+
+Examples:
+
+* Approved
+* Pending
+* Rejected
+* Under Review
+
+Use soft color pills.
+
+---
+
+# Responsive Design
+
+## Mobile
+
+Collapse sidebar into hamburger menu.
+
+Cards stack vertically.
+
+---
+
+## Tablet
+
+Two-column grid layout.
+
+---
+
+## Desktop
+
+Full dashboard layout with sidebar.
+
+---
+
+# Animation Guidelines
+
+Use subtle animations only.
+
+Examples:
+
+* card hover lift,
+* smooth sidebar transitions,
+* fade-in tables,
+* soft loading states.
+
+Avoid excessive animation.
+
+---
+
+# Frontend Folder Structure
+
+```text
+/app
+/components
+/dashboard
+/pmdd
+/agency
+/bidder
+/auditor
+/public-portal
+/styles
+```
+
+---
+
+# MVP Frontend Scope
+
+## Must Build
+
+* Landing Page
+* Authentication Pages
+* PMDD Dashboard
+* Procuring Agency Dashboard
+* Bidder Dashboard
+* Public Transparency Portal
+
+---
+
+## Lightweight Prototype
+
+* Auditor Dashboard
+* Charts
+* Notifications
+
+---
+
+# Frontend UX Principles
+
+## Keep Everything:
+
+* simple,
+* visual,
+* workflow-focused,
+* easy to navigate,
+* government-professional.
+
+Users should immediately understand:
+
+* procurement status,
+* tender flow,
+* approvals,
+* transparency.
+
+---
+
+# Final Design Vision
+
+The platform should feel like:
+
+> "A modern transparent government procurement operating system powered by accountability, trust, and audit visibility."

@@ -1,0 +1,446 @@
+# Product Requirement Document (PRD)
+
+# Bhutan Procurement Transparency Platform
+
+---
+
+# 1. Project Overview
+
+## Project Name
+
+Bhutan Procurement Transparency Platform
+
+---
+
+## Project Summary
+
+The Bhutan Procurement Transparency Platform is a blockchain-enabled government procurement transparency system integrated with Bhutan NDI for trusted authentication and accountability.
+
+The platform aims to improve:
+
+* procurement transparency,
+* accountability,
+* auditability,
+* trust in government procurement.
+
+The system allows:
+
+* government agencies to create tenders,
+* vendors to submit bids,
+* ministries to approve procurement,
+* auditors to verify records,
+* citizens to view transparency data.
+
+The platform introduces:
+
+* immutable audit records,
+* transparent procurement workflows,
+* trusted user verification,
+* public procurement visibility.
+
+---
+
+# 2. Problem Statement
+
+Government procurement systems often face issues such as:
+
+* fake vendors,
+* hidden approvals,
+* document tampering,
+* difficult auditing,
+* lack of transparency,
+* corruption risks,
+* poor public trust.
+
+Traditional systems may not provide:
+
+* clear audit trails,
+* trusted identity verification,
+* transparent procurement visibility,
+* immutable records.
+
+This creates accountability and governance challenges.
+
+---
+
+# 3. Proposed Solution
+
+Build a modern procurement transparency platform where:
+
+* agencies register and manage procurement,
+* vendors participate digitally,
+* PMDD approves onboarding requests,
+* procurement actions are auditable,
+* blockchain stores immutable audit records,
+* Bhutan NDI provides trusted authentication,
+* citizens can view procurement transparency.
+
+---
+
+# 4. Goals & Objectives
+
+## Primary Goals
+
+* Improve procurement transparency
+* Strengthen accountability
+* Reduce corruption risk
+* Create trusted audit trails
+* Improve procurement governance
+* Increase public trust
+
+---
+
+## Secondary Goals
+
+* Simplify vendor participation
+* Improve procurement monitoring
+* Digitize procurement workflows
+* Support audit verification
+
+---
+
+# 5. Target Users
+
+| User Type           | Description                    |
+| ------------------- | ------------------------------ |
+| PMDD Officials      | Review onboarding requests     |
+| Government Agencies | Manage tenders and procurement |
+| Ministry Approvers  | Approve procurement decisions  |
+| Vendors/Suppliers   | Submit bids and proposals      |
+| Auditors            | Verify procurement records     |
+| Citizens/Public     | View transparency data         |
+
+---
+
+# 6. Stakeholders & Dashboards
+
+| Dashboard                  | Users                                    | Responsibility                                   |
+| -------------------------- | ---------------------------------------- | ------------------------------------------------ |
+| PMDD Dashboard             | PMDD Officials                           | Review and approve agency/vendor registrations   |
+| Procuring Agency Dashboard | Government Agencies & Ministry Approvers | Create tenders, review bids, approve procurement |
+| Bidder Dashboard           | Vendors / Suppliers                      | Register, submit bids, track procurement status  |
+| Auditor Dashboard          | Auditors / Oversight Bodies              | Verify audit logs and procurement records        |
+| Public Transparency Portal | Citizens / Public                        | View awarded tenders and transparency status     |
+
+---
+
+# 7. Core Features
+
+## PMDD Dashboard
+
+### Features
+
+* Review registration requests
+* Approve/reject agencies
+* Approve/reject vendors
+* View onboarding history
+
+---
+
+## Procuring Agency Dashboard
+
+### Features
+
+* Create tenders
+* Publish procurement notices
+* Review submitted bids
+* Compare vendor proposals
+* Approve procurement workflow
+* View procurement history
+
+---
+
+## Bidder Dashboard
+
+### Features
+
+* Vendor registration
+* Browse tenders
+* Submit bids
+* Upload procurement documents
+* Track bid status
+
+---
+
+## Auditor Dashboard
+
+### Features
+
+* View audit logs
+* Review procurement history
+* Inspect approval records
+* Monitor suspicious activities
+* Verify procurement timelines
+
+---
+
+## Public Transparency Portal
+
+### Features
+
+* View awarded tenders
+* Search procurement records
+* View procurement timeline
+* Check transparency status
+
+---
+
+# 8. User Workflow
+
+## Step 1 — Registration
+
+Government agencies and vendors create registration requests.
+
+---
+
+## Step 2 — PMDD Approval
+
+PMDD reviews and approves valid registrations.
+
+---
+
+## Step 3 — Authentication
+
+Approved users log into the platform.
+
+---
+
+## Step 4 — Tender Creation
+
+Government agency creates and publishes procurement tender.
+
+---
+
+## Step 5 — Bid Submission
+
+Vendor views tender and submits proposal.
+
+---
+
+## Step 6 — Audit Record
+
+System stores procurement activity and timestamps.
+
+---
+
+## Step 7 — Bid Review
+
+Agency reviews and evaluates submitted bids.
+
+---
+
+## Step 8 — Procurement Approval
+
+Authorized ministry approver approves procurement.
+
+---
+
+## Step 9 — Approval Audit Record
+
+System stores procurement approval history.
+
+---
+
+## Step 10 — Auditor Verification
+
+Auditors inspect procurement records and audit logs.
+
+---
+
+## Step 11 — Public Transparency
+
+Citizens can view procurement transparency information.
+
+---
+
+# 9. Procurement Workflow Diagram
+
+```text
+Registration Request
+        ↓
+PMDD Approval
+        ↓
+User Login
+        ↓
+Tender Creation
+        ↓
+Bid Submission
+        ↓
+Bid Review
+        ↓
+Procurement Approval
+        ↓
+Audit Verification
+        ↓
+Public Transparency
+```
+
+---
+
+# 10. Key Pain Points Solved
+
+| Problem              | Solution                      |
+| -------------------- | ----------------------------- |
+| Fake vendors         | Verified onboarding           |
+| Hidden approvals     | Approval tracking             |
+| Poor transparency    | Public visibility portal      |
+| Weak audit trails    | Permanent audit records       |
+| Procurement disputes | Traceable procurement history |
+| Difficult auditing   | Centralized procurement logs  |
+
+---
+
+# 11. Transparency & Accountability Benefits
+
+The platform improves:
+
+* procurement visibility,
+* accountability,
+* auditability,
+* governance trust,
+* procurement traceability.
+
+Every procurement activity becomes:
+
+* trackable,
+* reviewable,
+* verifiable.
+
+---
+
+# 12. Blockchain Role
+
+Blockchain acts as the audit layer.
+
+Used for:
+
+* bid submission records,
+* approval history,
+* immutable timestamps,
+* procurement traceability.
+
+Benefits:
+
+* prevents tampering,
+* improves trust,
+* strengthens auditing.
+
+---
+
+# 13. Bhutan NDI Role
+
+Bhutan NDI acts as the trusted authentication layer.
+
+Used for:
+
+* verified login,
+* trusted procurement participation,
+* accountable approvals,
+* identity verification.
+
+---
+
+# 14. MVP Scope
+
+## Must Build
+
+* PMDD Dashboard
+* Procuring Agency Dashboard
+* Bidder Dashboard
+* Public Transparency Portal
+* Basic Auditor Dashboard
+* Tender workflow
+* Bid submission flow
+* Procurement approval flow
+
+---
+
+## Optional Features
+
+* Analytics charts
+* Notification system
+* Fraud alerts
+* Advanced search
+* Real-time monitoring
+
+---
+
+# 15. Non-Functional Requirements
+
+## Usability
+
+* Simple navigation
+* Beginner-friendly UI
+* Clear workflows
+
+---
+
+## Performance
+
+* Fast dashboard loading
+* Smooth workflow transitions
+
+---
+
+## Security
+
+* Secure authentication
+* Protected procurement data
+* Role-based access
+
+---
+
+## Transparency
+
+* Public procurement visibility
+* Procurement audit traceability
+
+---
+
+# 16. Success Metrics
+
+The project is successful if:
+
+* users can register successfully,
+* agencies can publish tenders,
+* vendors can submit bids,
+* procurement approvals are traceable,
+* audit logs are viewable,
+* citizens can verify procurement transparency.
+
+---
+
+# 17. Future Scope
+
+Potential future improvements:
+
+* AI fraud detection
+* QR procurement verification
+* Procurement analytics
+* Multi-agency procurement support
+* Financial institution integration
+* Advanced blockchain verification
+
+---
+
+# 18. Final Product Vision
+
+The Bhutan Procurement Transparency Platform aims to transform procurement into:
+
+* a transparent,
+* accountable,
+* auditable,
+* trusted digital governance system.
+
+The platform combines:
+
+* procurement workflow management,
+* blockchain transparency,
+* trusted authentication,
+* public accountability.
+
+---
+
+# Final One-Line Summary
+
+"A transparent and accountable government procurement platform powered by blockchain auditability and Bhutan NDI verification."
