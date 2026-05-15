@@ -1,0 +1,1253 @@
+{
+  "address": "0xAbA0aE70F11f693f5c962d9A21D6f3B81009DDC1",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract UserRegistry",
+          "name": "_userRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "admin",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "AccessControlBadConfirmation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "neededRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "AccessControlUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "EnforcedPause",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpectedPause",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "awardRegistry",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "AwardRegistryUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Paused",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "newAdminRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RoleAdminChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleGranted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleRevoked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "amendmentHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "amendmentURI",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderAmended",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderAwarded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "reasonHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderClosed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "tenderRef",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "agency",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "tenderHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "documentURI",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "submissionDeadline",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "openingTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "TenderPublished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "Unpaused",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "DEFAULT_ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "amendmentHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "amendmentURI",
+          "type": "string"
+        }
+      ],
+      "name": "addAmendment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "awardRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "reasonHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "cancelTender",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "closeTender",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAmendment",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "amendmentHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "string",
+              "name": "amendmentURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TenderRegistry.Amendment",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAmendmentCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRoleAdmin",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTender",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "tenderId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "tenderRef",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "agency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "tenderHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "string",
+              "name": "documentURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "publishedAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "submissionDeadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "openingTime",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum TenderRegistry.TenderStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "exists",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct TenderRegistry.Tender",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRole",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "markAwarded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextTenderId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "tenderRef",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "tenderHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "documentURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "submissionDeadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "openingTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "publishTender",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "callerConfirmation",
+          "type": "address"
+        }
+      ],
+      "name": "renounceRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_awardRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "setAwardRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "tenders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "tenderRef",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "agency",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "tenderHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "documentURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "publishedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "submissionDeadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "openingTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum TenderRegistry.TenderStatus",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "userRegistry",
+      "outputs": [
+        {
+          "internalType": "contract UserRegistry",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tenderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "hashToCheck",
+          "type": "bytes32"
+        }
+      ],
+      "name": "verifyTenderHash",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x3a2c4fda1ed2ddb221b111db04e23857132e0dff67683a5651cf19f5434db6c5",
+  "receipt": {
+    "to": null,
+    "from": "0xA7BFf7d4C90BB06292B30F4A69C896Ad7b781c82",
+    "contractAddress": "0xAbA0aE70F11f693f5c962d9A21D6f3B81009DDC1",
+    "transactionIndex": 115,
+    "gasUsed": "2085625",
+    "logsBloom": "0x00000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020020001000000000000000000000002020000000000000000000800000000200000000800000000000000000000000000000000000000000000004000000000000000000000000000000200000000000000000000000000000000000000000000000000001000000000000000040000000000000000000000000000000000000000000100000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x4ada1b49340db65649da2026e5d499d60d300febe75f1829659c1718ea2e42b2",
+    "transactionHash": "0x3a2c4fda1ed2ddb221b111db04e23857132e0dff67683a5651cf19f5434db6c5",
+    "logs": [
+      {
+        "transactionIndex": 115,
+        "blockNumber": 10858053,
+        "transactionHash": "0x3a2c4fda1ed2ddb221b111db04e23857132e0dff67683a5651cf19f5434db6c5",
+        "address": "0xAbA0aE70F11f693f5c962d9A21D6f3B81009DDC1",
+        "topics": [
+          "0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x000000000000000000000000a7bff7d4c90bb06292b30f4a69c896ad7b781c82",
+          "0x000000000000000000000000a7bff7d4c90bb06292b30f4a69c896ad7b781c82"
+        ],
+        "data": "0x",
+        "logIndex": 597,
+        "blockHash": "0x4ada1b49340db65649da2026e5d499d60d300febe75f1829659c1718ea2e42b2"
+      },
+      {
+        "transactionIndex": 115,
+        "blockNumber": 10858053,
+        "transactionHash": "0x3a2c4fda1ed2ddb221b111db04e23857132e0dff67683a5651cf19f5434db6c5",
+        "address": "0xAbA0aE70F11f693f5c962d9A21D6f3B81009DDC1",
+        "topics": [
+          "0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d",
+          "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775",
+          "0x000000000000000000000000a7bff7d4c90bb06292b30f4a69c896ad7b781c82",
+          "0x000000000000000000000000a7bff7d4c90bb06292b30f4a69c896ad7b781c82"
+        ],
+        "data": "0x",
+        "logIndex": 598,
+        "blockHash": "0x4ada1b49340db65649da2026e5d499d60d300febe75f1829659c1718ea2e42b2"
+      }
+    ],
+    "blockNumber": 10858053,
+    "cumulativeGasUsed": "27544613",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x16c958121BA2D3B3Bdc4254bb0880f7915e28970",
+    "0xA7BFf7d4C90BB06292B30F4A69C896Ad7b781c82"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "948a3049d8aafed556b24904198339c4",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.30+commit.73712a01\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract UserRegistry\",\"name\":\"_userRegistry\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EnforcedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ExpectedPause\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"awardRegistry\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"AwardRegistryUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"amendmentHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"amendmentURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TenderAmended\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TenderAwarded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"reasonHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TenderCancelled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TenderClosed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tenderRef\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"agency\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"tenderHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"documentURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"submissionDeadline\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"openingTime\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TenderPublished\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"amendmentHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"amendmentURI\",\"type\":\"string\"}],\"name\":\"addAmendment\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"awardRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"reasonHash\",\"type\":\"bytes32\"}],\"name\":\"cancelTender\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"}],\"name\":\"closeTender\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getAmendment\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"amendmentHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"amendmentURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"internalType\":\"struct TenderRegistry.Amendment\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"}],\"name\":\"getAmendmentCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"}],\"name\":\"getTender\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tenderRef\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"agency\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"tenderHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"documentURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"publishedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"submissionDeadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"openingTime\",\"type\":\"uint256\"},{\"internalType\":\"enum TenderRegistry.TenderStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"}],\"internalType\":\"struct TenderRegistry.Tender\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"}],\"name\":\"markAwarded\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextTenderId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"tenderRef\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"tenderHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"documentURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"submissionDeadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"openingTime\",\"type\":\"uint256\"}],\"name\":\"publishTender\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_awardRegistry\",\"type\":\"address\"}],\"name\":\"setAwardRegistry\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tenders\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tenderRef\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"agency\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"tenderHash\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"documentURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"publishedAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"submissionDeadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"openingTime\",\"type\":\"uint256\"},{\"internalType\":\"enum TenderRegistry.TenderStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"userRegistry\",\"outputs\":[{\"internalType\":\"contract UserRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tenderId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"hashToCheck\",\"type\":\"bytes32\"}],\"name\":\"verifyTenderHash\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"AccessControlBadConfirmation()\":[{\"details\":\"The caller of a function is not the expected one. NOTE: Don't confuse with {AccessControlUnauthorizedAccount}.\"}],\"AccessControlUnauthorizedAccount(address,bytes32)\":[{\"details\":\"The `account` is missing a role.\"}],\"EnforcedPause()\":[{\"details\":\"The operation failed because the contract is paused.\"}],\"ExpectedPause()\":[{\"details\":\"The operation failed because the contract is not paused.\"}]},\"events\":{\"Paused(address)\":{\"details\":\"Emitted when the pause is triggered by `account`.\"},\"RoleAdminChanged(bytes32,bytes32,bytes32)\":{\"details\":\"Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this.\"},\"RoleGranted(bytes32,address,address)\":{\"details\":\"Emitted when `account` is granted `role`. `sender` is the account that originated the contract call, an admin role bearer except when using {AccessControl-_setupRole}.\"},\"RoleRevoked(bytes32,address,address)\":{\"details\":\"Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)\"},\"Unpaused(address)\":{\"details\":\"Emitted when the pause is lifted by `account`.\"}},\"kind\":\"dev\",\"methods\":{\"getRoleAdmin(bytes32)\":{\"details\":\"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.\"},\"grantRole(bytes32,address)\":{\"details\":\"Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event.\"},\"hasRole(bytes32,address)\":{\"details\":\"Returns `true` if `account` has been granted `role`.\"},\"paused()\":{\"details\":\"Returns true if the contract is paused, and false otherwise.\"},\"renounceRole(bytes32,address)\":{\"details\":\"Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `callerConfirmation`. May emit a {RoleRevoked} event.\"},\"revokeRole(bytes32,address)\":{\"details\":\"Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"See {IERC165-supportsInterface}.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/TenderRegistry.sol\":\"TenderRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/AccessControl.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (access/AccessControl.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {IAccessControl} from \\\"./IAccessControl.sol\\\";\\nimport {Context} from \\\"../utils/Context.sol\\\";\\nimport {ERC165} from \\\"../utils/introspection/ERC165.sol\\\";\\n\\n/**\\n * @dev Contract module that allows children to implement role-based access\\n * control mechanisms. This is a lightweight version that doesn't allow enumerating role\\n * members except through off-chain means by accessing the contract event logs. Some\\n * applications may benefit from on-chain enumerability, for those cases see\\n * {AccessControlEnumerable}.\\n *\\n * Roles are referred to by their `bytes32` identifier. These should be exposed\\n * in the external API and be unique. The best way to achieve this is by\\n * using `public constant` hash digests:\\n *\\n * ```solidity\\n * bytes32 public constant MY_ROLE = keccak256(\\\"MY_ROLE\\\");\\n * ```\\n *\\n * Roles can be used to represent a set of permissions. To restrict access to a\\n * function call, use {hasRole}:\\n *\\n * ```solidity\\n * function foo() public {\\n *     require(hasRole(MY_ROLE, msg.sender));\\n *     ...\\n * }\\n * ```\\n *\\n * Roles can be granted and revoked dynamically via the {grantRole} and\\n * {revokeRole} functions. Each role has an associated admin role, and only\\n * accounts that have a role's admin role can call {grantRole} and {revokeRole}.\\n *\\n * By default, the admin role for all roles is `DEFAULT_ADMIN_ROLE`, which means\\n * that only accounts with this role will be able to grant or revoke other\\n * roles. More complex role relationships can be created by using\\n * {_setRoleAdmin}.\\n *\\n * WARNING: The `DEFAULT_ADMIN_ROLE` is also its own admin: it has permission to\\n * grant and revoke this role. Extra precautions should be taken to secure\\n * accounts that have been granted it. We recommend using {AccessControlDefaultAdminRules}\\n * to enforce additional security measures for this role.\\n */\\nabstract contract AccessControl is Context, IAccessControl, ERC165 {\\n    struct RoleData {\\n        mapping(address account => bool) hasRole;\\n        bytes32 adminRole;\\n    }\\n\\n    mapping(bytes32 role => RoleData) private _roles;\\n\\n    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x00;\\n\\n    /**\\n     * @dev Modifier that checks that an account has a specific role. Reverts\\n     * with an {AccessControlUnauthorizedAccount} error including the required role.\\n     */\\n    modifier onlyRole(bytes32 role) {\\n        _checkRole(role);\\n        _;\\n    }\\n\\n    /**\\n     * @dev See {IERC165-supportsInterface}.\\n     */\\n    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {\\n        return interfaceId == type(IAccessControl).interfaceId || super.supportsInterface(interfaceId);\\n    }\\n\\n    /**\\n     * @dev Returns `true` if `account` has been granted `role`.\\n     */\\n    function hasRole(bytes32 role, address account) public view virtual returns (bool) {\\n        return _roles[role].hasRole[account];\\n    }\\n\\n    /**\\n     * @dev Reverts with an {AccessControlUnauthorizedAccount} error if `_msgSender()`\\n     * is missing `role`. Overriding this function changes the behavior of the {onlyRole} modifier.\\n     */\\n    function _checkRole(bytes32 role) internal view virtual {\\n        _checkRole(role, _msgSender());\\n    }\\n\\n    /**\\n     * @dev Reverts with an {AccessControlUnauthorizedAccount} error if `account`\\n     * is missing `role`.\\n     */\\n    function _checkRole(bytes32 role, address account) internal view virtual {\\n        if (!hasRole(role, account)) {\\n            revert AccessControlUnauthorizedAccount(account, role);\\n        }\\n    }\\n\\n    /**\\n     * @dev Returns the admin role that controls `role`. See {grantRole} and\\n     * {revokeRole}.\\n     *\\n     * To change a role's admin, use {_setRoleAdmin}.\\n     */\\n    function getRoleAdmin(bytes32 role) public view virtual returns (bytes32) {\\n        return _roles[role].adminRole;\\n    }\\n\\n    /**\\n     * @dev Grants `role` to `account`.\\n     *\\n     * If `account` had not been already granted `role`, emits a {RoleGranted}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     *\\n     * May emit a {RoleGranted} event.\\n     */\\n    function grantRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {\\n        _grantRole(role, account);\\n    }\\n\\n    /**\\n     * @dev Revokes `role` from `account`.\\n     *\\n     * If `account` had been granted `role`, emits a {RoleRevoked} event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     *\\n     * May emit a {RoleRevoked} event.\\n     */\\n    function revokeRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {\\n        _revokeRole(role, account);\\n    }\\n\\n    /**\\n     * @dev Revokes `role` from the calling account.\\n     *\\n     * Roles are often managed via {grantRole} and {revokeRole}: this function's\\n     * purpose is to provide a mechanism for accounts to lose their privileges\\n     * if they are compromised (such as when a trusted device is misplaced).\\n     *\\n     * If the calling account had been revoked `role`, emits a {RoleRevoked}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must be `callerConfirmation`.\\n     *\\n     * May emit a {RoleRevoked} event.\\n     */\\n    function renounceRole(bytes32 role, address callerConfirmation) public virtual {\\n        if (callerConfirmation != _msgSender()) {\\n            revert AccessControlBadConfirmation();\\n        }\\n\\n        _revokeRole(role, callerConfirmation);\\n    }\\n\\n    /**\\n     * @dev Sets `adminRole` as ``role``'s admin role.\\n     *\\n     * Emits a {RoleAdminChanged} event.\\n     */\\n    function _setRoleAdmin(bytes32 role, bytes32 adminRole) internal virtual {\\n        bytes32 previousAdminRole = getRoleAdmin(role);\\n        _roles[role].adminRole = adminRole;\\n        emit RoleAdminChanged(role, previousAdminRole, adminRole);\\n    }\\n\\n    /**\\n     * @dev Attempts to grant `role` to `account` and returns a boolean indicating if `role` was granted.\\n     *\\n     * Internal function without access restriction.\\n     *\\n     * May emit a {RoleGranted} event.\\n     */\\n    function _grantRole(bytes32 role, address account) internal virtual returns (bool) {\\n        if (!hasRole(role, account)) {\\n            _roles[role].hasRole[account] = true;\\n            emit RoleGranted(role, account, _msgSender());\\n            return true;\\n        } else {\\n            return false;\\n        }\\n    }\\n\\n    /**\\n     * @dev Attempts to revoke `role` to `account` and returns a boolean indicating if `role` was revoked.\\n     *\\n     * Internal function without access restriction.\\n     *\\n     * May emit a {RoleRevoked} event.\\n     */\\n    function _revokeRole(bytes32 role, address account) internal virtual returns (bool) {\\n        if (hasRole(role, account)) {\\n            _roles[role].hasRole[account] = false;\\n            emit RoleRevoked(role, account, _msgSender());\\n            return true;\\n        } else {\\n            return false;\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xa0e92d42942f4f57c5be50568dac11e9d00c93efcb458026e18d2d9b9b2e7308\",\"license\":\"MIT\"},\"@openzeppelin/contracts/access/IAccessControl.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (access/IAccessControl.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev External interface of AccessControl declared to support ERC165 detection.\\n */\\ninterface IAccessControl {\\n    /**\\n     * @dev The `account` is missing a role.\\n     */\\n    error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);\\n\\n    /**\\n     * @dev The caller of a function is not the expected one.\\n     *\\n     * NOTE: Don't confuse with {AccessControlUnauthorizedAccount}.\\n     */\\n    error AccessControlBadConfirmation();\\n\\n    /**\\n     * @dev Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole`\\n     *\\n     * `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite\\n     * {RoleAdminChanged} not being emitted signaling this.\\n     */\\n    event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole);\\n\\n    /**\\n     * @dev Emitted when `account` is granted `role`.\\n     *\\n     * `sender` is the account that originated the contract call, an admin role\\n     * bearer except when using {AccessControl-_setupRole}.\\n     */\\n    event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender);\\n\\n    /**\\n     * @dev Emitted when `account` is revoked `role`.\\n     *\\n     * `sender` is the account that originated the contract call:\\n     *   - if using `revokeRole`, it is the admin role bearer\\n     *   - if using `renounceRole`, it is the role bearer (i.e. `account`)\\n     */\\n    event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender);\\n\\n    /**\\n     * @dev Returns `true` if `account` has been granted `role`.\\n     */\\n    function hasRole(bytes32 role, address account) external view returns (bool);\\n\\n    /**\\n     * @dev Returns the admin role that controls `role`. See {grantRole} and\\n     * {revokeRole}.\\n     *\\n     * To change a role's admin, use {AccessControl-_setRoleAdmin}.\\n     */\\n    function getRoleAdmin(bytes32 role) external view returns (bytes32);\\n\\n    /**\\n     * @dev Grants `role` to `account`.\\n     *\\n     * If `account` had not been already granted `role`, emits a {RoleGranted}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     */\\n    function grantRole(bytes32 role, address account) external;\\n\\n    /**\\n     * @dev Revokes `role` from `account`.\\n     *\\n     * If `account` had been granted `role`, emits a {RoleRevoked} event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must have ``role``'s admin role.\\n     */\\n    function revokeRole(bytes32 role, address account) external;\\n\\n    /**\\n     * @dev Revokes `role` from the calling account.\\n     *\\n     * Roles are often managed via {grantRole} and {revokeRole}: this function's\\n     * purpose is to provide a mechanism for accounts to lose their privileges\\n     * if they are compromised (such as when a trusted device is misplaced).\\n     *\\n     * If the calling account had been granted `role`, emits a {RoleRevoked}\\n     * event.\\n     *\\n     * Requirements:\\n     *\\n     * - the caller must be `callerConfirmation`.\\n     */\\n    function renounceRole(bytes32 role, address callerConfirmation) external;\\n}\\n\",\"keccak256\":\"0xb6b36edd6a2999fd243ff226d6cbf84bd71af2432bbd0dfe19392996a1d9cb41\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n\\n    function _contextSuffixLength() internal view virtual returns (uint256) {\\n        return 0;\\n    }\\n}\\n\",\"keccak256\":\"0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Pausable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/Pausable.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {Context} from \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which allows children to implement an emergency stop\\n * mechanism that can be triggered by an authorized account.\\n *\\n * This module is used through inheritance. It will make available the\\n * modifiers `whenNotPaused` and `whenPaused`, which can be applied to\\n * the functions of your contract. Note that they will not be pausable by\\n * simply including this module, only once the modifiers are put in place.\\n */\\nabstract contract Pausable is Context {\\n    bool private _paused;\\n\\n    /**\\n     * @dev Emitted when the pause is triggered by `account`.\\n     */\\n    event Paused(address account);\\n\\n    /**\\n     * @dev Emitted when the pause is lifted by `account`.\\n     */\\n    event Unpaused(address account);\\n\\n    /**\\n     * @dev The operation failed because the contract is paused.\\n     */\\n    error EnforcedPause();\\n\\n    /**\\n     * @dev The operation failed because the contract is not paused.\\n     */\\n    error ExpectedPause();\\n\\n    /**\\n     * @dev Initializes the contract in unpaused state.\\n     */\\n    constructor() {\\n        _paused = false;\\n    }\\n\\n    /**\\n     * @dev Modifier to make a function callable only when the contract is not paused.\\n     *\\n     * Requirements:\\n     *\\n     * - The contract must not be paused.\\n     */\\n    modifier whenNotPaused() {\\n        _requireNotPaused();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Modifier to make a function callable only when the contract is paused.\\n     *\\n     * Requirements:\\n     *\\n     * - The contract must be paused.\\n     */\\n    modifier whenPaused() {\\n        _requirePaused();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Returns true if the contract is paused, and false otherwise.\\n     */\\n    function paused() public view virtual returns (bool) {\\n        return _paused;\\n    }\\n\\n    /**\\n     * @dev Throws if the contract is paused.\\n     */\\n    function _requireNotPaused() internal view virtual {\\n        if (paused()) {\\n            revert EnforcedPause();\\n        }\\n    }\\n\\n    /**\\n     * @dev Throws if the contract is not paused.\\n     */\\n    function _requirePaused() internal view virtual {\\n        if (!paused()) {\\n            revert ExpectedPause();\\n        }\\n    }\\n\\n    /**\\n     * @dev Triggers stopped state.\\n     *\\n     * Requirements:\\n     *\\n     * - The contract must not be paused.\\n     */\\n    function _pause() internal virtual whenNotPaused {\\n        _paused = true;\\n        emit Paused(_msgSender());\\n    }\\n\\n    /**\\n     * @dev Returns to normal state.\\n     *\\n     * Requirements:\\n     *\\n     * - The contract must be paused.\\n     */\\n    function _unpause() internal virtual whenPaused {\\n        _paused = false;\\n        emit Unpaused(_msgSender());\\n    }\\n}\\n\",\"keccak256\":\"0xb2e5f50762c27fb4b123e3619c3c02bdcba5e515309382e5bfb6f7d6486510bd\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/introspection/ERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/introspection/ERC165.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {IERC165} from \\\"./IERC165.sol\\\";\\n\\n/**\\n * @dev Implementation of the {IERC165} interface.\\n *\\n * Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check\\n * for the additional interface id that will be supported. For example:\\n *\\n * ```solidity\\n * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {\\n *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);\\n * }\\n * ```\\n */\\nabstract contract ERC165 is IERC165 {\\n    /**\\n     * @dev See {IERC165-supportsInterface}.\\n     */\\n    function supportsInterface(bytes4 interfaceId) public view virtual returns (bool) {\\n        return interfaceId == type(IERC165).interfaceId;\\n    }\\n}\\n\",\"keccak256\":\"0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/introspection/IERC165.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Interface of the ERC165 standard, as defined in the\\n * https://eips.ethereum.org/EIPS/eip-165[EIP].\\n *\\n * Implementers can declare support of contract interfaces, which can then be\\n * queried by others ({ERC165Checker}).\\n *\\n * For an implementation, see {ERC165}.\\n */\\ninterface IERC165 {\\n    /**\\n     * @dev Returns true if this contract implements the interface defined by\\n     * `interfaceId`. See the corresponding\\n     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]\\n     * to learn more about how these ids are created.\\n     *\\n     * This function call must use less than 30 000 gas.\\n     */\\n    function supportsInterface(bytes4 interfaceId) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b\",\"license\":\"MIT\"},\"contracts/TenderRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.24;\\n\\nimport \\\"@openzeppelin/contracts/access/AccessControl.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/Pausable.sol\\\";\\nimport \\\"./UserRegistry.sol\\\";\\n\\ncontract TenderRegistry is AccessControl, Pausable {\\n    bytes32 public constant ADMIN_ROLE = keccak256(\\\"ADMIN_ROLE\\\");\\n\\n    enum TenderStatus {\\n        Draft,\\n        Published,\\n        Closed,\\n        Cancelled,\\n        Awarded\\n    }\\n\\n    struct Tender {\\n        uint256 tenderId;\\n        string tenderRef;\\n        address agency;\\n        bytes32 tenderHash;\\n        string documentURI;\\n        uint256 publishedAt;\\n        uint256 submissionDeadline;\\n        uint256 openingTime;\\n        TenderStatus status;\\n        bool exists;\\n    }\\n\\n    struct Amendment {\\n        bytes32 amendmentHash;\\n        string amendmentURI;\\n        uint256 timestamp;\\n    }\\n\\n    UserRegistry public immutable userRegistry;\\n    address public awardRegistry;\\n    uint256 public nextTenderId = 1;\\n\\n    mapping(uint256 => Tender) public tenders;\\n    mapping(uint256 => Amendment[]) private tenderAmendments;\\n\\n    event AwardRegistryUpdated(address indexed awardRegistry, uint256 timestamp);\\n    event TenderPublished(\\n        uint256 indexed tenderId,\\n        string tenderRef,\\n        address indexed agency,\\n        bytes32 indexed tenderHash,\\n        string documentURI,\\n        uint256 submissionDeadline,\\n        uint256 openingTime,\\n        uint256 timestamp\\n    );\\n    event TenderAmended(\\n        uint256 indexed tenderId,\\n        bytes32 indexed amendmentHash,\\n        string amendmentURI,\\n        uint256 timestamp\\n    );\\n    event TenderClosed(uint256 indexed tenderId, uint256 timestamp);\\n    event TenderCancelled(uint256 indexed tenderId, bytes32 reasonHash, uint256 timestamp);\\n    event TenderAwarded(uint256 indexed tenderId, uint256 timestamp);\\n\\n    constructor(UserRegistry _userRegistry, address admin) {\\n        require(address(_userRegistry) != address(0), \\\"TenderRegistry: zero user registry\\\");\\n        require(admin != address(0), \\\"TenderRegistry: zero admin\\\");\\n\\n        userRegistry = _userRegistry;\\n        _grantRole(DEFAULT_ADMIN_ROLE, admin);\\n        _grantRole(ADMIN_ROLE, admin);\\n    }\\n\\n    modifier onlyActiveAgency() {\\n        require(userRegistry.hasUserRole(msg.sender, UserRegistry.UserRole.Agency), \\\"TenderRegistry: agency only\\\");\\n        _;\\n    }\\n\\n    modifier onlyRegistryAdmin() {\\n        require(\\n            hasRole(ADMIN_ROLE, msg.sender) || userRegistry.hasUserRole(msg.sender, UserRegistry.UserRole.Admin),\\n            \\\"TenderRegistry: admin only\\\"\\n        );\\n        _;\\n    }\\n\\n    function setAwardRegistry(address _awardRegistry) external onlyRegistryAdmin {\\n        require(_awardRegistry != address(0), \\\"TenderRegistry: zero award registry\\\");\\n        awardRegistry = _awardRegistry;\\n        emit AwardRegistryUpdated(_awardRegistry, block.timestamp);\\n    }\\n\\n    function publishTender(\\n        string calldata tenderRef,\\n        bytes32 tenderHash,\\n        string calldata documentURI,\\n        uint256 submissionDeadline,\\n        uint256 openingTime\\n    ) external whenNotPaused onlyActiveAgency returns (uint256 tenderId) {\\n        require(bytes(tenderRef).length != 0, \\\"TenderRegistry: empty tender ref\\\");\\n        require(tenderHash != bytes32(0), \\\"TenderRegistry: zero tender hash\\\");\\n        require(submissionDeadline > block.timestamp, \\\"TenderRegistry: deadline must be future\\\");\\n        require(openingTime >= submissionDeadline, \\\"TenderRegistry: opening before deadline\\\");\\n\\n        tenderId = nextTenderId++;\\n        tenders[tenderId] = Tender({\\n            tenderId: tenderId,\\n            tenderRef: tenderRef,\\n            agency: msg.sender,\\n            tenderHash: tenderHash,\\n            documentURI: documentURI,\\n            publishedAt: block.timestamp,\\n            submissionDeadline: submissionDeadline,\\n            openingTime: openingTime,\\n            status: TenderStatus.Published,\\n            exists: true\\n        });\\n\\n        emit TenderPublished(\\n            tenderId,\\n            tenderRef,\\n            msg.sender,\\n            tenderHash,\\n            documentURI,\\n            submissionDeadline,\\n            openingTime,\\n            block.timestamp\\n        );\\n    }\\n\\n    function addAmendment(\\n        uint256 tenderId,\\n        bytes32 amendmentHash,\\n        string calldata amendmentURI\\n    ) external whenNotPaused onlyActiveAgency {\\n        Tender storage tender = _publishedTender(tenderId);\\n        require(tender.agency == msg.sender, \\\"TenderRegistry: not tender agency\\\");\\n        require(block.timestamp < tender.submissionDeadline, \\\"TenderRegistry: deadline passed\\\");\\n        require(amendmentHash != bytes32(0), \\\"TenderRegistry: zero amendment hash\\\");\\n\\n        tenderAmendments[tenderId].push(\\n            Amendment({ amendmentHash: amendmentHash, amendmentURI: amendmentURI, timestamp: block.timestamp })\\n        );\\n\\n        emit TenderAmended(tenderId, amendmentHash, amendmentURI, block.timestamp);\\n    }\\n\\n    function closeTender(uint256 tenderId) external whenNotPaused {\\n        Tender storage tender = _publishedTender(tenderId);\\n        require(msg.sender == tender.agency || hasRole(ADMIN_ROLE, msg.sender), \\\"TenderRegistry: agency or admin only\\\");\\n        require(block.timestamp >= tender.submissionDeadline, \\\"TenderRegistry: deadline not reached\\\");\\n\\n        tender.status = TenderStatus.Closed;\\n        emit TenderClosed(tenderId, block.timestamp);\\n    }\\n\\n    function cancelTender(uint256 tenderId, bytes32 reasonHash) external whenNotPaused {\\n        Tender storage tender = _existingTender(tenderId);\\n        require(msg.sender == tender.agency || hasRole(ADMIN_ROLE, msg.sender), \\\"TenderRegistry: agency or admin only\\\");\\n        require(tender.status != TenderStatus.Awarded, \\\"TenderRegistry: already awarded\\\");\\n        require(tender.status != TenderStatus.Cancelled, \\\"TenderRegistry: already cancelled\\\");\\n        require(reasonHash != bytes32(0), \\\"TenderRegistry: zero reason hash\\\");\\n\\n        tender.status = TenderStatus.Cancelled;\\n        emit TenderCancelled(tenderId, reasonHash, block.timestamp);\\n    }\\n\\n    function markAwarded(uint256 tenderId) external whenNotPaused {\\n        require(msg.sender == awardRegistry || hasRole(ADMIN_ROLE, msg.sender), \\\"TenderRegistry: award registry only\\\");\\n        Tender storage tender = _existingTender(tenderId);\\n        require(tender.status == TenderStatus.Closed, \\\"TenderRegistry: tender not closed\\\");\\n\\n        tender.status = TenderStatus.Awarded;\\n        emit TenderAwarded(tenderId, block.timestamp);\\n    }\\n\\n    function getTender(uint256 tenderId) external view returns (Tender memory) {\\n        return _existingTenderView(tenderId);\\n    }\\n\\n    function getAmendmentCount(uint256 tenderId) external view returns (uint256) {\\n        _existingTenderView(tenderId);\\n        return tenderAmendments[tenderId].length;\\n    }\\n\\n    function getAmendment(uint256 tenderId, uint256 index) external view returns (Amendment memory) {\\n        _existingTenderView(tenderId);\\n        require(index < tenderAmendments[tenderId].length, \\\"TenderRegistry: amendment out of range\\\");\\n        return tenderAmendments[tenderId][index];\\n    }\\n\\n    function verifyTenderHash(uint256 tenderId, bytes32 hashToCheck) external view returns (bool) {\\n        Tender memory tender = _existingTenderView(tenderId);\\n        return tender.tenderHash == hashToCheck;\\n    }\\n\\n    function pause() external onlyRegistryAdmin {\\n        _pause();\\n    }\\n\\n    function unpause() external onlyRegistryAdmin {\\n        _unpause();\\n    }\\n\\n    function _existingTender(uint256 tenderId) internal view returns (Tender storage tender) {\\n        tender = tenders[tenderId];\\n        require(tender.exists, \\\"TenderRegistry: unknown tender\\\");\\n    }\\n\\n    function _existingTenderView(uint256 tenderId) internal view returns (Tender memory tender) {\\n        tender = tenders[tenderId];\\n        require(tender.exists, \\\"TenderRegistry: unknown tender\\\");\\n    }\\n\\n    function _publishedTender(uint256 tenderId) internal view returns (Tender storage tender) {\\n        tender = _existingTender(tenderId);\\n        require(tender.status == TenderStatus.Published, \\\"TenderRegistry: not published\\\");\\n    }\\n}\\n\",\"keccak256\":\"0xbd656314760a78bae01cd75e294f2432dec1fdb9045cf20ae5521bc1c6acd951\",\"license\":\"MIT\"},\"contracts/UserRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.24;\\n\\nimport \\\"@openzeppelin/contracts/access/AccessControl.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/Pausable.sol\\\";\\n\\ncontract UserRegistry is AccessControl, Pausable {\\n    bytes32 public constant ADMIN_ROLE = keccak256(\\\"ADMIN_ROLE\\\");\\n    bytes32 public constant AGENCY_ROLE = keccak256(\\\"AGENCY_ROLE\\\");\\n    bytes32 public constant SUPPLIER_ROLE = keccak256(\\\"SUPPLIER_ROLE\\\");\\n    bytes32 public constant AUDITOR_ROLE = keccak256(\\\"AUDITOR_ROLE\\\");\\n\\n    enum UserRole {\\n        None,\\n        Admin,\\n        Agency,\\n        Supplier,\\n        Auditor\\n    }\\n\\n    struct User {\\n        bytes32 identityHash;\\n        UserRole role;\\n        bool active;\\n        uint256 registeredAt;\\n        uint256 updatedAt;\\n    }\\n\\n    mapping(address => User) public users;\\n    mapping(bytes32 => address) public identityToWallet;\\n\\n    event UserRegistered(address indexed wallet, bytes32 indexed identityHash, UserRole role, uint256 timestamp);\\n    event UserRoleUpdated(address indexed wallet, UserRole oldRole, UserRole newRole, uint256 timestamp);\\n    event UserStatusChanged(address indexed wallet, bool active, uint256 timestamp);\\n\\n    constructor(address admin) {\\n        require(admin != address(0), \\\"UserRegistry: zero admin\\\");\\n\\n        _grantRole(DEFAULT_ADMIN_ROLE, admin);\\n        _grantRole(ADMIN_ROLE, admin);\\n\\n        bytes32 bootstrapIdentity = keccak256(abi.encodePacked(\\\"BOOTSTRAP_ADMIN\\\", admin));\\n        users[admin] = User({\\n            identityHash: bootstrapIdentity,\\n            role: UserRole.Admin,\\n            active: true,\\n            registeredAt: block.timestamp,\\n            updatedAt: block.timestamp\\n        });\\n        identityToWallet[bootstrapIdentity] = admin;\\n\\n        emit UserRegistered(admin, bootstrapIdentity, UserRole.Admin, block.timestamp);\\n    }\\n\\n    function registerUser(\\n        address wallet,\\n        bytes32 identityHash,\\n        UserRole role\\n    ) external onlyRole(ADMIN_ROLE) whenNotPaused {\\n        require(wallet != address(0), \\\"UserRegistry: zero wallet\\\");\\n        require(identityHash != bytes32(0), \\\"UserRegistry: zero identity hash\\\");\\n        require(role != UserRole.None, \\\"UserRegistry: invalid role\\\");\\n        require(users[wallet].registeredAt == 0, \\\"UserRegistry: wallet already registered\\\");\\n        require(identityToWallet[identityHash] == address(0), \\\"UserRegistry: identity already linked\\\");\\n\\n        users[wallet] = User({\\n            identityHash: identityHash,\\n            role: role,\\n            active: true,\\n            registeredAt: block.timestamp,\\n            updatedAt: block.timestamp\\n        });\\n        identityToWallet[identityHash] = wallet;\\n        _grantRole(_accessRoleFor(role), wallet);\\n\\n        emit UserRegistered(wallet, identityHash, role, block.timestamp);\\n    }\\n\\n    function updateUserRole(address wallet, UserRole newRole) external onlyRole(ADMIN_ROLE) whenNotPaused {\\n        require(newRole != UserRole.None, \\\"UserRegistry: invalid role\\\");\\n        User storage user = users[wallet];\\n        require(user.registeredAt != 0, \\\"UserRegistry: unknown user\\\");\\n\\n        UserRole oldRole = user.role;\\n        require(oldRole != newRole, \\\"UserRegistry: same role\\\");\\n\\n        _revokeRole(_accessRoleFor(oldRole), wallet);\\n        _grantRole(_accessRoleFor(newRole), wallet);\\n\\n        user.role = newRole;\\n        user.updatedAt = block.timestamp;\\n\\n        emit UserRoleUpdated(wallet, oldRole, newRole, block.timestamp);\\n    }\\n\\n    function deactivateUser(address wallet) external onlyRole(ADMIN_ROLE) whenNotPaused {\\n        _setUserStatus(wallet, false);\\n    }\\n\\n    function reactivateUser(address wallet) external onlyRole(ADMIN_ROLE) whenNotPaused {\\n        _setUserStatus(wallet, true);\\n    }\\n\\n    function isActiveUser(address wallet) external view returns (bool) {\\n        return users[wallet].active;\\n    }\\n\\n    function hasUserRole(address wallet, UserRole role) external view returns (bool) {\\n        User memory user = users[wallet];\\n        return user.active && user.role == role;\\n    }\\n\\n    function pause() external onlyRole(ADMIN_ROLE) {\\n        _pause();\\n    }\\n\\n    function unpause() external onlyRole(ADMIN_ROLE) {\\n        _unpause();\\n    }\\n\\n    function _setUserStatus(address wallet, bool active) internal {\\n        User storage user = users[wallet];\\n        require(user.registeredAt != 0, \\\"UserRegistry: unknown user\\\");\\n        require(user.active != active, \\\"UserRegistry: status unchanged\\\");\\n\\n        user.active = active;\\n        user.updatedAt = block.timestamp;\\n\\n        emit UserStatusChanged(wallet, active, block.timestamp);\\n    }\\n\\n    function _accessRoleFor(UserRole role) internal pure returns (bytes32) {\\n        if (role == UserRole.Admin) return ADMIN_ROLE;\\n        if (role == UserRole.Agency) return AGENCY_ROLE;\\n        if (role == UserRole.Supplier) return SUPPLIER_ROLE;\\n        if (role == UserRole.Auditor) return AUDITOR_ROLE;\\n        revert(\\\"UserRegistry: invalid role\\\");\\n    }\\n}\\n\",\"keccak256\":\"0x2fae65c6c84eaba357a1747c24cfa02a48dcfc7d30a413f63026b3233df5c2a2\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60a0604052600160025534801561001557600080fd5b506040516125c53803806125c583398101604081905261003491610209565b6001805460ff191690556001600160a01b0382166100a45760405162461bcd60e51b815260206004820152602260248201527f54656e64657252656769737472793a207a65726f207573657220726567697374604482015261727960f01b60648201526084015b60405180910390fd5b6001600160a01b0381166100fa5760405162461bcd60e51b815260206004820152601a60248201527f54656e64657252656769737472793a207a65726f2061646d696e000000000000604482015260640161009b565b6001600160a01b038216608052610112600082610145565b5061013d7fa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c2177582610145565b505050610243565b6000828152602081815260408083206001600160a01b038516845290915281205460ff166101e7576000838152602081815260408083206001600160a01b03861684529091529020805460ff1916600117905561019f3390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45060016101eb565b5060005b92915050565b6001600160a01b038116811461020657600080fd5b50565b6000806040838503121561021c57600080fd5b8251610227816101f1565b6020840151909250610238816101f1565b809150509250929050565b608051612344610281600039600081816102b10152818161072d0152818161097301528181610dba0152818161121f015261151e01526123446000f3fe608060405234801561001057600080fd5b50600436106101725760003560e01c8063667c1a24116100de578063a217fddf11610097578063d1d8f14211610071578063d1d8f1421461036b578063d547741f1461037e578063de8468c014610391578063fb5b21e5146103a457600080fd5b8063a217fddf1461033d578063b209e38e14610345578063b577e4541461035857600080fd5b8063667c1a24146102de57806375b238fc146102e75780638456cb59146102fc57806391d14854146103045780639b80796d146103175780639f49c6971461032a57600080fd5b80632f2ff15d116101305780632f2ff15d1461025557806336568abe146102685780633f4ba83a1461027b578063465e1def146102835780635c7460d6146102ac5780635c975abb146102d357600080fd5b8062cda3da1461017757806301ffc9a71461018c5780630585c25e146101b45780630c3977d7146101d45780631bf97317146101f4578063248a9ca314610224575b600080fd5b61018a610185366004611c0e565b6103b7565b005b61019f61019a366004611c27565b6104c9565b60405190151581526020015b60405180910390f35b6101c76101c2366004611c0e565b610500565b6040516101ab9190611cdf565b6101e76101e2366004611d97565b610511565b6040516101ab9190611db9565b60015461020c9061010090046001600160a01b031681565b6040516001600160a01b0390911681526020016101ab565b610247610232366004611c0e565b60009081526020819052604090206001015490565b6040519081526020016101ab565b61018a610263366004611e0c565b610695565b61018a610276366004611e0c565b6106c0565b61018a6106f8565b610296610291366004611c0e565b6107cc565b6040516101ab9a99989796959493929190611e38565b61020c7f000000000000000000000000000000000000000000000000000000000000000081565b60015460ff1661019f565b61024760025481565b6102476000805160206122ef83398151915281565b61018a61093e565b61019f610312366004611e0c565b610a10565b61018a610325366004611d97565b610a39565b61018a610338366004611c0e565b610c0e565b610247600081565b61019f610353366004611d97565b610d5f565b610247610366366004611c0e565b610d7a565b610247610379366004611f01565b610d99565b61018a61038c366004611e0c565b6111db565b61018a61039f366004611f8f565b611200565b61018a6103b2366004611fe2565b6114e9565b6103bf611671565b60006103ca82611695565b60028101549091506001600160a01b03163314806103fb57506103fb6000805160206122ef83398151915233610a10565b6104205760405162461bcd60e51b815260040161041790611ffd565b60405180910390fd5b80600601544210156104805760405162461bcd60e51b8152602060048201526024808201527f54656e64657252656769737472793a20646561646c696e65206e6f742072656160448201526318da195960e21b6064820152608401610417565b60088101805460ff1916600217905560405142815282907f0d2959a5ce40bdbfeb405909e977bb2d62b09a785b0a0059ce46c386a873a451906020015b60405180910390a25050565b60006001600160e01b03198216637965db0b60e01b14806104fa57506301ffc9a760e01b6001600160e01b03198316145b92915050565b610508611b9e565b6104fa8261170f565b61053860405180606001604052806000801916815260200160608152602001600081525090565b6105418361170f565b5060008381526004602052604090205482106105ae5760405162461bcd60e51b815260206004820152602660248201527f54656e64657252656769737472793a20616d656e646d656e74206f7574206f666044820152652072616e676560d01b6064820152608401610417565b60008381526004602052604090208054839081106105ce576105ce612041565b90600052602060002090600302016040518060600160405290816000820154815260200160018201805461060190612057565b80601f016020809104026020016040519081016040528092919081815260200182805461062d90612057565b801561067a5780601f1061064f5761010080835404028352916020019161067a565b820191906000526020600020905b81548152906001019060200180831161065d57829003601f168201915b50505050508152602001600282015481525050905092915050565b6000828152602081905260409020600101546106b081611940565b6106ba838361194d565b50505050565b6001600160a01b03811633146106e95760405163334bd91960e11b815260040160405180910390fd5b6106f382826119df565b505050565b6107106000805160206122ef83398151915233610a10565b806107a6575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790610765903390600190600401612091565b602060405180830381865afa158015610782573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107a691906120b7565b6107c25760405162461bcd60e51b8152600401610417906120d9565b6107ca611a4a565b565b600360205260009081526040902080546001820180549192916107ee90612057565b80601f016020809104026020016040519081016040528092919081815260200182805461081a90612057565b80156108675780601f1061083c57610100808354040283529160200191610867565b820191906000526020600020905b81548152906001019060200180831161084a57829003601f168201915b505050506002830154600384015460048501805494956001600160a01b03909316949193509061089690612057565b80601f01602080910402602001604051908101604052809291908181526020018280546108c290612057565b801561090f5780601f106108e45761010080835404028352916020019161090f565b820191906000526020600020905b8154815290600101906020018083116108f257829003601f168201915b505050506005830154600684015460078501546008909501549394919390925060ff808216916101009004168a565b6109566000805160206122ef83398151915233610a10565b806109ec575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f737906109ab903390600190600401612091565b602060405180830381865afa1580156109c8573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109ec91906120b7565b610a085760405162461bcd60e51b8152600401610417906120d9565b6107ca611a9c565b6000918252602082815260408084206001600160a01b0393909316845291905290205460ff1690565b610a41611671565b6000610a4c83611ad7565b60028101549091506001600160a01b0316331480610a7d5750610a7d6000805160206122ef83398151915233610a10565b610a995760405162461bcd60e51b815260040161041790611ffd565b6004600882015460ff166004811115610ab457610ab4611c9e565b03610b015760405162461bcd60e51b815260206004820152601f60248201527f54656e64657252656769737472793a20616c72656164792061776172646564006044820152606401610417565b6003600882015460ff166004811115610b1c57610b1c611c9e565b03610b735760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a20616c72656164792063616e63656c6c656044820152601960fa1b6064820152608401610417565b81610bc05760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a207a65726f20726561736f6e20686173686044820152606401610417565b60088101805460ff191660031790556040805183815242602082015284917fd6796e30b7cbe2e95ff4dc119ed465274266f7d90f4326993cec32d9edb9477c910160405180910390a2505050565b610c16611671565b60015461010090046001600160a01b0316331480610c475750610c476000805160206122ef83398151915233610a10565b610c9f5760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a206177617264207265676973747279206f6044820152626e6c7960e81b6064820152608401610417565b6000610caa82611ad7565b90506002600882015460ff166004811115610cc757610cc7611c9e565b14610d1e5760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a2074656e646572206e6f7420636c6f73656044820152601960fa1b6064820152608401610417565b60088101805460ff1916600417905560405142815282907f6905212b40969bef6059a8d27d24a54be2629672c745f5f3d7a30afa035e216d906020016104bd565b600080610d6b8461170f565b60600151831491505092915050565b6000610d858261170f565b505060009081526004602052604090205490565b6000610da3611671565b60405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790610df2903390600290600401612091565b602060405180830381865afa158015610e0f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610e3391906120b7565b610e7f5760405162461bcd60e51b815260206004820152601b60248201527f54656e64657252656769737472793a206167656e6379206f6e6c7900000000006044820152606401610417565b6000879003610ed05760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a20656d7074792074656e646572207265666044820152606401610417565b85610f1d5760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a207a65726f2074656e64657220686173686044820152606401610417565b428311610f7c5760405162461bcd60e51b815260206004820152602760248201527f54656e64657252656769737472793a20646561646c696e65206d7573742062656044820152662066757475726560c81b6064820152608401610417565b82821015610fdc5760405162461bcd60e51b815260206004820152602760248201527f54656e64657252656769737472793a206f70656e696e67206265666f726520646044820152666561646c696e6560c81b6064820152608401610417565b60028054906000610fec83612110565b91905055905060405180610140016040528082815260200189898080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152505050908252503360208083019190915260408083018a90528051601f890183900483028101830190915287815260609092019190889088908190840183828082843760009201919091525050509082525042602082015260408101859052606081018490526080016001815260016020918201819052600084815260038352604090208351815591830151908201906110d0908261219b565b5060408201516002820180546001600160a01b0319166001600160a01b039092169190911790556060820151600382015560808201516004820190611115908261219b565b5060a0820151600582015560c0820151600682015560e0820151600782015561010082015160088201805460ff1916600183600481111561115857611158611c9e565b02179055506101208201518160080160016101000a81548160ff02191690831515021790555090505085336001600160a01b0316827f880c637e08f390f9fd5eec810b5438441c651dfc79f124ca2d245c77d00d8b908b8b8a8a8a8a426040516111c89796959493929190612283565b60405180910390a4979650505050505050565b6000828152602081905260409020600101546111f681611940565b6106ba83836119df565b611208611671565b60405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790611257903390600290600401612091565b602060405180830381865afa158015611274573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061129891906120b7565b6112e45760405162461bcd60e51b815260206004820152601b60248201527f54656e64657252656769737472793a206167656e6379206f6e6c7900000000006044820152606401610417565b60006112ef85611695565b60028101549091506001600160a01b031633146113585760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a206e6f742074656e646572206167656e636044820152607960f81b6064820152608401610417565b806006015442106113ab5760405162461bcd60e51b815260206004820152601f60248201527f54656e64657252656769737472793a20646561646c696e6520706173736564006044820152606401610417565b836114045760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a207a65726f20616d656e646d656e7420686044820152620c2e6d60eb1b6064820152608401610417565b60046000868152602001908152602001600020604051806060016040528086815260200185858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092018290525093855250504260209384015250835460018181018655948252908290208351600390920201908155908201519192909190820190611498908261219b565b5060408201518160020155505083857f20abc5c16026505fb34e01e5af7119a58b9bb4a138a4312926d74e5a0219bd598585426040516114da939291906122ca565b60405180910390a35050505050565b6115016000805160206122ef83398151915233610a10565b80611597575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790611556903390600190600401612091565b602060405180830381865afa158015611573573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061159791906120b7565b6115b35760405162461bcd60e51b8152600401610417906120d9565b6001600160a01b0381166116155760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a207a65726f20617761726420726567697360448201526274727960e81b6064820152608401610417565b60018054610100600160a81b0319166101006001600160a01b038416908102919091179091556040514281527f84bd7bb5ee998d2da286d0592d633c0016f835469bf8ad2ab30ff8297ead89349060200160405180910390a250565b60015460ff16156107ca5760405163d93c066560e01b815260040160405180910390fd5b60006116a082611ad7565b90506001600882015460ff1660048111156116bd576116bd611c9e565b1461170a5760405162461bcd60e51b815260206004820152601d60248201527f54656e64657252656769737472793a206e6f74207075626c69736865640000006044820152606401610417565b919050565b611717611b9e565b60036000838152602001908152602001600020604051806101400160405290816000820154815260200160018201805461175090612057565b80601f016020809104026020016040519081016040528092919081815260200182805461177c90612057565b80156117c95780601f1061179e576101008083540402835291602001916117c9565b820191906000526020600020905b8154815290600101906020018083116117ac57829003601f168201915b505050918352505060028201546001600160a01b031660208201526003820154604082015260048201805460609092019161180390612057565b80601f016020809104026020016040519081016040528092919081815260200182805461182f90612057565b801561187c5780601f106118515761010080835404028352916020019161187c565b820191906000526020600020905b81548152906001019060200180831161185f57829003601f168201915b5050509183525050600582015460208201526006820154604082015260078201546060820152600882015460809091019060ff1660048111156118c1576118c1611c9e565b60048111156118d2576118d2611c9e565b815260089190910154610100900460ff16151560209091015261012081015190915061170a5760405162461bcd60e51b815260206004820152601e60248201527f54656e64657252656769737472793a20756e6b6e6f776e2074656e64657200006044820152606401610417565b61194a8133611b3e565b50565b60006119598383610a10565b6119d7576000838152602081815260408083206001600160a01b03861684529091529020805460ff1916600117905561198f3390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45060016104fa565b5060006104fa565b60006119eb8383610a10565b156119d7576000838152602081815260408083206001600160a01b0386168085529252808320805460ff1916905551339286917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a45060016104fa565b611a52611b7b565b6001805460ff191690557f5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa335b6040516001600160a01b03909116815260200160405180910390a1565b611aa4611671565b6001805460ff1916811790557f62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a25833611a7f565b60008181526003602052604090206008810154610100900460ff1661170a5760405162461bcd60e51b815260206004820152601e60248201527f54656e64657252656769737472793a20756e6b6e6f776e2074656e64657200006044820152606401610417565b611b488282610a10565b611b775760405163e2517d3f60e01b81526001600160a01b038216600482015260248101839052604401610417565b5050565b60015460ff166107ca57604051638dfc202b60e01b815260040160405180910390fd5b604051806101400160405280600081526020016060815260200160006001600160a01b03168152602001600080191681526020016060815260200160008152602001600081526020016000815260200160006004811115611c0157611c01611c9e565b8152600060209091015290565b600060208284031215611c2057600080fd5b5035919050565b600060208284031215611c3957600080fd5b81356001600160e01b031981168114611c5157600080fd5b9392505050565b6000815180845260005b81811015611c7e57602081850181015186830182015201611c62565b506000602082860101526020601f19601f83011685010191505092915050565b634e487b7160e01b600052602160045260246000fd5b6005811061194a57634e487b7160e01b600052602160045260246000fd5b611cdb81611cb4565b9052565b6020815281516020820152600060208301516101406040840152611d07610160840182611c58565b90506040840151611d2360608501826001600160a01b03169052565b50606084015160808401526080840151601f198483030160a0850152611d498282611c58565b91505060a084015160c084015260c084015160e084015260e0840151610100840152610100840151611d7f610120850182611cd2565b50610120840151801515610140850152509392505050565b60008060408385031215611daa57600080fd5b50508035926020909101359150565b60208152815160208201526000602083015160606040840152611ddf6080840182611c58565b9050604084015160608401528091505092915050565b80356001600160a01b038116811461170a57600080fd5b60008060408385031215611e1f57600080fd5b82359150611e2f60208401611df5565b90509250929050565b8a815261014060208201526000611e5361014083018c611c58565b6001600160a01b038b166040840152606083018a90528281036080840152611e7b818a611c58565b9150508660a08301528560c08301528460e0830152611e9984611cb4565b836101008301528215156101208301529b9a5050505050505050505050565b60008083601f840112611eca57600080fd5b50813567ffffffffffffffff811115611ee257600080fd5b602083019150836020828501011115611efa57600080fd5b9250929050565b600080600080600080600060a0888a031215611f1c57600080fd5b873567ffffffffffffffff811115611f3357600080fd5b611f3f8a828b01611eb8565b90985096505060208801359450604088013567ffffffffffffffff811115611f6657600080fd5b611f728a828b01611eb8565b989b979a5095989597966060870135966080013595509350505050565b60008060008060608587031215611fa557600080fd5b8435935060208501359250604085013567ffffffffffffffff811115611fca57600080fd5b611fd687828801611eb8565b95989497509550505050565b600060208284031215611ff457600080fd5b611c5182611df5565b60208082526024908201527f54656e64657252656769737472793a206167656e6379206f722061646d696e206040820152636f6e6c7960e01b606082015260800190565b634e487b7160e01b600052603260045260246000fd5b600181811c9082168061206b57607f821691505b60208210810361208b57634e487b7160e01b600052602260045260246000fd5b50919050565b6001600160a01b0383168152604081016120aa83611cb4565b8260208301529392505050565b6000602082840312156120c957600080fd5b81518015158114611c5157600080fd5b6020808252601a908201527f54656e64657252656769737472793a2061646d696e206f6e6c79000000000000604082015260600190565b60006001820161213057634e487b7160e01b600052601160045260246000fd5b5060010190565b634e487b7160e01b600052604160045260246000fd5b601f8211156106f357806000526020600020601f840160051c810160208510156121745750805b601f840160051c820191505b818110156121945760008155600101612180565b5050505050565b815167ffffffffffffffff8111156121b5576121b5612137565b6121c9816121c38454612057565b8461214d565b6020601f8211600181146121fd57600083156121e55750848201515b600019600385901b1c1916600184901b178455612194565b600084815260208120601f198516915b8281101561222d578785015182556020948501946001909201910161220d565b508482101561224b5786840151600019600387901b60f8161c191681555b50505050600190811b01905550565b81835281816020850137506000828201602090810191909152601f909101601f19169091010190565b60a08152600061229760a08301898b61225a565b82810360208401526122aa81888a61225a565b604084019690965250506060810192909252608090910152949350505050565b6040815260006122de60408301858761225a565b905082602083015294935050505056fea49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775a2646970667358221220c49093ed44bb6ca44342db8e809312025f3a8b77be50642cc39ad1516219650164736f6c634300081e0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101725760003560e01c8063667c1a24116100de578063a217fddf11610097578063d1d8f14211610071578063d1d8f1421461036b578063d547741f1461037e578063de8468c014610391578063fb5b21e5146103a457600080fd5b8063a217fddf1461033d578063b209e38e14610345578063b577e4541461035857600080fd5b8063667c1a24146102de57806375b238fc146102e75780638456cb59146102fc57806391d14854146103045780639b80796d146103175780639f49c6971461032a57600080fd5b80632f2ff15d116101305780632f2ff15d1461025557806336568abe146102685780633f4ba83a1461027b578063465e1def146102835780635c7460d6146102ac5780635c975abb146102d357600080fd5b8062cda3da1461017757806301ffc9a71461018c5780630585c25e146101b45780630c3977d7146101d45780631bf97317146101f4578063248a9ca314610224575b600080fd5b61018a610185366004611c0e565b6103b7565b005b61019f61019a366004611c27565b6104c9565b60405190151581526020015b60405180910390f35b6101c76101c2366004611c0e565b610500565b6040516101ab9190611cdf565b6101e76101e2366004611d97565b610511565b6040516101ab9190611db9565b60015461020c9061010090046001600160a01b031681565b6040516001600160a01b0390911681526020016101ab565b610247610232366004611c0e565b60009081526020819052604090206001015490565b6040519081526020016101ab565b61018a610263366004611e0c565b610695565b61018a610276366004611e0c565b6106c0565b61018a6106f8565b610296610291366004611c0e565b6107cc565b6040516101ab9a99989796959493929190611e38565b61020c7f000000000000000000000000000000000000000000000000000000000000000081565b60015460ff1661019f565b61024760025481565b6102476000805160206122ef83398151915281565b61018a61093e565b61019f610312366004611e0c565b610a10565b61018a610325366004611d97565b610a39565b61018a610338366004611c0e565b610c0e565b610247600081565b61019f610353366004611d97565b610d5f565b610247610366366004611c0e565b610d7a565b610247610379366004611f01565b610d99565b61018a61038c366004611e0c565b6111db565b61018a61039f366004611f8f565b611200565b61018a6103b2366004611fe2565b6114e9565b6103bf611671565b60006103ca82611695565b60028101549091506001600160a01b03163314806103fb57506103fb6000805160206122ef83398151915233610a10565b6104205760405162461bcd60e51b815260040161041790611ffd565b60405180910390fd5b80600601544210156104805760405162461bcd60e51b8152602060048201526024808201527f54656e64657252656769737472793a20646561646c696e65206e6f742072656160448201526318da195960e21b6064820152608401610417565b60088101805460ff1916600217905560405142815282907f0d2959a5ce40bdbfeb405909e977bb2d62b09a785b0a0059ce46c386a873a451906020015b60405180910390a25050565b60006001600160e01b03198216637965db0b60e01b14806104fa57506301ffc9a760e01b6001600160e01b03198316145b92915050565b610508611b9e565b6104fa8261170f565b61053860405180606001604052806000801916815260200160608152602001600081525090565b6105418361170f565b5060008381526004602052604090205482106105ae5760405162461bcd60e51b815260206004820152602660248201527f54656e64657252656769737472793a20616d656e646d656e74206f7574206f666044820152652072616e676560d01b6064820152608401610417565b60008381526004602052604090208054839081106105ce576105ce612041565b90600052602060002090600302016040518060600160405290816000820154815260200160018201805461060190612057565b80601f016020809104026020016040519081016040528092919081815260200182805461062d90612057565b801561067a5780601f1061064f5761010080835404028352916020019161067a565b820191906000526020600020905b81548152906001019060200180831161065d57829003601f168201915b50505050508152602001600282015481525050905092915050565b6000828152602081905260409020600101546106b081611940565b6106ba838361194d565b50505050565b6001600160a01b03811633146106e95760405163334bd91960e11b815260040160405180910390fd5b6106f382826119df565b505050565b6107106000805160206122ef83398151915233610a10565b806107a6575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790610765903390600190600401612091565b602060405180830381865afa158015610782573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107a691906120b7565b6107c25760405162461bcd60e51b8152600401610417906120d9565b6107ca611a4a565b565b600360205260009081526040902080546001820180549192916107ee90612057565b80601f016020809104026020016040519081016040528092919081815260200182805461081a90612057565b80156108675780601f1061083c57610100808354040283529160200191610867565b820191906000526020600020905b81548152906001019060200180831161084a57829003601f168201915b505050506002830154600384015460048501805494956001600160a01b03909316949193509061089690612057565b80601f01602080910402602001604051908101604052809291908181526020018280546108c290612057565b801561090f5780601f106108e45761010080835404028352916020019161090f565b820191906000526020600020905b8154815290600101906020018083116108f257829003601f168201915b505050506005830154600684015460078501546008909501549394919390925060ff808216916101009004168a565b6109566000805160206122ef83398151915233610a10565b806109ec575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f737906109ab903390600190600401612091565b602060405180830381865afa1580156109c8573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906109ec91906120b7565b610a085760405162461bcd60e51b8152600401610417906120d9565b6107ca611a9c565b6000918252602082815260408084206001600160a01b0393909316845291905290205460ff1690565b610a41611671565b6000610a4c83611ad7565b60028101549091506001600160a01b0316331480610a7d5750610a7d6000805160206122ef83398151915233610a10565b610a995760405162461bcd60e51b815260040161041790611ffd565b6004600882015460ff166004811115610ab457610ab4611c9e565b03610b015760405162461bcd60e51b815260206004820152601f60248201527f54656e64657252656769737472793a20616c72656164792061776172646564006044820152606401610417565b6003600882015460ff166004811115610b1c57610b1c611c9e565b03610b735760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a20616c72656164792063616e63656c6c656044820152601960fa1b6064820152608401610417565b81610bc05760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a207a65726f20726561736f6e20686173686044820152606401610417565b60088101805460ff191660031790556040805183815242602082015284917fd6796e30b7cbe2e95ff4dc119ed465274266f7d90f4326993cec32d9edb9477c910160405180910390a2505050565b610c16611671565b60015461010090046001600160a01b0316331480610c475750610c476000805160206122ef83398151915233610a10565b610c9f5760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a206177617264207265676973747279206f6044820152626e6c7960e81b6064820152608401610417565b6000610caa82611ad7565b90506002600882015460ff166004811115610cc757610cc7611c9e565b14610d1e5760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a2074656e646572206e6f7420636c6f73656044820152601960fa1b6064820152608401610417565b60088101805460ff1916600417905560405142815282907f6905212b40969bef6059a8d27d24a54be2629672c745f5f3d7a30afa035e216d906020016104bd565b600080610d6b8461170f565b60600151831491505092915050565b6000610d858261170f565b505060009081526004602052604090205490565b6000610da3611671565b60405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790610df2903390600290600401612091565b602060405180830381865afa158015610e0f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610e3391906120b7565b610e7f5760405162461bcd60e51b815260206004820152601b60248201527f54656e64657252656769737472793a206167656e6379206f6e6c7900000000006044820152606401610417565b6000879003610ed05760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a20656d7074792074656e646572207265666044820152606401610417565b85610f1d5760405162461bcd60e51b815260206004820181905260248201527f54656e64657252656769737472793a207a65726f2074656e64657220686173686044820152606401610417565b428311610f7c5760405162461bcd60e51b815260206004820152602760248201527f54656e64657252656769737472793a20646561646c696e65206d7573742062656044820152662066757475726560c81b6064820152608401610417565b82821015610fdc5760405162461bcd60e51b815260206004820152602760248201527f54656e64657252656769737472793a206f70656e696e67206265666f726520646044820152666561646c696e6560c81b6064820152608401610417565b60028054906000610fec83612110565b91905055905060405180610140016040528082815260200189898080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152505050908252503360208083019190915260408083018a90528051601f890183900483028101830190915287815260609092019190889088908190840183828082843760009201919091525050509082525042602082015260408101859052606081018490526080016001815260016020918201819052600084815260038352604090208351815591830151908201906110d0908261219b565b5060408201516002820180546001600160a01b0319166001600160a01b039092169190911790556060820151600382015560808201516004820190611115908261219b565b5060a0820151600582015560c0820151600682015560e0820151600782015561010082015160088201805460ff1916600183600481111561115857611158611c9e565b02179055506101208201518160080160016101000a81548160ff02191690831515021790555090505085336001600160a01b0316827f880c637e08f390f9fd5eec810b5438441c651dfc79f124ca2d245c77d00d8b908b8b8a8a8a8a426040516111c89796959493929190612283565b60405180910390a4979650505050505050565b6000828152602081905260409020600101546111f681611940565b6106ba83836119df565b611208611671565b60405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790611257903390600290600401612091565b602060405180830381865afa158015611274573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061129891906120b7565b6112e45760405162461bcd60e51b815260206004820152601b60248201527f54656e64657252656769737472793a206167656e6379206f6e6c7900000000006044820152606401610417565b60006112ef85611695565b60028101549091506001600160a01b031633146113585760405162461bcd60e51b815260206004820152602160248201527f54656e64657252656769737472793a206e6f742074656e646572206167656e636044820152607960f81b6064820152608401610417565b806006015442106113ab5760405162461bcd60e51b815260206004820152601f60248201527f54656e64657252656769737472793a20646561646c696e6520706173736564006044820152606401610417565b836114045760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a207a65726f20616d656e646d656e7420686044820152620c2e6d60eb1b6064820152608401610417565b60046000868152602001908152602001600020604051806060016040528086815260200185858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092018290525093855250504260209384015250835460018181018655948252908290208351600390920201908155908201519192909190820190611498908261219b565b5060408201518160020155505083857f20abc5c16026505fb34e01e5af7119a58b9bb4a138a4312926d74e5a0219bd598585426040516114da939291906122ca565b60405180910390a35050505050565b6115016000805160206122ef83398151915233610a10565b80611597575060405163a078f73760e01b81526001600160a01b037f0000000000000000000000000000000000000000000000000000000000000000169063a078f73790611556903390600190600401612091565b602060405180830381865afa158015611573573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061159791906120b7565b6115b35760405162461bcd60e51b8152600401610417906120d9565b6001600160a01b0381166116155760405162461bcd60e51b815260206004820152602360248201527f54656e64657252656769737472793a207a65726f20617761726420726567697360448201526274727960e81b6064820152608401610417565b60018054610100600160a81b0319166101006001600160a01b038416908102919091179091556040514281527f84bd7bb5ee998d2da286d0592d633c0016f835469bf8ad2ab30ff8297ead89349060200160405180910390a250565b60015460ff16156107ca5760405163d93c066560e01b815260040160405180910390fd5b60006116a082611ad7565b90506001600882015460ff1660048111156116bd576116bd611c9e565b1461170a5760405162461bcd60e51b815260206004820152601d60248201527f54656e64657252656769737472793a206e6f74207075626c69736865640000006044820152606401610417565b919050565b611717611b9e565b60036000838152602001908152602001600020604051806101400160405290816000820154815260200160018201805461175090612057565b80601f016020809104026020016040519081016040528092919081815260200182805461177c90612057565b80156117c95780601f1061179e576101008083540402835291602001916117c9565b820191906000526020600020905b8154815290600101906020018083116117ac57829003601f168201915b505050918352505060028201546001600160a01b031660208201526003820154604082015260048201805460609092019161180390612057565b80601f016020809104026020016040519081016040528092919081815260200182805461182f90612057565b801561187c5780601f106118515761010080835404028352916020019161187c565b820191906000526020600020905b81548152906001019060200180831161185f57829003601f168201915b5050509183525050600582015460208201526006820154604082015260078201546060820152600882015460809091019060ff1660048111156118c1576118c1611c9e565b60048111156118d2576118d2611c9e565b815260089190910154610100900460ff16151560209091015261012081015190915061170a5760405162461bcd60e51b815260206004820152601e60248201527f54656e64657252656769737472793a20756e6b6e6f776e2074656e64657200006044820152606401610417565b61194a8133611b3e565b50565b60006119598383610a10565b6119d7576000838152602081815260408083206001600160a01b03861684529091529020805460ff1916600117905561198f3390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a45060016104fa565b5060006104fa565b60006119eb8383610a10565b156119d7576000838152602081815260408083206001600160a01b0386168085529252808320805460ff1916905551339286917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a45060016104fa565b611a52611b7b565b6001805460ff191690557f5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa335b6040516001600160a01b03909116815260200160405180910390a1565b611aa4611671565b6001805460ff1916811790557f62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a25833611a7f565b60008181526003602052604090206008810154610100900460ff1661170a5760405162461bcd60e51b815260206004820152601e60248201527f54656e64657252656769737472793a20756e6b6e6f776e2074656e64657200006044820152606401610417565b611b488282610a10565b611b775760405163e2517d3f60e01b81526001600160a01b038216600482015260248101839052604401610417565b5050565b60015460ff166107ca57604051638dfc202b60e01b815260040160405180910390fd5b604051806101400160405280600081526020016060815260200160006001600160a01b03168152602001600080191681526020016060815260200160008152602001600081526020016000815260200160006004811115611c0157611c01611c9e565b8152600060209091015290565b600060208284031215611c2057600080fd5b5035919050565b600060208284031215611c3957600080fd5b81356001600160e01b031981168114611c5157600080fd5b9392505050565b6000815180845260005b81811015611c7e57602081850181015186830182015201611c62565b506000602082860101526020601f19601f83011685010191505092915050565b634e487b7160e01b600052602160045260246000fd5b6005811061194a57634e487b7160e01b600052602160045260246000fd5b611cdb81611cb4565b9052565b6020815281516020820152600060208301516101406040840152611d07610160840182611c58565b90506040840151611d2360608501826001600160a01b03169052565b50606084015160808401526080840151601f198483030160a0850152611d498282611c58565b91505060a084015160c084015260c084015160e084015260e0840151610100840152610100840151611d7f610120850182611cd2565b50610120840151801515610140850152509392505050565b60008060408385031215611daa57600080fd5b50508035926020909101359150565b60208152815160208201526000602083015160606040840152611ddf6080840182611c58565b9050604084015160608401528091505092915050565b80356001600160a01b038116811461170a57600080fd5b60008060408385031215611e1f57600080fd5b82359150611e2f60208401611df5565b90509250929050565b8a815261014060208201526000611e5361014083018c611c58565b6001600160a01b038b166040840152606083018a90528281036080840152611e7b818a611c58565b9150508660a08301528560c08301528460e0830152611e9984611cb4565b836101008301528215156101208301529b9a5050505050505050505050565b60008083601f840112611eca57600080fd5b50813567ffffffffffffffff811115611ee257600080fd5b602083019150836020828501011115611efa57600080fd5b9250929050565b600080600080600080600060a0888a031215611f1c57600080fd5b873567ffffffffffffffff811115611f3357600080fd5b611f3f8a828b01611eb8565b90985096505060208801359450604088013567ffffffffffffffff811115611f6657600080fd5b611f728a828b01611eb8565b989b979a5095989597966060870135966080013595509350505050565b60008060008060608587031215611fa557600080fd5b8435935060208501359250604085013567ffffffffffffffff811115611fca57600080fd5b611fd687828801611eb8565b95989497509550505050565b600060208284031215611ff457600080fd5b611c5182611df5565b60208082526024908201527f54656e64657252656769737472793a206167656e6379206f722061646d696e206040820152636f6e6c7960e01b606082015260800190565b634e487b7160e01b600052603260045260246000fd5b600181811c9082168061206b57607f821691505b60208210810361208b57634e487b7160e01b600052602260045260246000fd5b50919050565b6001600160a01b0383168152604081016120aa83611cb4565b8260208301529392505050565b6000602082840312156120c957600080fd5b81518015158114611c5157600080fd5b6020808252601a908201527f54656e64657252656769737472793a2061646d696e206f6e6c79000000000000604082015260600190565b60006001820161213057634e487b7160e01b600052601160045260246000fd5b5060010190565b634e487b7160e01b600052604160045260246000fd5b601f8211156106f357806000526020600020601f840160051c810160208510156121745750805b601f840160051c820191505b818110156121945760008155600101612180565b5050505050565b815167ffffffffffffffff8111156121b5576121b5612137565b6121c9816121c38454612057565b8461214d565b6020601f8211600181146121fd57600083156121e55750848201515b600019600385901b1c1916600184901b178455612194565b600084815260208120601f198516915b8281101561222d578785015182556020948501946001909201910161220d565b508482101561224b5786840151600019600387901b60f8161c191681555b50505050600190811b01905550565b81835281816020850137506000828201602090810191909152601f909101601f19169091010190565b60a08152600061229760a08301898b61225a565b82810360208401526122aa81888a61225a565b604084019690965250506060810192909252608090910152949350505050565b6040815260006122de60408301858761225a565b905082602083015294935050505056fea49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775a2646970667358221220c49093ed44bb6ca44342db8e809312025f3a8b77be50642cc39ad1516219650164736f6c634300081e0033",
+  "devdoc": {
+    "errors": {
+      "AccessControlBadConfirmation()": [
+        {
+          "details": "The caller of a function is not the expected one. NOTE: Don't confuse with {AccessControlUnauthorizedAccount}."
+        }
+      ],
+      "AccessControlUnauthorizedAccount(address,bytes32)": [
+        {
+          "details": "The `account` is missing a role."
+        }
+      ],
+      "EnforcedPause()": [
+        {
+          "details": "The operation failed because the contract is paused."
+        }
+      ],
+      "ExpectedPause()": [
+        {
+          "details": "The operation failed because the contract is not paused."
+        }
+      ]
+    },
+    "events": {
+      "Paused(address)": {
+        "details": "Emitted when the pause is triggered by `account`."
+      },
+      "RoleAdminChanged(bytes32,bytes32,bytes32)": {
+        "details": "Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this."
+      },
+      "RoleGranted(bytes32,address,address)": {
+        "details": "Emitted when `account` is granted `role`. `sender` is the account that originated the contract call, an admin role bearer except when using {AccessControl-_setupRole}."
+      },
+      "RoleRevoked(bytes32,address,address)": {
+        "details": "Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)"
+      },
+      "Unpaused(address)": {
+        "details": "Emitted when the pause is lifted by `account`."
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "getRoleAdmin(bytes32)": {
+        "details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+      },
+      "grantRole(bytes32,address)": {
+        "details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event."
+      },
+      "hasRole(bytes32,address)": {
+        "details": "Returns `true` if `account` has been granted `role`."
+      },
+      "paused()": {
+        "details": "Returns true if the contract is paused, and false otherwise."
+      },
+      "renounceRole(bytes32,address)": {
+        "details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `callerConfirmation`. May emit a {RoleRevoked} event."
+      },
+      "revokeRole(bytes32,address)": {
+        "details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event."
+      },
+      "supportsInterface(bytes4)": {
+        "details": "See {IERC165-supportsInterface}."
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 26,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "_roles",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_bytes32,t_struct(RoleData)21_storage)"
+      },
+      {
+        "astId": 417,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "_paused",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_bool"
+      },
+      {
+        "astId": 2165,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "awardRegistry",
+        "offset": 1,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 2168,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "nextTenderId",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 2173,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "tenders",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint256,t_struct(Tender)2153_storage)"
+      },
+      {
+        "astId": 2179,
+        "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+        "label": "tenderAmendments",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_mapping(t_uint256,t_array(t_struct(Amendment)2160_storage)dyn_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_struct(Amendment)2160_storage)dyn_storage": {
+        "base": "t_struct(Amendment)2160_storage",
+        "encoding": "dynamic_array",
+        "label": "struct TenderRegistry.Amendment[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_enum(TenderStatus)2131": {
+        "encoding": "inplace",
+        "label": "enum TenderRegistry.TenderStatus",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      },
+      "t_mapping(t_bytes32,t_struct(RoleData)21_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct AccessControl.RoleData)",
+        "numberOfBytes": "32",
+        "value": "t_struct(RoleData)21_storage"
+      },
+      "t_mapping(t_uint256,t_array(t_struct(Amendment)2160_storage)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct TenderRegistry.Amendment[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_struct(Amendment)2160_storage)dyn_storage"
+      },
+      "t_mapping(t_uint256,t_struct(Tender)2153_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct TenderRegistry.Tender)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Tender)2153_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Amendment)2160_storage": {
+        "encoding": "inplace",
+        "label": "struct TenderRegistry.Amendment",
+        "members": [
+          {
+            "astId": 2155,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "amendmentHash",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 2157,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "amendmentURI",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 2159,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "timestamp",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_struct(RoleData)21_storage": {
+        "encoding": "inplace",
+        "label": "struct AccessControl.RoleData",
+        "members": [
+          {
+            "astId": 18,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "hasRole",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_address,t_bool)"
+          },
+          {
+            "astId": 20,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "adminRole",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_bytes32"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_struct(Tender)2153_storage": {
+        "encoding": "inplace",
+        "label": "struct TenderRegistry.Tender",
+        "members": [
+          {
+            "astId": 2133,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "tenderId",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2135,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "tenderRef",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 2137,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "agency",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          },
+          {
+            "astId": 2139,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "tenderHash",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 2141,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "documentURI",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 2143,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "publishedAt",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2145,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "submissionDeadline",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2147,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "openingTime",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 2150,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "status",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_enum(TenderStatus)2131"
+          },
+          {
+            "astId": 2152,
+            "contract": "contracts/TenderRegistry.sol:TenderRegistry",
+            "label": "exists",
+            "offset": 1,
+            "slot": "8",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "288"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
