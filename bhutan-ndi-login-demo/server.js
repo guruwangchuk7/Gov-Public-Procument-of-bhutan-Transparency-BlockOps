@@ -34,6 +34,14 @@ app.get("/", (_req, res) => {
   res.sendFile(new URL("./public/index.html", import.meta.url).pathname);
 });
 
+app.get("/admin", (_req, res) => {
+  res.sendFile(new URL("./public/admin.html", import.meta.url).pathname);
+});
+
+app.get("/user", (_req, res) => {
+  res.sendFile(new URL("./public/user.html", import.meta.url).pathname);
+});
+
 app.post("/api/ndi/login", async (_req, res, next) => {
   try {
     const proof = await createProofRequest();
@@ -79,6 +87,8 @@ app.get("/api/ndi/session/:threadId", async (req, res) => {
     status: session.status,
     verified: session.status === "verified",
     user: session.user,
+    role: session.role || null,
+    redirectTo: session.redirectTo || null,
     updatedAt: session.updatedAt,
   });
 });
@@ -202,8 +212,13 @@ async function createProofRequest() {
     proofName: "Login with Bhutan NDI",
     proofAttributes: [
       { name: "Full Name", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
+      { name: "Gender", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
+      { name: "Bhutanese", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "ID Number", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
+      { name: "ID Type", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "Date of Birth", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
+      { name: "Dzongkhag", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
+      { name: "Gewog", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
     ],
     purpose: "login",
     authenticationLevel: "Standard",
@@ -248,12 +263,19 @@ function routeNdiPayload(payload, via) {
     session.status =
       inner.verification_result === "ProofValidated" ? "verified" : "proof_received";
     session.user = {
-      fullName: attrs["Full Name"] || attrs.name || null,
+      fullName: attrs["Full Name"] || attrs.FullName || attrs.name || null,
+      gender: attrs.Gender || null,
+      bhutanese: attrs.Bhutanese || null,
+      idType: attrs["ID Type"] || null,
       idNumber: attrs["ID Number"] || attrs["ID No"] || null,
       dateOfBirth: attrs["Date of Birth"] || attrs.DOB || null,
+      dzongkhag: attrs.Dzongkhag || null,
+      gewog: attrs.Gewog || null,
       relationshipDid: inner.relationship_did || inner.relationshipDid || null,
       holderDid: inner.holder_did || null,
     };
+    session.role = isAdminIdentity(session.user) ? "admin" : "user";
+    session.redirectTo = session.role === "admin" ? "/admin" : "/user";
     session.rawResult = inner;
     session.updatedAt = new Date().toISOString();
     console.log(`NDI login ${session.status} for ${threadId} via ${via}`);
@@ -272,6 +294,23 @@ function extractRevealedAttrs(revealedAttrs) {
     out[key] = item?.value ?? null;
   }
   return out;
+}
+
+function isAdminIdentity(user) {
+  return (
+    sameText(user.fullName, "Dorji Sonam") &&
+    sameText(user.gender, "Male") &&
+    sameText(user.bhutanese, "Yes") &&
+    sameText(user.dateOfBirth, "19/07/1995") &&
+    sameText(user.idType, "National ID Card") &&
+    sameText(user.idNumber, "1234") &&
+    sameText(user.dzongkhag, "Trongsa") &&
+    sameText(user.gewog, "Tangsibjee")
+  );
+}
+
+function sameText(actual, expected) {
+  return String(actual || "").trim().toLowerCase() === expected.toLowerCase();
 }
 
 function safeJson(text) {

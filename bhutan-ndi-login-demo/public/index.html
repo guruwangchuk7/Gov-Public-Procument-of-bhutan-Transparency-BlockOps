@@ -117,9 +117,10 @@
         const data = await response.json();
 
         if (data.verified) {
-          statusBox.textContent = "Logged in with Bhutan NDI.";
+          statusBox.textContent = `Logged in with Bhutan NDI. Routing to ${data.role} portal...`;
           result.hidden = false;
           result.textContent = JSON.stringify(data.user, null, 2);
+          window.location.href = data.redirectTo || "/user";
           return;
         }
 
