@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 import crypto from "node:crypto";
+import { fileURLToPath } from "node:url";
 import express from "express";
 import * as nats from "nats";
 import QRCode from "qrcode";
@@ -31,15 +32,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
 app.get("/", (_req, res) => {
-  res.sendFile(new URL("./public/index.html", import.meta.url).pathname);
+  res.sendFile(fileURLToPath(new URL("./public/index.html", import.meta.url)));
 });
 
 app.get("/admin", (_req, res) => {
-  res.sendFile(new URL("./public/admin.html", import.meta.url).pathname);
+  res.sendFile(fileURLToPath(new URL("./public/admin.html", import.meta.url)));
 });
 
 app.get("/user", (_req, res) => {
-  res.sendFile(new URL("./public/user.html", import.meta.url).pathname);
+  res.sendFile(fileURLToPath(new URL("./public/user.html", import.meta.url)));
+});
+
+app.get("/auditor", (_req, res) => {
+  res.sendFile(fileURLToPath(new URL("./public/auditor.html", import.meta.url)));
+});
+
+app.get("/supplier", (_req, res) => {
+  res.sendFile(fileURLToPath(new URL("./public/supplier.html", import.meta.url)));
+});
+
+app.get("/procuring-agency", (_req, res) => {
+  res.sendFile(fileURLToPath(new URL("./public/procuring-agency.html", import.meta.url)));
 });
 
 app.post("/api/ndi/login", async (_req, res, next) => {
@@ -88,6 +101,7 @@ app.get("/api/ndi/session/:threadId", async (req, res) => {
     verified: session.status === "verified",
     user: session.user,
     role: session.role || null,
+    roleLabel: getRoleLabel(session.role),
     redirectTo: session.redirectTo || null,
     updatedAt: session.updatedAt,
   });
@@ -213,12 +227,9 @@ async function createProofRequest() {
     proofAttributes: [
       { name: "Full Name", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "Gender", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
-      { name: "Bhutanese", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "ID Number", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "ID Type", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
       { name: "Date of Birth", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
-      { name: "Dzongkhag", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
-      { name: "Gewog", restrictions: [{ schema_name: FOUNDATIONAL_SCHEMA }] },
     ],
     purpose: "login",
     authenticationLevel: "Standard",
@@ -263,19 +274,21 @@ function routeNdiPayload(payload, via) {
     session.status =
       inner.verification_result === "ProofValidated" ? "verified" : "proof_received";
     session.user = {
-      fullName: attrs["Full Name"] || attrs.FullName || attrs.name || null,
-      gender: attrs.Gender || null,
-      bhutanese: attrs.Bhutanese || null,
-      idType: attrs["ID Type"] || null,
-      idNumber: attrs["ID Number"] || attrs["ID No"] || null,
-      dateOfBirth: attrs["Date of Birth"] || attrs.DOB || null,
-      dzongkhag: attrs.Dzongkhag || null,
-      gewog: attrs.Gewog || null,
+      fullName: attrValue(attrs, ["Full Name", "FullName", "name"]),
+      gender: attrValue(attrs, ["Gender"]),
+      idType: attrValue(attrs, ["ID Type", "IDType"]),
+      idNumber: attrValue(attrs, ["ID Number", "ID No", "IDNumber", "IDNo"]),
+      dateOfBirth: attrValue(attrs, ["Date of Birth", "DOB", "DateOfBirth"]),
+      dzongkhag: attrValue(attrs, ["Dzongkhag"]),
+      gewog: attrValue(attrs, ["Gewog"]),
       relationshipDid: inner.relationship_did || inner.relationshipDid || null,
-      holderDid: inner.holder_did || null,
+      holderDid: inner.holder_did || inner.holderDid || null,
     };
-    session.role = isAdminIdentity(session.user) ? "admin" : "user";
-    session.redirectTo = session.role === "admin" ? "/admin" : "/user";
+    session.user.bhutanese = attrValue(attrs, ["Bhutanese"]) || (
+      sameText(session.user.idType, "National ID Card") ? "Yes" : null
+    );
+    session.role = getUserRole(session.user);
+    session.redirectTo = getRoleRedirect(session.role);
     session.rawResult = inner;
     session.updatedAt = new Date().toISOString();
     console.log(`NDI login ${session.status} for ${threadId} via ${via}`);
@@ -297,16 +310,111 @@ function extractRevealedAttrs(revealedAttrs) {
 }
 
 function isAdminIdentity(user) {
-  return (
-    sameText(user.fullName, "Dorji Sonam") &&
-    sameText(user.gender, "Male") &&
-    sameText(user.bhutanese, "Yes") &&
-    sameText(user.dateOfBirth, "19/07/1995") &&
-    sameText(user.idType, "National ID Card") &&
+  const stableDemoIdMatch =
     sameText(user.idNumber, "1234") &&
-    sameText(user.dzongkhag, "Trongsa") &&
-    sameText(user.gewog, "Tangsibjee")
+    sameText(user.dateOfBirth, "19/07/1995");
+
+  const optionalProfileFieldsMatch =
+    (!user.fullName || sameText(user.fullName, "Dorji Sonam")) &&
+    (!user.gender || sameText(user.gender, "Male")) &&
+    (
+      !user.idType ||
+      sameText(user.idType, "National ID Card") ||
+      sameText(user.idType, "Citizenship")
+    );
+
+  return stableDemoIdMatch && optionalProfileFieldsMatch;
+}
+
+function getUserRole(user) {
+  if (isAdminIdentity(user)) return "admin";
+  if (isAuditorIdentity(user)) return "auditor";
+  if (isSupplierIdentity(user)) return "supplier";
+  if (isProcuringAgencyIdentity(user)) return "procuring-agency";
+  return null;
+}
+
+function getRoleRedirect(role) {
+  if (role === "admin") return "/admin";
+  if (role === "auditor") return "/auditor";
+  if (role === "supplier") return "/supplier";
+  if (role === "procuring-agency") return "/procuring-agency";
+  return null;
+}
+
+function getRoleLabel(role) {
+  if (role === "admin") return "Admin";
+  if (role === "auditor") return "Auditor";
+  if (role === "supplier") return "Supplier";
+  if (role === "procuring-agency") return "Procuring Agency";
+  return null;
+}
+
+function isAuditorIdentity(user) {
+  const stableAuditorIdMatch =
+    sameText(user.idNumber, "10905006125") &&
+    sameText(user.dateOfBirth, "01/11/2004");
+
+  const optionalProfileFieldsMatch =
+    (!user.fullName || sameText(user.fullName, "Guru Wangchuk")) &&
+    (!user.gender || sameText(user.gender, "Male")) &&
+    (!user.idType || sameText(user.idType, "Citizenship"));
+
+  return stableAuditorIdMatch && optionalProfileFieldsMatch;
+}
+
+function isSupplierIdentity(user) {
+  const stableSupplierIdMatch =
+    sameText(user.idNumber, "10205005922") &&
+    sameText(user.dateOfBirth, "25/02/2003");
+
+  const optionalProfileFieldsMatch =
+    (!user.fullName || sameText(user.fullName, "Karma Wangchuk")) &&
+    (!user.gender || sameText(user.gender, "Male")) &&
+    (!user.idType || sameText(user.idType, "Citizenship"));
+
+  return stableSupplierIdMatch && optionalProfileFieldsMatch;
+}
+
+function isProcuringAgencyIdentity(user) {
+  const stableProcuringAgencyIdMatch =
+    sameText(user.idNumber, "10709004662") &&
+    sameText(user.dateOfBirth, "25/12/2003");
+
+  const optionalProfileFieldsMatch =
+    (!user.fullName || sameText(user.fullName, "Ngawang Gyeltshen")) &&
+    (!user.gender || sameText(user.gender, "Male")) &&
+    (!user.idType || sameText(user.idType, "Citizenship")) &&
+    (
+      !user.relationshipDid ||
+      sameText(user.relationshipDid, "02707385-727d-4d99-9df1-2221263d4fe0")
+    ) &&
+    (
+      !user.holderDid ||
+      sameText(user.holderDid, "did:key:z6MkkayhZwJWvdZFQQXRfBVVmRKdsGPZRizUs4yDio49FmDq")
+    );
+
+  return stableProcuringAgencyIdMatch && optionalProfileFieldsMatch;
+}
+
+function attrValue(attrs, names) {
+  for (const name of names) {
+    if (attrs[name]) return attrs[name];
+  }
+
+  const normalized = new Map(
+    Object.entries(attrs).map(([key, value]) => [normalizeAttrName(key), value])
   );
+  for (const name of names) {
+    const value = normalized.get(normalizeAttrName(name));
+    if (value) return value;
+  }
+
+  return null;
+}
+
+function normalizeAttrName(name) {
+  return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 function sameText(actual, expected) {

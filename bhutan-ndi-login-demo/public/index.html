@@ -5,83 +5,184 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bhutan NDI Login Demo</title>
     <style>
+      :root {
+        --ndi-forest: #124143;
+        --ndi-mint: #5ac994;
+        --ndi-gray: #a1a0a0;
+        --page: #eef4f1;
+        --panel: #f8f8f8;
+        --text: #102622;
+      }
+
+      * { box-sizing: border-box; }
+
       body {
         margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: #f7f7f5;
-        color: #1d2520;
-        font-family: Arial, sans-serif;
+        font-family: 'Inter', sans-serif;
+        background: var(--page);
+        color: var(--text);
       }
-      main {
-        width: min(94vw, 520px);
-        padding: 28px;
-        border: 1px solid #ddd;
+
+      /* Panel container centered with 30px internal spacing requirements */
+      .auth-panel {
+        width: min(100% - 32px, 590px);
+        background: var(--panel);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px; /* Guideline requirement: 30px spacing between content */
+        margin: 40px auto;
         border-radius: 8px;
-        background: white;
       }
-      h1 {
-        margin: 0 0 12px;
-        font-size: 28px;
+
+      /* Title Specs: 18px, Semibold, #5AC994 for 'Bhutan NDI' */
+      .brand-title {
+        color: var(--ndi-forest);
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
       }
-      button, a.button {
+      .brand-title span { color: var(--ndi-mint); }
+
+      /* Primary Button: 330x50px, Centered logo */
+      .btn-primary {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 44px;
-        padding: 0 16px;
-        border: 0;
-        border-radius: 6px;
-        background: #116149;
-        color: white;
-        font: inherit;
-        font-weight: 700;
+        gap: 10px; /* Spacing between logo and text */
+        width: min(100%, 330px);
+        min-height: 50px;
+        padding: 0 18px;
+        background: var(--ndi-forest);
+        color: #ffffff;
+        border: 1px solid var(--ndi-forest);
+        border-radius: 8px;
         text-decoration: none;
+        font: inherit;
+        font-weight: 600;
         cursor: pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
       }
-      button:disabled {
-        background: #8b9993;
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(18, 65, 67, 0.24);
+      }
+
+      .btn-primary:disabled {
+        background: #8ca09d;
+        border-color: #8ca09d;
         cursor: wait;
       }
+
+      /* Logo inside button */
+      .ndi-logo { width: 24px; height: 24px; }
+
       .qr {
         display: none;
-        margin-top: 20px;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        width: 100%;
       }
-      .qr img {
+
+      .qr-frame {
+        width: min(100%, 290px);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--ndi-forest);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 10px;
+      }
+
+      .qr-frame img {
         display: block;
-        width: 280px;
-        height: 280px;
-        max-width: 100%;
-        border: 1px solid #e3e3df;
+        width: 100%;
+        height: 100%;
       }
+
+      .instruction { color: var(--ndi-gray); font-size: 16px; margin: 0; }
+
+      /* Watch Video Button: #5AC994 border/text, 200x40px */
+      .btn-secondary {
+        width: 200px;
+        height: 40px;
+        min-height: 40px;
+        border: 2px solid var(--ndi-mint);
+        color: var(--ndi-mint);
+        background: transparent;
+        font-weight: 500;
+      }
+
+      .download { color: var(--ndi-gray); font-size: 16px; }
+      .download strong { color: var(--ndi-mint); font-weight: 700; }
+
+      .support { color: var(--ndi-gray); font-size: 14px; }
+      .support a { color: var(--ndi-gray); text-decoration: none; }
+      .support strong { color: var(--ndi-mint); display: block; font-size: 16px; }
+
       .status {
-        margin-top: 16px;
+        width: 100%;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 12px;
-        border-radius: 6px;
-        background: #edf3f0;
+        border-radius: 8px;
+        background: rgba(90, 201, 148, 0.14);
+        color: var(--ndi-forest);
+        font-weight: 700;
+        text-align: center;
       }
+
       pre {
+        width: 100%;
         overflow: auto;
         max-height: 220px;
         padding: 12px;
-        border-radius: 6px;
-        background: #f1f1ee;
+        border-radius: 8px;
+        background: #ffffff;
+        text-align: left;
+      }
+
+      @media (max-width: 520px) {
+        .auth-panel {
+          padding: 28px 16px;
+          margin: 24px auto;
+        }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Login with Bhutan NDI</h1>
-      <button id="login">Login with NDI</button>
+    <section class="auth-panel">
+      <!-- Title spec: "Login with Bhutan NDI" -->
+      <h2 class="brand-title">Login with <span>Bhutan NDI</span></h2>
+
+      <button id="login" class="btn-primary">
+        <img src="assets/NDI_logo.png" alt="" class="ndi-logo">
+        Login with Bhutan NDI
+      </button>
+
       <div id="qr" class="qr">
-        <p>Scan this QR with the Bhutan NDI demo wallet.</p>
-        <img id="qrImage" alt="Bhutan NDI proof request QR code" />
-        <p><a id="deepLink" class="button" href="#">Open NDI Wallet</a></p>
+        <a id="deepLink" class="btn-primary" href="#">
+          <img src="assets/NDI_logo.png" alt="" class="ndi-logo">
+          Open Bhutan NDI wallet
+        </a>
+        <div class="qr-frame"><img id="qrImage" alt="QR Code" /></div>
+        <p class="instruction">Tap the scan button located on the menu bar and scan the QR code</p>
+        <a class="btn-primary btn-secondary" href="https://www.youtube.com/@BhutanNDI" target="_blank" rel="noreferrer">Watch Video Guide</a>
+        <p class="download">Don't have the Bhutan NDI Wallet? <a href="https://www.bhutanndi.com/" target="_blank" rel="noreferrer"><strong>Download Now!</strong></a></p>
+        <div class="support">
+            <strong>Get support</strong>
+            <a href="tel:1199">1199</a> | <a href="mailto:support@bhutanndi.com">support@bhutanndi.com</a>
+        </div>
       </div>
-      <div id="status" class="status">Ready.</div>
+      <div id="status" class="status" aria-live="polite">Ready.</div>
       <pre id="result" hidden></pre>
-    </main>
+    </section>
 
     <script>
       const login = document.querySelector("#login");
@@ -93,7 +194,7 @@
 
       login.addEventListener("click", async () => {
         login.disabled = true;
-        statusBox.textContent = "Creating NDI proof request...";
+        statusBox.textContent = "Creating Bhutan NDI proof request...";
         result.hidden = true;
 
         try {
@@ -103,7 +204,7 @@
 
           qrImage.src = data.qrDataUrl;
           deepLink.href = data.deepLinkURL;
-          qr.style.display = "block";
+          qr.style.display = "flex";
           statusBox.textContent = "Waiting for wallet approval...";
           poll(data.threadId);
         } catch (error) {
@@ -117,10 +218,19 @@
         const data = await response.json();
 
         if (data.verified) {
-          statusBox.textContent = `Logged in with Bhutan NDI. Routing to ${data.role} portal...`;
+          if (!data.redirectTo) {
+            login.disabled = false;
+            qr.style.display = "none";
+            statusBox.textContent = "You are not registered.";
+            result.hidden = false;
+            result.textContent = JSON.stringify(data.user, null, 2);
+            return;
+          }
+
+          statusBox.textContent = `Logged in with Bhutan NDI. Routing to ${data.roleLabel || data.role} portal...`;
           result.hidden = false;
           result.textContent = JSON.stringify(data.user, null, 2);
-          window.location.href = data.redirectTo || "/user";
+          window.location.href = data.redirectTo;
           return;
         }
 
