@@ -16,6 +16,16 @@ export const AgencyRepository = {
     return data;
   },
 
+  async getById(id) {
+    const { data, error } = await getSupabaseAdmin()
+      .from('agencies')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) return null;
+    return data;
+  },
+
   async getAllPending() {
     const { data, error } = await getSupabaseAdmin()
       .from('agencies')
@@ -33,6 +43,17 @@ export const AgencyRepository = {
       .eq('id', id)
       .select()
       .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async getVerifiedAgencies() {
+    const { data, error } = await getSupabaseAdmin()
+      .from('agencies')
+      .select('agency_name, registration_number, blockchain_authorized, authorization_tx_hash, verified_at')
+      .eq('status', 'approved')
+      .eq('blockchain_authorized', true)
+      .order('verified_at', { ascending: false });
     if (error) throw error;
     return data;
   }
@@ -49,6 +70,16 @@ export const SupplierRepository = {
     return data;
   },
 
+  async getById(id) {
+    const { data, error } = await getSupabaseAdmin()
+      .from('suppliers')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) return null;
+    return data;
+  },
+
   async getAllPending() {
     const { data, error } = await getSupabaseAdmin()
       .from('suppliers')
@@ -66,6 +97,17 @@ export const SupplierRepository = {
       .eq('id', id)
       .select()
       .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async getVerifiedSuppliers() {
+    const { data, error } = await getSupabaseAdmin()
+      .from('suppliers')
+      .select('company_name, license_number, blockchain_authorized, authorization_tx_hash, verified_at')
+      .eq('status', 'approved')
+      .eq('blockchain_authorized', true)
+      .order('verified_at', { ascending: false });
     if (error) throw error;
     return data;
   }

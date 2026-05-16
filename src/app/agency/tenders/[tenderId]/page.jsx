@@ -68,8 +68,8 @@ export default function AgencyTenderDetailsPage({ params }) {
 
       // 2. Blockchain Transaction
       if (!window.ethereum) throw new Error('Wallet not found');
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         BGPS_ABI,

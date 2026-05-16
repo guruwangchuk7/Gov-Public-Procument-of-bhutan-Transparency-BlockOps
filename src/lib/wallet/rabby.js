@@ -6,10 +6,19 @@ import { ethers } from 'ethers';
  */
 export const RabbyWallet = {
   /**
-   * Checks if a compatible Ethereum provider (like Rabby) is installed.
+   * Checks if a compatible Ethereum provider is installed.
+   * Prioritizes Rabby Wallet if available.
    */
   isInstalled() {
-    return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined';
+    if (typeof window === 'undefined') return false;
+    return !!(window.ethereum || window.rabby);
+  },
+
+  /**
+   * Specifically checks if Rabby is the active provider.
+   */
+  isRabby() {
+    return !!(window.ethereum?.isRabby || window.rabby);
   },
 
   /**
@@ -18,13 +27,22 @@ export const RabbyWallet = {
    */
   async connect() {
     if (!this.isInstalled()) {
-      throw new Error('Rabby Wallet or compatible provider not found. Please install Rabby.');
+      throw new Error('Rabby Wallet or compatible provider not found. Please install Rabby (https://rabby.io/) to proceed.');
     }
 
     try {
-      // Use Ethers Web3Provider (v5 syntax) to interact with window.ethereum
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // 1. Request Account Connection
+      const ethereum = window.rabby || window.ethereum;
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const accounts = await provider.send('eth_requestAccounts', []);
+      
+      // 2. Ensure we are on Sepolia network
+      const currentChain = await this.getChainId();
+      if (currentChain !== '0xaa36a7') {
+        const { SepoliaGuard } = await import('./sepolia-guard');
+        await SepoliaGuard.ensureSepolia();
+      }
+
       return accounts[0];
     } catch (error) {
       if (error.code === 4001) {
@@ -40,7 +58,8 @@ export const RabbyWallet = {
   async getAccount() {
     if (!this.isInstalled()) return null;
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const ethereum = window.rabby || window.ethereum;
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const accounts = await provider.send('eth_accounts', []);
       return accounts[0] || null;
     } catch (error) {
@@ -54,7 +73,8 @@ export const RabbyWallet = {
   async getChainId() {
     if (!this.isInstalled()) return null;
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const ethereum = window.rabby || window.ethereum;
+      const provider = new ethers.providers.Web3Provider(ethereum);
       const network = await provider.getNetwork();
       return '0x' + network.chainId.toString(16);
     } catch (error) {
@@ -67,7 +87,8 @@ export const RabbyWallet = {
    */
   listenToAccountChanges(callback) {
     if (!this.isInstalled()) return;
-    window.ethereum.on('accountsChanged', (accounts) => {
+    const ethereum = window.rabby || window.ethereum;
+    ethereum.on('accountsChanged', (accounts) => {
       callback(accounts[0] || null);
     });
   },
@@ -77,7 +98,8 @@ export const RabbyWallet = {
    */
   listenToChainChanges(callback) {
     if (!this.isInstalled()) return;
-    window.ethereum.on('chainChanged', (chainId) => {
+    const ethereum = window.rabby || window.ethereum;
+    ethereum.on('chainChanged', (chainId) => {
       callback(chainId);
     });
   }

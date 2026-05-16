@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Landmark, Check, X, ShieldCheck, ExternalLink, Clock, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase/client';
 
 export default function PendingAgencyTable() {
   const [agencies, setAgencies] = useState([]);
@@ -25,10 +26,11 @@ export default function PendingAgencyTable() {
 
   const handleApprove = async (agencyId) => {
     try {
+      const { data: { user } } = await createClient().auth.getUser();
       const res = await fetch('/api/admin/approve-agency', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ agencyId })
+        body: JSON.stringify({ agencyId, adminId: user?.id })
       });
       const result = await res.json();
       if (result.success) {

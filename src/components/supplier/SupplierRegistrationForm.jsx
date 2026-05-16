@@ -7,6 +7,7 @@ import PayloadPreview from '@/components/common/PayloadPreview';
 import { useRouter } from 'next/navigation';
 import { useNDI } from '@/hooks/useNDI';
 import { RabbyWallet } from '@/lib/wallet/rabby';
+import { NDIVerifier } from '@/lib/ndi/ndi-verifier';
 import IdentityLinkingCard from '@/components/auth/IdentityLinkingCard';
 
 export default function SupplierRegistrationForm() {
@@ -40,6 +41,8 @@ export default function SupplierRegistrationForm() {
       return;
     }
 
+    const ndiIdentifier = NDIVerifier.extractNDIIdentifierFromProof(ndiProfile);
+
     try {
       const res = await fetch('/api/supplier/register', {
         method: 'POST',
@@ -47,7 +50,7 @@ export default function SupplierRegistrationForm() {
         body: JSON.stringify({
           formData: {
             ...formData,
-            ndi_identifier: ndiProfile.ndi_identifier,
+            ndi_identifier: ndiIdentifier,
             wallet_address: walletAddress
           },
           documentData: {

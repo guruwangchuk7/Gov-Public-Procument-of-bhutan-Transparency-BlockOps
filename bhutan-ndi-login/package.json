@@ -1,0 +1,29 @@
+{
+  "name": "bhutan-ndi-login-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "hardhat": "hardhat",
+    "contract:compile": "hardhat compile",
+    "contract:deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.5",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.1",
+    "nats": "^2.29.3",
+    "next": "^14.2.3",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-verify": "^2.0.8",
+    "hardhat": "^2.22.5"
+  }
+}

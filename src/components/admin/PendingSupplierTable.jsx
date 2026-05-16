@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Building2, Check, X, ShieldCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase/client';
 
 export default function PendingSupplierTable() {
   const [suppliers, setSuppliers] = useState([]);
@@ -25,10 +26,11 @@ export default function PendingSupplierTable() {
 
   const handleApprove = async (supplierId) => {
     try {
+      const { data: { user } } = await createClient().auth.getUser();
       const res = await fetch('/api/admin/approve-supplier', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ supplierId })
+        body: JSON.stringify({ supplierId, adminId: user?.id })
       });
       const result = await res.json();
       if (result.success) {

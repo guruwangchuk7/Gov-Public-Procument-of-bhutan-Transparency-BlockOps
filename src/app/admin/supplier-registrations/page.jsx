@@ -30,15 +30,15 @@ export default function SupplierApprovalsPage() {
     try {
       if (!window.ethereum) throw new Error('Wallet not found');
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         BGPS_ABI,
         signer
       );
 
-      const proofHash = ethers.id(`${supplier.company_name}-${supplier.license_number}`);
+      const proofHash = ethers.utils.id(`${supplier.company_name}-${supplier.license_number}`);
       
       console.log('Sending blockchain transaction...');
       const tx = await contract.authorizeSupplier(supplier.wallet_address, proofHash);

@@ -20,13 +20,13 @@ export const NDIVerifier = {
 
   /**
    * Extracts a stable identifier from an NDI proof result.
-   * Depending on the NDI schema, this might be a DID or an ID Number.
    */
-  extractNDIIdentifierFromProof(proofResult) {
-    if (!proofResult) return null;
+  extractNDIIdentifierFromProof(profile) {
+    if (!profile) return null;
     
-    // In our implementation, we use the holder_did or a specific attribute
-    return proofResult.ndi_identifier || proofResult.holder_did || null;
+    // Prioritize ID Number (Citizenship ID) as it's the most stable identifier in Bhutan
+    // Alternatively use holderDid if idNumber is not available.
+    return profile.idNumber || profile.holderDid || profile.ndi_identifier || null;
   },
 
   /**

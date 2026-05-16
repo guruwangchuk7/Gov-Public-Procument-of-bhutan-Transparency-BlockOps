@@ -25,18 +25,21 @@ export async function GET(request) {
     const tender_event = events.find(e => e.event_name === 'TenderCreated');
     const award_event = events.find(e => e.event_name === 'WinnerSelected');
 
-    // 4. Fetch Award
+    // 4. Fetch Award & Winning Bid
     const { data: award } = await supabase
       .from('awards')
-      .select('*')
+      .select('*, winning_bid:bids(*, suppliers(company_name))')
       .eq('tender_id', tenderId)
       .single();
+
+    const bid_event = award ? events.find(e => e.event_name === 'BidSubmitted' && e.related_bid_id === award.winning_bid_id) : null;
 
     return NextResponse.json({
       tender,
       events,
       tender_event,
       award_event,
+      bid_event,
       award
     });
   } catch (error) {

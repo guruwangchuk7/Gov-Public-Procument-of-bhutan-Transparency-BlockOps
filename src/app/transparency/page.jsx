@@ -13,6 +13,9 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 
+import { Trophy, ShieldCheck, UserCheck, Award, Bell } from 'lucide-react';
+import PublicTrustDashboard from '@/components/public/PublicTrustDashboard';
+
 export default function TransparencyPortalPage() {
   const [awards, setAwards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,9 +27,11 @@ export default function TransparencyPortalPage() {
 
   const fetchAwards = async () => {
     try {
-      const res = await fetch('/api/public/awards');
-      const data = await res.json();
-      setAwards(data);
+      const res = await fetch('/api/public/winning-bids');
+      const result = await res.json();
+      if (result.success) {
+        setAwards(result.data);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -35,8 +40,8 @@ export default function TransparencyPortalPage() {
   };
 
   const filteredAwards = awards.filter(a => 
-    a.tenders?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    a.suppliers?.company_name.toLowerCase().includes(searchTerm.toLowerCase())
+    a.tenders?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    a.suppliers?.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -53,6 +58,13 @@ export default function TransparencyPortalPage() {
           </div>
         </div>
       </nav>
+
+      {/* Trust Notification Layer */}
+      <div className="bg-white border-b border-gray-100 mb-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <PublicTrustDashboard />
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -110,20 +122,26 @@ export default function TransparencyPortalPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-3 bg-emerald-50/50 rounded-xl">
                       <p className="text-[10px] text-emerald-600 font-bold uppercase mb-1">Amount</p>
-                      <p className="text-sm font-black text-emerald-700">Nu. {award.bids?.bid_amount.toLocaleString()}</p>
+                      <p className="text-sm font-black text-emerald-700">Nu. {award.bids?.bid_amount?.toLocaleString()}</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
                       <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Date</p>
-                      <p className="text-sm font-bold text-gray-700">{format(new Date(award.awarded_at), 'MMM dd, yyyy')}</p>
+                      <p className="text-sm font-bold text-gray-700">{award.awarded_at ? format(new Date(award.awarded_at), 'MMM dd, yyyy') : 'N/A'}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-gray-100 mt-auto">
+                <div className="pt-6 border-t border-gray-100 mt-auto flex flex-col gap-2">
+                  <Link
+                    href={`/transparency/tenders/${award.tenders?.id}`}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
+                  >
+                    View Full Record
+                  </Link>
                   <a 
                     href={`https://sepolia.etherscan.io/tx/${award.blockchain_tx_hash}`}
                     target="_blank"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-emerald-600 transition-all shadow-lg shadow-gray-200"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-all"
                   >
                     <Globe size={14} /> View Blockchain Proof <ExternalLink size={12} />
                   </a>

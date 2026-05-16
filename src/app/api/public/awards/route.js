@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   const supabase = createClient();
-  
+
   try {
     const { data, error } = await supabase
       .from('awards')
@@ -11,8 +11,10 @@ export async function GET() {
       .order('awarded_at', { ascending: false });
 
     if (error) throw error;
+
     return NextResponse.json(data);
   } catch (error) {
+    console.error('Public Awards API Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

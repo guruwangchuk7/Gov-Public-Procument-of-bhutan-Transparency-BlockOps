@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Search, ShieldCheck, Globe, Loader2, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { Search, ShieldCheck, Globe, Loader2, CheckCircle2, XCircle, ArrowRight, ExternalLink } from 'lucide-react';
 
 export default function PublicVerifyTool() {
   const [query, setQuery] = useState('');
@@ -14,7 +14,6 @@ export default function PublicVerifyTool() {
     setLoading(true);
     setResult(null);
     try {
-      // Simulate/Fetch verification from public endpoint
       const res = await fetch(`/api/public/verify?q=${query}`);
       const data = await res.json();
       setResult(data);
@@ -27,13 +26,13 @@ export default function PublicVerifyTool() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="card shadow-2xl border-primary-100 p-8">
+      <div className="card shadow-2xl border-primary-100 p-8 bg-white">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-4">
             <ShieldCheck size={32} />
           </div>
           <h2 className="text-2xl font-black text-gray-900">Blockchain Proof Verifier</h2>
-          <p className="text-gray-500 text-sm mt-1">Paste a Document Hash or Tender ID to verify its integrity on Ethereum Sepolia.</p>
+          <p className="text-gray-500 text-sm mt-1">Verify any Tender ID or Transaction Hash against the immutable ledger.</p>
         </div>
 
         <form onSubmit={handleVerify} className="space-y-4">
@@ -42,7 +41,7 @@ export default function PublicVerifyTool() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Enter Hash (0x...) or Tender ID..."
+              placeholder="Enter Tender ID or 0x... Transaction Hash"
               className="w-full pl-4 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono text-sm"
             />
             <button 
@@ -57,51 +56,59 @@ export default function PublicVerifyTool() {
 
         {result && (
           <div className={`mt-8 p-6 rounded-2xl border-2 animate-in fade-in slide-in-from-bottom-4 duration-500 ${
-            result.verified ? 'border-emerald-500 bg-emerald-50/20' : 'border-red-500 bg-red-50/20'
+            result.status === 'trusted' ? 'border-emerald-500 bg-emerald-50/20' : 
+            result.status === 'suspicious' ? 'border-red-500 bg-red-50/20' :
+            'border-gray-200 bg-gray-50/50'
           }`}>
-            <div className="flex items-center gap-4 mb-4">
-              {result.verified ? (
+            <div className="flex items-center gap-4 mb-6">
+              {result.status === 'trusted' ? (
                 <CheckCircle2 size={32} className="text-emerald-500" />
               ) : (
                 <XCircle size={32} className="text-red-500" />
               )}
               <div>
                 <h3 className="font-black text-gray-900">
-                  {result.verified ? 'Cryptographic Proof Verified' : 'Verification Failed'}
+                  {result.status === 'trusted' ? 'Cryptographic Proof Verified' : 
+                   result.status === 'suspicious' ? 'INTEGRITY BREACH DETECTED' : 'Verification Status: ' + result.status}
                 </h3>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-                  Result for: {query.slice(0, 16)}...
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${result.status === 'suspicious' ? 'text-red-600 animate-pulse' : 'text-gray-500'}`}>
+                  {result.status === 'suspicious' ? 'Official Record Under Review - Tampering Suspected' : result.message}
                 </p>
               </div>
             </div>
 
-            {result.verified && (
-              <div className="space-y-4">
+            <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-3 bg-white/50 rounded-xl border border-gray-100">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase">Entity Type</p>
-                    <p className="text-sm font-bold text-gray-800 uppercase">{result.type}</p>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Blockchain Event</p>
+                    <p className="text-xs font-black text-gray-800 uppercase">{result.event_name || 'N/A'}</p>
                   </div>
                   <div className="p-3 bg-white/50 rounded-xl border border-gray-100">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase">Timestamp</p>
-                    <p className="text-sm font-bold text-gray-800">{new Date(result.timestamp).toLocaleDateString()}</p>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Block Number</p>
+                    <p className="text-xs font-black text-gray-800">{result.block_number || 'Pending'}</p>
                   </div>
                 </div>
-                <a 
-                  href={`https://sepolia.etherscan.io/tx/${result.txHash}`}
-                  target="_blank"
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-white text-indigo-600 border border-indigo-100 rounded-xl text-xs font-bold hover:bg-indigo-50 transition-all"
-                >
-                  <Globe size={14} /> View Immutable Proof on Sepolia Etherscan
-                </a>
-              </div>
-            )}
-            
-            {!result.verified && (
-              <p className="text-sm text-red-600 font-medium">
-                No matching record found on the blockchain ledger. This document or ID may be invalid or tampered with.
-              </p>
-            )}
+
+                <div className="space-y-2">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase">Database Hash</p>
+                    <p className="text-[9px] font-mono p-2 bg-white/50 rounded border border-gray-100 break-all">{result.database_hash || 'Record Missing Hash'}</p>
+                </div>
+
+                <div className="space-y-2">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase">On-Chain Hash</p>
+                    <p className="text-[9px] font-mono p-2 bg-white/50 rounded border border-gray-100 break-all">{result.blockchain_hash || 'No On-Chain Data'}</p>
+                </div>
+
+                {result.tx_hash && (
+                    <a 
+                    href={result.etherscan_url}
+                    target="_blank"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-primary transition-all"
+                    >
+                    <Globe size={14} /> View Immutable Proof <ExternalLink size={12} />
+                    </a>
+                )}
+            </div>
           </div>
         )}
       </div>

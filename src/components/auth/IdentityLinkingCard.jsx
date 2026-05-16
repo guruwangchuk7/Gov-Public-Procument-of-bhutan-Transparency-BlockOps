@@ -1,6 +1,7 @@
 import React from 'react';
-import { Fingerprint, Wallet, CheckCircle2, AlertCircle, Loader2, ShieldCheck, Link, QrCode } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Loader2, QrCode, Link, Wallet, AlertCircle } from 'lucide-react';
 import QRCode from 'react-qr-code';
+import { NDIVerifier } from '@/lib/ndi/ndi-verifier';
 
 /**
  * Premium UI Component for Multi-Factor Identity Linking.
@@ -19,6 +20,7 @@ export default function IdentityLinkingCard({
   const isNDIReady = !!ndiProfile;
   const isWalletReady = !!walletAddress;
   const isFullyLinked = isNDIReady && isWalletReady;
+  const ndiIdentifier = NDIVerifier.extractNDIIdentifierFromProof(ndiProfile);
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -70,16 +72,26 @@ export default function IdentityLinkingCard({
                 <Loader2 size={12} className="animate-spin" />
                 Waiting for scan...
               </div>
+              
+              {proofRequest.deepLinkURL && (
+                <a 
+                  href={proofRequest.deepLinkURL}
+                  className="btn btn-outline btn-sm w-full text-[10px] uppercase tracking-tighter"
+                >
+                  Open in NDI App <QrCode size={12} />
+                </a>
+              )}
             </div>
           )}
 
           {isNDIReady && (
             <div className="mt-3 pt-3 border-t border-green-100/50 flex flex-col gap-1">
               <span className="text-[10px] text-green-600 font-bold uppercase">Linked Identifier</span>
-              <code className="text-xs text-green-700 font-mono">{ndiProfile.ndi_identifier}</code>
+              <code className="text-xs text-green-700 font-mono">{ndiIdentifier}</code>
             </div>
           )}
         </div>
+
 
         <div className="flex justify-center -my-2 relative z-10">
           <div className={`p-1.5 rounded-full border bg-white ${isFullyLinked ? 'text-green-500 border-green-200' : 'text-gray-300 border-gray-100'}`}>
@@ -103,6 +115,15 @@ export default function IdentityLinkingCard({
             </div>
             {isWalletReady ? (
               <CheckCircle2 size={20} className="text-blue-500" />
+            ) : !window.ethereum && !window.rabby ? (
+              <a
+                href="https://rabby.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-orange-600 text-white text-[10px] font-black rounded-lg hover:bg-orange-700 transition-all flex items-center gap-2"
+              >
+                Install Rabby
+              </a>
             ) : (
               <button
                 onClick={onConnectWallet}

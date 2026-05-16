@@ -9,9 +9,24 @@ import { Wallet, Loader2, CheckCircle2 } from 'lucide-react';
 export default function RabbyConnectButton({ 
   address, 
   onConnect, 
-  isConnecting 
+  isConnecting,
+  isInstalled = true
 }) {
   const isConnected = !!address;
+
+  if (!isInstalled && !isConnected) {
+    return (
+      <a
+        href="https://rabby.io/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-3 bg-orange-50 text-orange-600 border border-orange-100 hover:bg-orange-100 transition-all"
+      >
+        <Wallet size={20} />
+        Install Rabby Wallet
+      </a>
+    );
+  }
 
   return (
     <button

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import AuditTimeline from '@/components/auditor/AuditTimeline';
 import HashCompareCard from '@/components/auditor/HashCompareCard';
+import AuditSubmissionCard from '@/components/auditor/AuditSubmissionCard';
 
 export default function AuditTimelinePage({ params }) {
   const [data, setData] = useState(null);
@@ -67,16 +68,36 @@ export default function AuditTimelinePage({ params }) {
           <HashCompareCard 
             label="Tender Specification" 
             dbHash={data.tender.tender_hash} 
-            blockchainHash={data.tender_event?.payload_hash || '0x' + data.tender.tender_hash}
+            blockchainHash={data.tender_event?.payload_hash}
+            status={data.tender_event?.tx_status}
           />
+
+          {data.award?.winning_bid && (
+            <HashCompareCard 
+              label={`Winning Bid: ${data.award.winning_bid.suppliers?.company_name}`} 
+              dbHash={data.award.winning_bid.bid_hash} 
+              blockchainHash={data.bid_event?.payload_hash}
+              status={data.bid_event?.tx_status}
+            />
+          )}
 
           {data.award && (
             <HashCompareCard 
               label="Award Justification" 
               dbHash={data.award.justification_hash} 
-              blockchainHash={data.award_event?.payload_hash || '0x' + data.award.justification_hash}
+              blockchainHash={data.award_event?.payload_hash}
+              status={data.award_event?.tx_status}
             />
           )}
+
+          {/* Official Audit Submission */}
+          <AuditSubmissionCard 
+            tenderId={data.tender.id}
+            bidId={data.award?.winning_bid_id}
+            dbHash={data.tender.tender_hash}
+            blockchainHash={data.tender_event?.payload_hash}
+            blockchainEventId={data.tender_event?.id}
+          />
 
           <div className="card bg-amber-50 border-amber-200">
             <h4 className="font-bold text-amber-800 mb-2 flex items-center gap-2">

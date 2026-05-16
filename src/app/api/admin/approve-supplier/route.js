@@ -3,10 +3,13 @@ import { AdminApprovalService } from '@/services/admin-approval.service';
 
 export async function POST(request) {
   try {
-    const { supplierId, adminId } = await request.json();
-    if (!supplierId) return NextResponse.json({ error: 'Missing supplierId' }, { status: 400 });
-
-    const result = await AdminApprovalService.approveSupplier(supplierId, adminId || 'fb241743-f427-46ba-8fa5-8905bc20f2ec');
+    const { supplierId, adminId, txHash } = await request.json();
+    let result;
+    if (txHash) {
+      result = await AdminApprovalService.processFullSupplierApproval(supplierId, adminId, txHash);
+    } else {
+      result = await AdminApprovalService.approveSupplier(supplierId, adminId);
+    }
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

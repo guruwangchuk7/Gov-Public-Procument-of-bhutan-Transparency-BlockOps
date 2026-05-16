@@ -40,12 +40,34 @@ export async function resolveRoleAccess({
   const ndi_id = NDIVerifier.extractNDIIdentifierFromProof(ndi_profile);
   const normalized_wallet = WalletLinking.normalizeWalletAddress(wallet_address);
 
-  // In Mock Mode or Demo, we check against local mock records
-  // In a real system, this would be an API call to Supabase or the Smart Contract
-  const record = mock_records.find(r => 
-    WalletLinking.isSameWallet(r.wallet_address, normalized_wallet) ||
-    NDIVerifier.isSameNDIIdentity(r.ndi_identifier, ndi_id)
-  );
+  // Real backend verification
+  let record = null;
+  try {
+    const res = await fetch('/api/auth/resolve-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        selected_role,
+        ndi_identifier: ndi_id,
+        wallet_address: normalized_wallet
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      record = data.record;
+    } else {
+      return { 
+        allowed: false, 
+        status: 'denied', 
+        reason: data.error || 'Access denied', 
+        redirect_target: selected_role === 'Admin' ? '/admin/login' : 
+                         selected_role === 'Auditor' ? '/auditor/login' : 
+                         selected_role === 'Procuring_Agency' ? '/agency/login' : '/supplier/login'
+      };
+    }
+  } catch (err) {
+    console.error('Failed to resolve role access:', err);
+  }
 
   // 1. Admin Logic
   if (selected_role === 'Admin') {

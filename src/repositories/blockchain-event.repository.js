@@ -58,5 +58,30 @@ export const blockchainEventRepository = {
 
     if (error) throw error;
     return data;
+  },
+
+  /**
+   * Finds a confirmed blockchain event for a specific entity and event name.
+   */
+  async findEventByEntity(entityId, entityType, eventName) {
+    const supabase = createClient();
+    const query = supabase
+      .from('blockchain_events')
+      .select('*')
+      .eq('event_name', eventName);
+    
+    if (entityType === 'agency') query.eq('related_agency_id', entityId);
+    if (entityType === 'supplier') query.eq('related_supplier_id', entityId);
+    if (entityType === 'tender') query.eq('related_tender_id', entityId);
+    if (entityType === 'bid') query.eq('related_bid_id', entityId);
+    if (entityType === 'award') query.eq('related_award_id', entityId);
+
+    const { data, error } = await query
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    if (error) throw error;
+    return data;
   }
 };

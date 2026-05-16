@@ -1,0 +1,27 @@
+import { createClient } from '@/lib/supabase/server';
+
+export const AdminRepository = {
+  async findByIdentifier(ndi_identifier) {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('ndi_identifier', ndi_identifier)
+      .single();
+    
+    if (error) return null;
+    return data;
+  },
+
+  async findByWallet(wallet_address) {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('wallet_address', wallet_address.toLowerCase())
+      .single();
+    
+    if (error) return null;
+    return data;
+  }
+};

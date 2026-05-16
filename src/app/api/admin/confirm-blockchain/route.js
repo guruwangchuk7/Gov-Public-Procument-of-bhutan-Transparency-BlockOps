@@ -3,17 +3,17 @@ import { AdminApprovalService } from '@/services/admin-approval.service';
 
 export async function POST(request) {
   try {
-    const { agencyId, supplierId, eventId, adminId } = await request.json();
+    const { agencyId, supplierId, eventId, txHash, adminId } = await request.json();
     
-    if (!eventId) {
-      return NextResponse.json({ error: 'Missing eventId' }, { status: 400 });
+    if (!eventId || !txHash) {
+      return NextResponse.json({ error: 'Missing eventId or txHash' }, { status: 400 });
     }
 
     let result;
     if (agencyId) {
-      result = await AdminApprovalService.confirmAgencyBlockchain(agencyId, eventId, adminId || 'fb241743-f427-46ba-8fa5-8905bc20f2ec');
+      result = await AdminApprovalService.confirmAgencyBlockchain(agencyId, eventId, txHash, adminId);
     } else if (supplierId) {
-      result = await AdminApprovalService.confirmSupplierBlockchain(supplierId, eventId, adminId || 'fb241743-f427-46ba-8fa5-8905bc20f2ec');
+      result = await AdminApprovalService.confirmSupplierBlockchain(supplierId, eventId, txHash, adminId);
     }
     
     return NextResponse.json({ success: true, data: result });

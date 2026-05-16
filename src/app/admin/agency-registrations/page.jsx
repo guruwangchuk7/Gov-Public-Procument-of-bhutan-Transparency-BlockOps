@@ -31,8 +31,8 @@ export default function AgencyApprovalsPage() {
       // 1. Authorize on Blockchain
       if (!window.ethereum) throw new Error('Wallet not found');
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         BGPS_ABI,
@@ -40,7 +40,7 @@ export default function AgencyApprovalsPage() {
       );
 
       // Create a proof hash (in real case, hash of documents)
-      const proofHash = ethers.id(`${agency.agency_name}-${agency.registration_number}`);
+      const proofHash = ethers.utils.id(`${agency.agency_name}-${agency.registration_number}`);
       
       console.log('Sending blockchain transaction...');
       const tx = await contract.authorizeAgency(agency.wallet_address, proofHash);

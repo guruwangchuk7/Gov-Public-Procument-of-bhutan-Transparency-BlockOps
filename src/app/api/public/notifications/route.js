@@ -1,19 +1,10 @@
-import { createClient } from '@/lib/supabase/server';
+import { PublicNotificationService } from '@/services/public/public-notification.service';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const supabase = createClient();
-  
-  try {
-    const { data, error } = await supabase
-      .from('activity_logs')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(10);
-
-    if (error) throw error;
-    return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  const result = await PublicNotificationService.getNotifications();
+  if (result.success) {
+    return NextResponse.json(result);
   }
+  return NextResponse.json(result, { status: 500 });
 }

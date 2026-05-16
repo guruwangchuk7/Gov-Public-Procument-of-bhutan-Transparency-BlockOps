@@ -43,8 +43,8 @@ export default function TenderDetailsPage({ params }) {
       // 1. Blockchain Transaction
       if (!window.ethereum) throw new Error('Rabby Wallet not found');
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         BGPS_ABI,
