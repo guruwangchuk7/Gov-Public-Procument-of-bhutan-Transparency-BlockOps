@@ -10,7 +10,7 @@ const ROLES = [
     desc: 'Approve procuring agencies, suppliers, and manage system auditors.',
     icon: ShieldAlert,
     color: 'slate',
-    route: '/admin/dashboard',
+    route: '/admin/login',
     features: ['Verify Agencies', 'Manage Auditors', 'Audit Logs']
   },
   {
@@ -20,7 +20,7 @@ const ROLES = [
     icon: Landmark,
     color: 'primary',
     registerRoute: '/agency/register',
-    dashboardRoute: '/agency/dashboard',
+    dashboardRoute: '/agency/login',
     features: ['Create Tenders', 'Evaluate Bids', 'Award Contracts']
   },
   {
@@ -30,7 +30,7 @@ const ROLES = [
     icon: Building2,
     color: 'emerald',
     registerRoute: '/supplier/register',
-    dashboardRoute: '/supplier/dashboard',
+    dashboardRoute: '/supplier/login',
     features: ['View Tenders', 'Secure Bidding', 'Track Awards']
   },
   {
@@ -39,7 +39,7 @@ const ROLES = [
     desc: 'Independent entities verifying procurement integrity on-chain.',
     icon: Search,
     color: 'indigo',
-    route: '/auditor/dashboard',
+    route: '/auditor/login',
     features: ['Verify Hashes', 'Timeline Audit', 'Compliance']
   },
   {

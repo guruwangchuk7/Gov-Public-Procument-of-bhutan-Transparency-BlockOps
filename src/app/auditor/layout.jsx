@@ -16,10 +16,14 @@ const auditorNavigation = [
   { name: 'Profile', href: '/auditor/profile', icon: Settings },
 ];
 
+import RoleGuard from '@/components/layout/RoleGuard';
+
 export default function AuditorLayout({ children }) {
   return (
-    <DashboardShell role="Auditor" navigation={auditorNavigation}>
-      {children}
-    </DashboardShell>
+    <RoleGuard requiredRole="Auditor">
+      <DashboardShell role="Auditor" navigation={auditorNavigation}>
+        {children}
+      </DashboardShell>
+    </RoleGuard>
   );
 }

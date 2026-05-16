@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 
 /**
  * Utility for interacting with Rabby Wallet (and other EIP-1193 providers).
+ * Ensures compatibility with window.ethereum.
  */
 export const RabbyWallet = {
   /**
@@ -21,7 +22,9 @@ export const RabbyWallet = {
     }
 
     try {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      // Use Ethers Web3Provider (v5 syntax) to interact with window.ethereum
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.send('eth_requestAccounts', []);
       return accounts[0];
     } catch (error) {
       if (error.code === 4001) {
@@ -36,8 +39,13 @@ export const RabbyWallet = {
    */
   async getAccount() {
     if (!this.isInstalled()) return null;
-    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-    return accounts[0] || null;
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.send('eth_accounts', []);
+      return accounts[0] || null;
+    } catch (error) {
+      return null;
+    }
   },
 
   /**
@@ -45,13 +53,19 @@ export const RabbyWallet = {
    */
   async getChainId() {
     if (!this.isInstalled()) return null;
-    return await window.ethereum.request({ method: 'eth_chainId' });
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await provider.getNetwork();
+      return '0x' + network.chainId.toString(16);
+    } catch (error) {
+      return null;
+    }
   },
 
   /**
    * Listens for account changes (e.g., user switching accounts in Rabby).
    */
-  onAccountChange(callback) {
+  listenToAccountChanges(callback) {
     if (!this.isInstalled()) return;
     window.ethereum.on('accountsChanged', (accounts) => {
       callback(accounts[0] || null);
@@ -61,7 +75,7 @@ export const RabbyWallet = {
   /**
    * Listens for network changes.
    */
-  onChainChange(callback) {
+  listenToChainChanges(callback) {
     if (!this.isInstalled()) return;
     window.ethereum.on('chainChanged', (chainId) => {
       callback(chainId);

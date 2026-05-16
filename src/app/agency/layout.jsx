@@ -16,10 +16,14 @@ const agencyNavigation = [
   { name: 'Profile', href: '/agency/profile', icon: Settings },
 ];
 
+import RoleGuard from '@/components/layout/RoleGuard';
+
 export default function AgencyLayout({ children }) {
   return (
-    <DashboardShell role="Agency" navigation={agencyNavigation}>
-      {children}
-    </DashboardShell>
+    <RoleGuard requiredRole="Procuring_Agency" requireApproved={true}>
+      <DashboardShell role="Agency" navigation={agencyNavigation}>
+        {children}
+      </DashboardShell>
+    </RoleGuard>
   );
 }

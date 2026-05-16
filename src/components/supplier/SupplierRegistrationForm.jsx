@@ -5,17 +5,22 @@ import { Building2, Mail, Phone, Hash, ShieldCheck, Wallet, FileUp, Send, CheckC
 import { toast } from 'sonner';
 import PayloadPreview from '@/components/common/PayloadPreview';
 import { useRouter } from 'next/navigation';
+import { useNDI } from '@/hooks/useNDI';
+import { RabbyWallet } from '@/lib/wallet/rabby';
+import IdentityLinkingCard from '@/components/auth/IdentityLinkingCard';
 
 export default function SupplierRegistrationForm() {
   const router = useRouter();
+  const { ndiProfile, verifyIdentity, isVerifying: isVerifyingNDI, status: ndiStatus, proofRequest } = useNDI();
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [loading, setLoading] = useState(false);
+  
   const [formData, setFormData] = useState({
     company_name: '',
     email: '',
     phone: '',
     license_number: '',
-    ndi_identifier: 'NDI-SIM-S-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
-    wallet_address: '0x' + Math.random().toString(16).substring(2, 42),
     status: 'pending',
     blockchain_authorized: false
   });
@@ -29,12 +34,22 @@ export default function SupplierRegistrationForm() {
     e.preventDefault();
     setLoading(true);
 
+    if (!ndiProfile || !walletAddress) {
+      toast.error('Please link both NDI and Wallet before registering');
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/supplier/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          formData,
+          formData: {
+            ...formData,
+            ndi_identifier: ndiProfile.ndi_identifier,
+            wallet_address: walletAddress
+          },
           documentData: {
             file_name: 'trade_license.pdf',
             storage_url: 'https://supabase.com/mock-storage/license.pdf',
@@ -136,33 +151,27 @@ export default function SupplierRegistrationForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-            <div className="space-y-1.5">
-              <label className="label-text">NDI Identifier</label>
-              <div className="relative">
-                <input 
-                  name="ndi_identifier" 
-                  value={formData.ndi_identifier} 
-                  readOnly
-                  className="input-field pl-11 bg-white cursor-not-allowed opacity-70" 
-                />
-                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={16} />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="label-text">Wallet Address</label>
-              <div className="relative">
-                <input 
-                  name="wallet_address" 
-                  value={formData.wallet_address} 
-                  readOnly
-                  className="input-field pl-11 bg-white cursor-not-allowed opacity-70" 
-                />
-                <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={16} />
-              </div>
-            </div>
-          </div>
+          <IdentityLinkingCard 
+            ndiProfile={ndiProfile}
+            walletAddress={walletAddress}
+            isVerifyingNDI={isVerifyingNDI}
+            isConnectingWallet={isConnectingWallet}
+            onVerifyNDI={verifyIdentity}
+            onConnectWallet={async () => {
+              setIsConnectingWallet(true);
+              try {
+                const addr = await RabbyWallet.connect();
+                setWalletAddress(addr);
+                toast.success('Wallet Linked Successfully');
+              } catch (err) {
+                toast.error(err.message);
+              } finally {
+                setIsConnectingWallet(false);
+              }
+            }}
+            ndiStatus={ndiStatus}
+            proofRequest={proofRequest}
+          />
 
           <div className="space-y-1.5">
             <label className="label-text">Valid Trade License</label>

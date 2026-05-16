@@ -9,8 +9,29 @@ import {
 } from 'lucide-react';
 import StatsCard from '@/components/common/StatsCard';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AgencyDashboard() {
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+  const [wallet, setWallet] = useState(null);
+
+  useEffect(() => {
+    const savedSession = localStorage.getItem('bgps_ndi_session');
+    const savedWallet = localStorage.getItem('bgps_wallet_address');
+    
+    if (!savedSession || !savedWallet) {
+      router.push('/agency/login');
+      return;
+    }
+    
+    setSession(JSON.parse(savedSession));
+    setWallet(savedWallet);
+  }, [router]);
+
+  if (!session) return null;
+
   const stats = [
     {
       title: 'Active Tenders',
@@ -47,7 +68,11 @@ export default function AgencyDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-gray-900">Agency Workspace</h1>
-          <p className="text-gray-500">Ministry of Works and Transport Dashboard</p>
+          <p className="text-gray-500 font-medium">Welcome, <span className="text-primary font-bold">{session.full_name || 'Verified Officer'}</span></p>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md uppercase tracking-widest border border-primary/20">Authenticated Agency</div>
+            <code className="text-[10px] text-gray-400 font-mono truncate max-w-[200px]">{wallet}</code>
+          </div>
         </div>
         <Link href="/agency/tenders/create" className="btn-primary flex items-center gap-2">
           <Plus size={18} /> New Tender

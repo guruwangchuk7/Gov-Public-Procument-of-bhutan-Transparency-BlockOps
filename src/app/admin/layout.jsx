@@ -18,10 +18,14 @@ const adminNavigation = [
   { name: 'Activity Logs', href: '/admin/activity-logs', icon: History },
 ];
 
+import RoleGuard from '@/components/layout/RoleGuard';
+
 export default function AdminLayout({ children }) {
   return (
-    <DashboardShell role="Admin" navigation={adminNavigation}>
-      {children}
-    </DashboardShell>
+    <RoleGuard requiredRole="Admin">
+      <DashboardShell role="Admin" navigation={adminNavigation}>
+        {children}
+      </DashboardShell>
+    </RoleGuard>
   );
 }

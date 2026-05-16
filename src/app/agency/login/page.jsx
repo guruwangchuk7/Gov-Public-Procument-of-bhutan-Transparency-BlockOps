@@ -1,39 +1,37 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, ArrowLeft, Building2, Loader2 } from 'lucide-react';
-import NDIConnectButton from '@/components/auth/NDIConnectButton';
-import RabbyConnectButton from '@/components/auth/RabbyConnectButton';
+import { ArrowLeft, Building2 } from 'lucide-react';
+import IdentityWalletVerifier from '@/components/auth/IdentityWalletVerifier';
+import { useRoleSession } from '@/hooks/useRoleSession';
+
+// Mock records for approved/pending agencies
+const MOCK_AGENCIES = [
+  {
+    id: 'agency-001',
+    agency_name: 'Ministry of Infrastructure',
+    ndi_identifier: 'MOCK_NDI_ID', // Matches demo scan
+    wallet_address: '0xMockWalletAddress',
+    status: 'approved',
+    blockchain_authorized: true
+  },
+  {
+    id: 'agency-002',
+    agency_name: 'Department of IT',
+    ndi_identifier: 'NDI-AGENCY-002',
+    wallet_address: '0x669877b026639906646199623838383838383838',
+    status: 'pending',
+    blockchain_authorized: false
+  }
+];
 
 export default function AgencyLoginPage() {
-  const [ndiUser, setNdiUser] = useState(null);
-  const [walletAddress, setWalletAddress] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { selectRole } = useRoleSession();
 
-  const handleLogin = async () => {
-    setLoading(true);
-    try {
-      // In real case, verify with backend if this agency is approved
-      const res = await fetch(`/api/agency/check-status?ndi=${ndiUser.id}&wallet=${walletAddress}`);
-      const data = await res.json();
-      
-      if (data.status === 'approved') {
-        router.push('/agency/dashboard');
-      } else if (data.status === 'pending') {
-        router.push('/agency/pending');
-      } else {
-        alert('Agency not found or rejected. Please register first.');
-        router.push('/agency/register');
-      }
-    } catch (err) {
-      // For demo purposes, if API fails, just proceed to dashboard if both are connected
-      router.push('/agency/dashboard');
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    selectRole('Procuring_Agency');
+  }, [selectRole]);
 
   return (
     <main className="min-h-screen bg-gray-50 py-20 px-4">
@@ -48,28 +46,24 @@ export default function AgencyLoginPage() {
           </div>
         </div>
 
-        <div className="card text-center">
-          <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6">
+        <div className="card shadow-2xl border-white p-8">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6">
             <Building2 size={32} />
           </div>
-          <h1 className="text-2xl font-black text-gray-900 mb-2">Agency Login</h1>
-          <p className="text-gray-500 text-sm mb-10">Connect your official identity and wallet to access the workspace.</p>
-
-          <div className="space-y-4">
-            <NDIConnectButton onVerify={setNdiUser} verified={!!ndiUser} />
-            <RabbyConnectButton onConnect={setWalletAddress} walletAddress={walletAddress} />
-            
-            <button
-              onClick={handleLogin}
-              disabled={!ndiUser || !walletAddress || loading}
-              className="btn-primary w-full py-4 font-bold flex items-center justify-center gap-2 mt-6"
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : 'Enter Workspace'}
-            </button>
+          
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-black text-gray-900 mb-2">Agency Workspace</h1>
+            <p className="text-gray-500 text-sm">Secure identity-gated access for government officers.</p>
           </div>
 
-          <p className="mt-8 text-xs text-gray-400">
-            Don't have an agency account? <Link href="/agency/register" className="text-primary font-bold hover:underline">Register here</Link>
+          <IdentityWalletVerifier 
+            role="Procuring_Agency" 
+            mockRecords={MOCK_AGENCIES}
+          />
+
+          <p className="mt-8 text-center text-xs text-gray-400">
+            Unauthorized access to government systems is strictly prohibited. <br />
+            New agency? <Link href="/agency/register" className="text-primary font-bold hover:underline">Register your office</Link>
           </p>
         </div>
       </div>

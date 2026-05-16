@@ -18,7 +18,7 @@ export const BGPSContract = {
     if (!rpcUrl) throw new Error('SEPOLIA_RPC_URL is not configured.');
     if (!contractAddress) throw new Error('BGPS Contract address is not configured.');
 
-    const provider = new ethers.JsonRpcProvider(rpcUrl);
+    const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
     return new ethers.Contract(contractAddress, BGPS_ABI.abi || BGPS_ABI, provider);
   },
 
@@ -34,12 +34,12 @@ export const BGPSContract = {
     const contractAddress = getActiveContractAddress();
     if (!contractAddress) throw new Error('BGPS Contract address is not configured.');
 
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
 
     // Check if on correct network (Sepolia 11155111)
     const network = await provider.getNetwork();
-    if (network.chainId !== 11155111n) {
+    if (network.chainId !== 11155111) {
       throw new Error('Please switch your wallet to the Sepolia Testnet.');
     }
 
@@ -50,10 +50,10 @@ export const BGPSContract = {
    * Normalizes any hash to a valid bytes32 string for the contract.
    */
   normalizeHash(hash) {
-    if (!hash) return ethers.ZeroHash;
+    if (!hash) return ethers.constants.HashZero;
     if (hash.startsWith('0x') && hash.length === 66) return hash;
     
     // If it's a plain string, we hash it first
-    return ethers.keccak256(ethers.toUtf8Bytes(hash));
+    return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(hash));
   }
 };

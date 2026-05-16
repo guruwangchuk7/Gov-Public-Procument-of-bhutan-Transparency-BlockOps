@@ -9,8 +9,29 @@ import {
 } from 'lucide-react';
 import StatsCard from '@/components/common/StatsCard';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SupplierDashboard() {
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+  const [wallet, setWallet] = useState(null);
+
+  useEffect(() => {
+    const savedSession = localStorage.getItem('bgps_ndi_session');
+    const savedWallet = localStorage.getItem('bgps_wallet_address');
+    
+    if (!savedSession || !savedWallet) {
+      router.push('/supplier/login');
+      return;
+    }
+    
+    setSession(JSON.parse(savedSession));
+    setWallet(savedWallet);
+  }, [router]);
+
+  if (!session) return null;
+
   const stats = [
     {
       title: 'Active Bids',
@@ -46,7 +67,11 @@ export default function SupplierDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-black text-gray-900">Supplier Workspace</h1>
-        <p className="text-gray-500">Welcome back, Druk Infrastructure Pvt. Ltd.</p>
+        <p className="text-gray-500 font-medium">Welcome back, <span className="text-emerald-600 font-bold">{session.full_name || 'Verified Supplier'}</span></p>
+        <div className="flex items-center gap-2 mt-2">
+          <div className="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[10px] font-bold rounded-md uppercase tracking-widest border border-emerald-200">Verified NDI</div>
+          <code className="text-[10px] text-gray-400 font-mono truncate max-w-[200px]">{wallet}</code>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

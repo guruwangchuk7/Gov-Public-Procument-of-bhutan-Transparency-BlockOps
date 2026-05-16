@@ -16,10 +16,14 @@ const supplierNavigation = [
   { name: 'Settings', href: '/supplier/settings', icon: Settings },
 ];
 
+import RoleGuard from '@/components/layout/RoleGuard';
+
 export default function SupplierLayout({ children }) {
   return (
-    <DashboardShell role="Supplier" navigation={supplierNavigation}>
-      {children}
-    </DashboardShell>
+    <RoleGuard requiredRole="Supplier_Bidder" requireApproved={true}>
+      <DashboardShell role="Supplier" navigation={supplierNavigation}>
+        {children}
+      </DashboardShell>
+    </RoleGuard>
   );
 }

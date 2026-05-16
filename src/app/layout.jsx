@@ -1,7 +1,6 @@
 import { Outfit } from 'next/font/google';
 import './globals.css';
 import { BgpsProvider } from '@/hooks/useBgpsFlowState';
-import FlowModeBadge from '@/components/flow/FlowModeBadge';
 import { Toaster } from 'sonner';
 
 const outfit = Outfit({ subsets: ['latin'] });
@@ -18,7 +17,6 @@ export default function RootLayout({ children }) {
         <BgpsProvider>
           <div className="min-h-screen selection:bg-primary/30">
             {children}
-            <FlowModeBadge />
             <Toaster position="top-right" expand={true} richColors />
           </div>
         </BgpsProvider>

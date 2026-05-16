@@ -1,76 +1,64 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, ArrowRight, Lock } from 'lucide-react';
-import NDIConnectButton from '@/components/auth/NDIConnectButton';
-import RabbyConnectButton from '@/components/auth/RabbyConnectButton';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import IdentityWalletVerifier from '@/components/auth/IdentityWalletVerifier';
+import { useRoleSession } from '@/hooks/useRoleSession';
+
+const MOCK_ADMINS = [
+  {
+    id: 'admin-001',
+    full_name: 'BGPS System Administrator',
+    ndi_identifier: 'NDI-ADMIN-777',
+    wallet_address: '0xa537bdbfa4ca9c82e9218e3a8a8f44b038fc63df8100e258d5ba90ee34ce8f66',
+    is_active: true
+  },
+  {
+    // Fallback for demo scan
+    id: 'admin-demo',
+    full_name: 'Bhutanese Citizen (Mock)',
+    ndi_identifier: 'MOCK_NDI_ID', 
+    wallet_address: '0xMockWalletAddress',
+    is_active: true
+  }
+];
 
 export default function AdminLoginPage() {
-  const [ndiUser, setNdiUser] = useState(null);
-  const [walletAddress, setWalletAddress] = useState(null);
-  const [isAuthorizing, setIsAuthorizing] = useState(false);
-  const router = useRouter();
+  const { selectRole } = useRoleSession();
 
-  const handleLogin = async () => {
-    setIsAuthorizing(true);
-    // Here we would call an API to create a session in Supabase
-    // after verifying both NDI and Wallet.
-    setTimeout(() => {
-      router.push('/admin/dashboard');
-    }, 1500);
-  };
+  useEffect(() => {
+    selectRole('Admin');
+  }, [selectRole]);
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-10">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold">B</div>
-            <span className="text-2xl font-black text-gray-900">BGPS</span>
+    <main className="min-h-screen bg-slate-900 py-20 px-4 text-white">
+      <div className="max-w-md mx-auto">
+        <div className="flex items-center justify-between mb-12">
+          <Link href="/select-role" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-medium">
+            <ArrowLeft size={18} /> Back
           </Link>
-          <h1 className="text-3xl font-black text-gray-900 mb-2">Admin Portal</h1>
-          <p className="text-gray-500 font-medium text-sm">
-            High-security access for Bhutan Procurement Authority
-          </p>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="text-primary" size={20} />
+            <span className="font-bold uppercase tracking-tighter">BGPS Admin Portal</span>
+          </div>
         </div>
 
-        <div className="card space-y-6">
-          <div className="flex items-center gap-4 p-4 bg-primary-50 rounded-xl border border-primary-100">
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary">
-              <Lock size={20} />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-primary uppercase tracking-wider">Multi-Factor Auth</p>
-              <p className="text-sm text-gray-700">Verify your identity and wallet to continue.</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <NDIConnectButton 
-              onVerify={setNdiUser} 
-              verified={!!ndiUser} 
-            />
-            <RabbyConnectButton 
-              onConnect={setWalletAddress} 
-              walletAddress={walletAddress} 
+        <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700/50 backdrop-blur-xl">
+          <div className="text-slate-900">
+            <IdentityWalletVerifier 
+              role="Admin" 
+              mockRecords={MOCK_ADMINS}
             />
           </div>
 
-          <button
-            onClick={handleLogin}
-            disabled={!ndiUser || !walletAddress || isAuthorizing}
-            className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-2"
-          >
-            {isAuthorizing ? 'Authorizing Session...' : 'Enter Admin Dashboard'}
-            {!isAuthorizing && <ArrowRight size={20} />}
-          </button>
+          <div className="mt-8 p-4 bg-slate-900/50 rounded-2xl border border-slate-700/30">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center leading-relaxed">
+              Administrative access requires dual biometric and cryptographic proof. <br />
+              Mode: {process.env.NEXT_PUBLIC_AUTH_MODE?.toUpperCase() || 'STAGING'}
+            </p>
+          </div>
         </div>
-
-        <p className="mt-8 text-center text-xs text-gray-400">
-          By accessing this portal, you agree to the Bhutan Digital Security Framework. 
-          All actions are logged on-chain.
-        </p>
       </div>
     </main>
   );

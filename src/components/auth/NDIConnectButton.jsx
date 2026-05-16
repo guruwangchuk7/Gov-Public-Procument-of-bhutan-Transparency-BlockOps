@@ -1,39 +1,39 @@
 'use client';
-import { useState } from 'react';
-import { ShieldCheck, Loader2 } from 'lucide-react';
 
-export default function NDIConnectButton({ onVerify, verified }) {
-  const [loading, setLoading] = useState(false);
+import React from 'react';
+import { Fingerprint, Loader2, CheckCircle2 } from 'lucide-react';
 
-  const handleVerify = async () => {
-    setLoading(true);
-    // Simulate NDI verification flow
-    setTimeout(() => {
-      setLoading(false);
-      onVerify({ id: 'NDI-TAS-123', name: 'Tashi Wangchuk' });
-    }, 2000);
-  };
+/**
+ * Connect button for Bhutan NDI with status feedback.
+ */
+export default function NDIConnectButton({ 
+  status, 
+  onConnect, 
+  isVerifying,
+  profile 
+}) {
+  const isVerified = status === 'verified' || !!profile;
+  const isPending = status === 'requested' || isVerifying;
 
   return (
     <button
-      onClick={handleVerify}
-      disabled={loading || verified}
-      className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold transition-all ${
-        verified 
-          ? 'bg-emerald-50 text-emerald-600 border-2 border-emerald-100' 
-          : 'bg-primary text-white hover:bg-opacity-90 shadow-lg shadow-primary/20'
+      onClick={onConnect}
+      disabled={isPending || isVerified}
+      className={`w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all ${
+        isVerified 
+          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-default'
+          : 'bg-slate-900 text-white hover:bg-black disabled:opacity-70'
       }`}
     >
-      {loading ? (
+      {isPending ? (
         <Loader2 className="animate-spin" size={20} />
-      ) : verified ? (
-        <ShieldCheck size={20} />
+      ) : isVerified ? (
+        <CheckCircle2 size={20} />
       ) : (
-        <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-          <div className="w-2 h-2 bg-primary rounded-full" />
-        </div>
+        <Fingerprint size={20} />
       )}
-      {verified ? 'Identity Verified via NDI' : 'Verify with Bhutan NDI'}
+      
+      {isVerified ? 'Bhutan NDI Verified' : isPending ? 'Waiting for Scan...' : 'Connect Bhutan NDI'}
     </button>
   );
 }

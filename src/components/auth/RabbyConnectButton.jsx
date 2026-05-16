@@ -1,64 +1,45 @@
 'use client';
-import { useState } from 'react';
+
+import React from 'react';
 import { Wallet, Loader2, CheckCircle2 } from 'lucide-react';
-import { ethers } from 'ethers';
 
-export default function RabbyConnectButton({ onConnect, walletAddress }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      setError('Rabby Wallet not found. Please install it.');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await provider.send("eth_requestAccounts", []);
-      const network = await provider.getNetwork();
-      
-      // Check if on Sepolia (Chain ID 11155111)
-      if (network.chainId !== 11155111n) {
-        setError('Please switch to Ethereum Sepolia network in Rabby.');
-        setLoading(false);
-        return;
-      }
-
-      onConnect(accounts[0]);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to connect wallet.');
-    } finally {
-      setLoading(false);
-    }
-  };
+/**
+ * Connect button for Rabby Wallet with status feedback.
+ */
+export default function RabbyConnectButton({ 
+  address, 
+  onConnect, 
+  isConnecting 
+}) {
+  const isConnected = !!address;
 
   return (
-    <div className="w-full space-y-2">
-      <button
-        onClick={connectWallet}
-        disabled={loading || walletAddress}
-        className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold transition-all ${
-          walletAddress 
-            ? 'bg-blue-50 text-blue-600 border-2 border-blue-100' 
-            : 'bg-gray-900 text-white hover:bg-gray-800 shadow-lg shadow-gray-200'
-        }`}
-      >
-        {loading ? (
-          <Loader2 className="animate-spin" size={20} />
-        ) : walletAddress ? (
-          <CheckCircle2 size={20} />
-        ) : (
-          <Wallet size={20} />
-        )}
-        {walletAddress 
-          ? `Wallet Connected: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 
-          : 'Connect Rabby Wallet'}
-      </button>
-      {error && <p className="text-xs text-red-500 text-center font-medium">{error}</p>}
-    </div>
+    <button
+      onClick={onConnect}
+      disabled={isConnecting || isConnected}
+      className={`w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all ${
+        isConnected 
+          ? 'bg-blue-50 text-blue-600 border border-blue-100 cursor-default'
+          : 'bg-white border-2 border-slate-900 text-slate-900 hover:bg-slate-50 disabled:opacity-70'
+      }`}
+    >
+      {isConnecting ? (
+        <Loader2 className="animate-spin" size={20} />
+      ) : isConnected ? (
+        <CheckCircle2 size={20} />
+      ) : (
+        <Wallet size={20} />
+      )}
+      
+      {isConnected ? (
+        <span className="font-mono text-xs">
+          {address.slice(0, 6)}...{address.slice(-4)}
+        </span>
+      ) : isConnecting ? (
+        'Connecting...'
+      ) : (
+        'Connect Rabby Wallet'
+      )}
+    </button>
   );
 }
