@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGPS: Proof-Based Procurement | Pitch Deck</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="deck-container">
+        <!-- Floating Nodes Background -->
+        <div id="bg-canvas"></div>
+
+        <!-- Global Header -->
+        <header class="deck-header">
+            <div class="brand">BGPS / <span>BlockOps</span></div>
+            <div class="meta">Presented by: <span>BlockOps Team</span></div>
+        </header>
+
+        <!-- Main Slides Area -->
+        <main id="slides-wrapper">
+            
+            <!-- Slide 1: Title -->
+            <section class="slide active" id="slide-1">
+                <div class="hero-content">
+                    <h2 class="animate-in delay-1 label">INNOVATION FOR GOVERNANCE</h2>
+                    <h1 class="animate-in delay-2 hero-title">BGPS<span>.</span></h1>
+                    <p class="animate-in delay-3 hero-subtitle">Blockchain-Based Government Procurement System</p>
+                    <div class="animate-in delay-4 hero-line"></div>
+                    <p class="animate-in delay-5 hero-cta">Press [Space] or [→] to Begin</p>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 1: Title</strong>
+                    <p>Welcome. Today we are introducing BGPS – a system designed to move public procurement from a world of trust-based reporting to proof-based transparency. Let's dive in.</p>
+                </div>
+            </section>
+
+            <!-- Slide 2: Problem -->
+            <section class="slide" id="slide-2">
+                <div class="content-split">
+                    <div class="text-side">
+                        <h2 class="label">THE NEED</h2>
+                        <h1 class="slide-title">The Trust <span>Gap.</span></h1>
+                        <p class="slide-desc">Government procurement handles public money, but citizens and suppliers lack tools to verify the fairness of decisions.</p>
+                    </div>
+                    <div class="interactive-side">
+                        <div class="reveal-list">
+                            <div class="reveal-card clickable" data-reveal="p1">
+                                <h3>Low Transparency</h3>
+                                <p class="hidden" id="p1">Internal decisions remain hidden from public oversight.</p>
+                            </div>
+                            <div class="reveal-card clickable" data-reveal="p2">
+                                <h3>Weak Audit Trails</h3>
+                                <p class="hidden" id="p2">Manual records are vulnerable to retrospective tampering.</p>
+                            </div>
+                            <div class="reveal-card clickable" data-reveal="p3">
+                                <h3>Manual Trust</h3>
+                                <p class="hidden" id="p3">Stakeholders must "trust" paperwork without cryptographic proof.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 2: Problem</strong>
+                    <p>The current procurement process is a black box. Public money is spent, but verification is nearly impossible for outsiders. We face low transparency, manual trust dependencies, and audit trails that are easily manipulated.</p>
+                </div>
+            </section>
+
+            <!-- Slide 3: Problem Impact -->
+            <section class="slide" id="slide-3">
+                <div class="full-centered">
+                    <h2 class="label">SYSTEMIC IMPACT</h2>
+                    <h1 class="slide-title">Why It <span>Matters.</span></h1>
+                    <div class="impact-flow">
+                        <div class="flow-node" id="fn-1">Public Money</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" id="fn-2">Procurement Decisions</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node highlight" id="fn-3">Limited Proof</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node danger" id="fn-4">Reduced Trust</div>
+                    </div>
+                    <p class="impact-text mt-10">When verification is difficult, disputes become unresolvable and public confidence collapses.</p>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 3: Problem Impact</strong>
+                    <p>This flow leads to one destination: Reduced Public Trust. Without accessible proof at the moment of decision, every procurement event is a potential point of dispute.</p>
+                </div>
+            </section>
+
+            <!-- Slide 4: Solution / Product -->
+            <section class="slide" id="slide-4">
+                <div class="content-split">
+                    <div class="text-side">
+                        <h2 class="label">THE SOLUTION</h2>
+                        <h1 class="slide-title">BGPS <span>Product.</span></h1>
+                        <p class="slide-desc">A unified platform bridging the gap between database records and blockchain proofs.</p>
+                    </div>
+                    <div class="interactive-side grid-2">
+                        <div class="feature-card">
+                            <div class="icon">🆔</div>
+                            <h4>Bhutan NDI</h4>
+                            <p>Identity Verification</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon">👛</div>
+                            <h4>Rabby Wallet</h4>
+                            <p>Web3 Confirmation</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon">🔗</div>
+                            <h4>Sepolia Proof</h4>
+                            <p>On-Chain Anchoring</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon">🕵️</div>
+                            <h4>Public Audit</h4>
+                            <p>Verify-It-Yourself</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 4: Solution</strong>
+                    <p>BGPS is the answer. We integrate Bhutan NDI for identity, Rabby Wallet for signatures, and Ethereum Sepolia for immutable anchoring. We move from trust-based reporting to proof-based transparency.</p>
+                </div>
+            </section>
+
+            <!-- Slide 5: How it Works -->
+            <section class="slide" id="slide-5">
+                <div class="full-centered">
+                    <h2 class="label">THE WORKFLOW</h2>
+                    <h1 class="slide-title">How It <span>Works.</span></h1>
+                    <div class="workflow-steps">
+                        <div class="w-step" id="ws-1">
+                            <div class="w-num">1</div>
+                            <div class="w-txt">NDI Identity Verified</div>
+                        </div>
+                        <div class="w-step" id="ws-2">
+                            <div class="w-num">2</div>
+                            <div class="w-txt">Rabby Wallet Linked</div>
+                        </div>
+                        <div class="w-step" id="ws-3">
+                            <div class="w-num">3</div>
+                            <div class="w-txt">Action Hash Generated</div>
+                        </div>
+                        <div class="w-step highlight" id="ws-4">
+                            <div class="w-num">4</div>
+                            <div class="w-txt">Proof Anchored to Sepolia</div>
+                        </div>
+                        <div class="w-step success" id="ws-5">
+                            <div class="w-num">5</div>
+                            <div class="w-txt">Publicly Verifiable</div>
+                        </div>
+                    </div>
+                    <button class="btn-reveal mt-10" id="btn-next-workflow">Next Stage</button>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 5: Workflow</strong>
+                    <p>It's a seamless chain: Verified Identity leads to a digital signature, which generates a cryptographic hash. This hash is anchored on-chain, creating a record that anyone can verify but no one can change.</p>
+                </div>
+            </section>
+
+            <!-- Slide 6: Market Opportunity -->
+            <section class="slide" id="slide-6">
+                <div class="content-split">
+                    <div class="text-side">
+                        <h2 class="label">MARKET</h2>
+                        <h1 class="slide-title">Size & <span>Potential.</span></h1>
+                        <p class="slide-desc">Modernizing the public sector's most critical recurring process.</p>
+                    </div>
+                    <div class="interactive-side">
+                        <div class="bubble-container">
+                            <div class="bubble b-1">Agencies</div>
+                            <div class="bubble b-2">Suppliers</div>
+                            <div class="bubble b-3">Auditors</div>
+                            <div class="bubble b-4">Citizens</div>
+                            <div class="bubble b-5">Int. Partners</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 6: Market</strong>
+                    <p>Every government agency, every municipal body, and every international development partner needs transparency. BGPS is built for this global move toward digital governance and anti-corruption technology.</p>
+                </div>
+            </section>
+
+            <!-- Slide 7: Competitive Advantage -->
+            <section class="slide" id="slide-7">
+                <div class="full-centered">
+                    <h2 class="label">ADVANTAGE</h2>
+                    <h1 class="slide-title">BGPS vs <span>Traditional.</span></h1>
+                    <div class="comparison-table">
+                        <div class="comp-col">
+                            <h3>Traditional</h3>
+                            <ul>
+                                <li>Manual Verification</li>
+                                <li>Limited Visibility</li>
+                                <li>Trust-Based Claims</li>
+                                <li>Tamperable Records</li>
+                            </ul>
+                        </div>
+                        <div class="comp-vs">VS</div>
+                        <div class="comp-col highlight">
+                            <h3>BGPS</h3>
+                            <ul>
+                                <li>NDI & Wallet Auth</li>
+                                <li>Public Transparency Portal</li>
+                                <li>Cryptographic Hash Proof</li>
+                                <li>Immutable Audit Trail</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 7: Advantage</strong>
+                    <p>Unlike traditional platforms that rely on administrative promises, BGPS relies on cryptographic math. We combine identity, wallet verification, and blockchain proofs into a single, tamper-evident ecosystem.</p>
+                </div>
+            </section>
+
+            <!-- Slide 8: Trust Architecture -->
+            <section class="slide" id="slide-8">
+                <div class="full-centered">
+                    <h2 class="label">CORE ARCHITECTURE</h2>
+                    <h1 class="slide-title">The <span>Trust Model.</span></h1>
+                    <div class="trust-anim">
+                        <div class="hash-card" id="db-hash">
+                            <span>DB HASH</span>
+                            <code>0x7e4a...92cf</code>
+                        </div>
+                        <div class="compare-icon">↔</div>
+                        <div class="hash-card highlight" id="bc-hash">
+                            <span>BLOCKCHAIN HASH</span>
+                            <code>0x7e4a...92cf</code>
+                        </div>
+                    </div>
+                    <div id="verify-badge" class="badge-hidden">TRUST VERIFIED</div>
+                    <button class="btn-reveal mt-10" id="btn-verify-demo">Run Verification</button>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 8: Trust Architecture</strong>
+                    <p>This is our core value. We compare the database record with the blockchain anchor. If they match, the system grants a "Trust Verified" badge. If they don't, the record is flagged for immediate audit.</p>
+                </div>
+            </section>
+
+            <!-- Slide 9: The Ask -->
+            <section class="slide" id="slide-9">
+                <div class="content-split">
+                    <div class="text-side">
+                        <h2 class="label">NEXT STEPS</h2>
+                        <h1 class="slide-title">Our <span>Ask.</span></h1>
+                        <p class="slide-desc">Moving from MVP to a production-hardened platform.</p>
+                    </div>
+                    <div class="interactive-side">
+                        <div class="ask-list">
+                            <div class="ask-item">Pilot Opportunity with Agency</div>
+                            <div class="ask-item">Technical Mentorship</div>
+                            <div class="ask-item">Security Hardening Review</div>
+                            <div class="ask-item highlight">Hackathon Validation</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 9: Ask</strong>
+                    <p>We are looking for pilot opportunities, technical mentorship, and hackathon validation to move this prototype into a production-ready system for the government of Bhutan and beyond.</p>
+                </div>
+            </section>
+
+            <!-- Slide 10: Closing -->
+            <section class="slide" id="slide-10">
+                <div class="hero-content">
+                    <h2 class="label">BLOCKOPS TEAM</h2>
+                    <h1 class="hero-title">Verify <span>Everything.</span></h1>
+                    <p class="hero-subtitle">BGPS: Turning Trust into Proof.</p>
+                    <div class="hero-line"></div>
+                    <p class="tagline">Thank You.</p>
+                </div>
+                <div class="presenter-notes">
+                    <strong>Slide 10: Closing</strong>
+                    <p>Thank you for your time. Let's make procurement verifiable, one hash at a time. We are now open for questions.</p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Global Footer -->
+        <footer class="deck-footer">
+            <div class="nav-controls">
+                <button id="btn-prev">← PREV</button>
+                <div id="counter">01 / 10</div>
+                <button id="btn-next">NEXT →</button>
+            </div>
+            <div class="progress-wrap">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="copyright">© BlockOps | 2026</div>
+        </footer>
+
+        <!-- Presenter Notes Toggle -->
+        <button id="btn-notes">Notes [N]</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

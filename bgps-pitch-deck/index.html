@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGPS Pitch Deck | BlockOps</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="presentation">
+        <!-- Top Navigation Bar -->
+        <header id="top-bar">
+            <div class="logo">BGPS / <span>BlockOps</span></div>
+            <div class="presenter">Presented by: <span>BlockOps Team</span></div>
+        </header>
+
+        <!-- Slides Container -->
+        <div id="slides">
+            <!-- Slide 1: Title -->
+            <section class="slide active" id="slide-1" data-time="0:00–0:10">
+                <div class="content center">
+                    <h2 class="label">BGPS / BLOCKOPS</h2>
+                    <h1 class="big-title">BGPS</h1>
+                    <p class="subtitle">Blockchain-Based Government Procurement System</p>
+                    <div class="line"></div>
+                    <p class="tagline">From "Trust Us" to "Verify It."</p>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (0:00–0:10):</strong>
+                    <p>Good morning. Today, we are proud to present BGPS – the Blockchain-Based Government Procurement System. My name is [Your Name], representing Team BlockOps, and we are here to show you how we are turning public procurement from a system of manual trust into a system of mathematical certainty.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 2: Problem -->
+            <section class="slide" id="slide-2" data-time="0:10–0:40">
+                <div class="content">
+                    <h2 class="label">The Problem</h2>
+                    <h1 class="title">Transparency <br><span>Gap.</span></h1>
+                    <div class="line"></div>
+                    <ul class="points">
+                        <li>Public money lacks easy public verification</li>
+                        <li>Audit trails are manual and tamperable</li>
+                        <li>Low citizen confidence in award decisions</li>
+                        <li>The "Black Box" of procurement</li>
+                    </ul>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (0:10–0:40):</strong>
+                    <p>Billions are spent on government procurement every year. But for the average citizen, and even for the competing suppliers, the process is a black box. Once a bid is submitted, how do we know it wasn't modified? When a winner is selected, can we prove the decision was based on the original data? Currently, we just have to "trust" the paperwork. In a digital world, manual trust is a single point of failure.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 3: Solution -->
+            <section class="slide" id="slide-3" data-time="0:40–1:10">
+                <div class="content">
+                    <h2 class="label">The Solution</h2>
+                    <h1 class="title">BGPS <span>Core.</span></h1>
+                    <div class="line"></div>
+                    <div class="solution-grid">
+                        <div class="solution-card">
+                            <h3>Verified Identity</h3>
+                            <p>Bhutan NDI + Rabby Wallet</p>
+                        </div>
+                        <div class="solution-card">
+                            <h3>Immutable Audit</h3>
+                            <p>Ethereum Sepolia Proofs</p>
+                        </div>
+                        <div class="solution-card">
+                            <h3>Real-time Access</h3>
+                            <p>Next.js & Supabase Engine</p>
+                        </div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (0:40–1:10):</strong>
+                    <p>BGPS is an end-to-end procurement ecosystem that bridges the gap between traditional government databases and decentralized trust. We integrate Bhutan's National Digital Identity with Web3 wallet authentication to ensure every action—every tender, every bid, and every award—is cryptographically signed and anchored to the Ethereum Sepolia blockchain.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 4: Ecosystem -->
+            <section class="slide" id="slide-4" data-time="1:10–1:40">
+                <div class="content">
+                    <h2 class="label">Who Uses It</h2>
+                    <h1 class="title">Multi-Role <span>Ecosystem.</span></h1>
+                    <div class="line"></div>
+                    <div class="roles-flex">
+                        <div class="role">Admin</div>
+                        <div class="role">Agency</div>
+                        <div class="role">Supplier</div>
+                        <div class="role">Auditor</div>
+                        <div class="role">Public</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (1:10–1:40):</strong>
+                    <p>Our platform serves the entire procurement lifecycle. From Administrators who verify participants, to Agencies who publish tenders, Bidders who submit secure proposals, Auditors who oversee the integrity, and the Public Citizens who verify the results. Everyone has a specific portal, but they all share a single source of truth: the blockchain.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 5: Demo - Agency -->
+            <section class="slide" id="slide-5" data-time="1:40–2:20">
+                <div class="content">
+                    <h2 class="label">Demo: Step 1</h2>
+                    <h1 class="title">Agency <span>Publishing.</span></h1>
+                    <div class="line"></div>
+                    <div class="demo-box">
+                        <div class="demo-step">NDI Login & Wallet Linking</div>
+                        <div class="demo-step">Tender Creation & Document Hashing</div>
+                        <div class="demo-step">On-Chain Publication (Sepolia)</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (1:40–2:20):</strong>
+                    <p>Let's look at the product. When a Procuring Agency wants to publish a tender, they log in using their Bhutan NDI identity. They link their Rabby wallet, upload the official tender document, and the system immediately generates a SHA-256 hash. This hash is published to the smart contract, creating an immutable timestamp of the original requirements.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 6: Demo - Supplier -->
+            <section class="slide" id="slide-6" data-time="2:20–3:00">
+                <div class="content">
+                    <h2 class="label">Demo: Step 2</h2>
+                    <h1 class="title">Supplier <span>Bidding.</span></h1>
+                    <div class="line"></div>
+                    <div class="demo-box">
+                        <div class="demo-step">Secure Proposal Upload</div>
+                        <div class="demo-step">Cryptographic Bid Commitment</div>
+                        <div class="demo-step">Tamper-Evident Record</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (2:20–3:00):</strong>
+                    <p>Next, Suppliers browse active tenders. When they submit a bid, BGPS doesn't just store it in a database. It creates a cryptographic commitment of the entire proposal. This "Bid Hash" is recorded on-chain. This means that once the deadline passes, no one—not even the Agency—can change a bid or replace it with another.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 7: Demo - Admin -->
+            <section class="slide" id="slide-7" data-time="3:00–3:40">
+                <div class="content">
+                    <h2 class="label">Demo: Step 3</h2>
+                    <h1 class="title">Admin <span>Control.</span></h1>
+                    <div class="line"></div>
+                    <div class="demo-box">
+                        <div class="demo-step">Identity Verification Queue</div>
+                        <div class="demo-step">Wallet Authorization</div>
+                        <div class="demo-step">System Governance</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (3:00–3:40):</strong>
+                    <p>The Admin Dashboard acts as the gatekeeper. Using the Verification Queue, admins review NDI proofs and authorize wallet addresses. They ensure that only legitimate agencies and vetted suppliers can participate in the ecosystem, effectively preventing "shell companies" from skewing the market.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 8: Demo - Auditor -->
+            <section class="slide" id="slide-8" data-time="3:40–4:30">
+                <div class="content">
+                    <h2 class="label">Demo: Step 4</h2>
+                    <h1 class="title">Auditor <span>Oversight.</span></h1>
+                    <div class="line"></div>
+                    <div class="demo-box">
+                        <div class="demo-step">Hash Mismatch Detection</div>
+                        <div class="demo-step">On-Chain Evidence Review</div>
+                        <div class="demo-step">Independent Audit Reports</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (3:40–4:30):</strong>
+                    <p>The Auditor is the system's watchman. They have access to a specialized dashboard that automatically scans the database against the blockchain. If a tender document or a bid hash in our database doesn't match the record on Sepolia, the system triggers a "Discrepancy Alert." Auditors can trace the entire history of an event through the immutable on-chain audit trail.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 9: Demo - Public -->
+            <section class="slide" id="slide-9" data-time="4:30–5:15">
+                <div class="content">
+                    <h2 class="label">Public Trust</h2>
+                    <h1 class="title">Public <span>Verification.</span></h1>
+                    <div class="line"></div>
+                    <div class="demo-box">
+                        <div class="demo-step">Transparency Portal (No Login)</div>
+                        <div class="demo-step">One-Click Proof Verification</div>
+                        <div class="demo-step">"Verify It Yourself" Architecture</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (4:30–5:15):</strong>
+                    <p>Finally, the most critical part: the Public Transparency Portal. Any citizen can visit the site—no login required—and view awarded tenders. More importantly, they can click "Verify Proof." The system fetches the data directly from the blockchain and compares it to our local record. If they match, the citizen sees a "Trust Verified" badge. It's a complete democratization of oversight.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 10: Tech Stack -->
+            <section class="slide" id="slide-10" data-time="5:15–5:30">
+                <div class="content">
+                    <h2 class="label">Architecture</h2>
+                    <h1 class="title">The <span>Stack.</span></h1>
+                    <div class="line"></div>
+                    <div class="tech-icons">
+                        <div class="tech">Next.js</div>
+                        <div class="tech">Supabase</div>
+                        <div class="tech">Solidity</div>
+                        <div class="tech">Sepolia</div>
+                        <div class="tech">NDI</div>
+                    </div>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (5:15–5:30):</strong>
+                    <p>Our architecture is built for scale and security. We use Next.js for a premium frontend experience, Supabase for highly responsive data management, and Solidity smart contracts on Ethereum Sepolia for the ultimate proof-of-integrity layer.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 11: Impact -->
+            <section class="slide" id="slide-11" data-time="5:30–5:45">
+                <div class="content">
+                    <h2 class="label">The Impact</h2>
+                    <h1 class="title">Systemic <span>Trust.</span></h1>
+                    <div class="line"></div>
+                    <ul class="points">
+                        <li>Eliminates opaque procurement decisions</li>
+                        <li>Automated, continuous independent auditing</li>
+                        <li>Reduces corruption through cryptographic proofs</li>
+                        <li>Builds absolute public and investor confidence</li>
+                    </ul>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (5:30–5:45):</strong>
+                    <p>The impact of BGPS is systemic. By replacing manual trust with cryptographic proof, we eliminate the opportunities for opaque decision-making and corruption. We build a procurement environment where fair competition is guaranteed by code, not just by policy.</p>
+                </aside>
+            </section>
+
+            <!-- Slide 12: Closing -->
+            <section class="slide" id="slide-12" data-time="5:45–6:00">
+                <div class="content center">
+                    <h2 class="label">BGPS / BLOCKOPS</h2>
+                    <h1 class="big-title">Verify <span>Everything.</span></h1>
+                    <p class="subtitle">BGPS: The Future of Transparent Governance</p>
+                    <div class="line"></div>
+                    <p class="tagline">Thank You.</p>
+                </div>
+                <aside class="speaker-notes">
+                    <strong>Speaker Script (5:45–6:00):</strong>
+                    <p>In conclusion, BGPS turns government procurement into an open book. We are moving from a world where you have to trust the system, to a world where you can verify everything yourself. Thank you for your time.</p>
+                </aside>
+            </section>
+        </div>
+
+        <!-- Footer / Navigation Controls -->
+        <footer id="bottom-bar">
+            <div class="controls">
+                <button id="prev-btn">← PREV</button>
+                <div id="slide-counter">1 / 12</div>
+                <button id="next-btn">NEXT →</button>
+            </div>
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="copyright">© BlockOps | 2026</div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
