@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "D:\\My Files\\bgps\\contracts\\contracts\\BGPSProcurement.sol": {
+      "lastModificationDate": 1778930203362,
+      "contentHash": "acc13555a4778483a3be381030be890e",
+      "sourceName": "contracts/BGPSProcurement.sol",
+      "solcConfig": {
+        "version": "0.8.19",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.19"
+      ],
+      "artifacts": [
+        "BGPSProcurement"
+      ]
+    }
+  }
+}

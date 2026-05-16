@@ -3,22 +3,73 @@ pragma solidity 0.8.19;
 
 /**
  * @title BGPSProcurement
- * @dev Blockchain-Based Government Procurement System proof recording contract.
+ * @dev Blockchain-Based Government Procurement System proof-of-procurement contract.
+ * Stores only hashes of procurement milestones to ensure transparency and immutability.
  */
 contract BGPSProcurement {
     address public owner;
 
-    event AgencyWalletAuthorized(address indexed agencyWallet, bytes32 proofHash);
-    event SupplierWalletAuthorized(address indexed supplierWallet, bytes32 proofHash);
-    event TenderCreated(uint256 indexed tenderId, bytes32 tenderHash);
-    event BidSubmitted(uint256 indexed tenderId, uint256 indexed bidId, bytes32 bidHash);
-    event WinnerSelected(uint256 indexed tenderId, uint256 indexed bidId, bytes32 justificationHash);
+    mapping(address => bool) public adminOperators;
+    mapping(address => bool) public authorizedAgencies;
+    mapping(address => bool) public authorizedSuppliers;
 
-    error NotOwner();
-    error AlreadyAuthorized();
+    event AdminOperatorAdded(address indexed adminWallet, address indexed addedBy, uint256 timestamp);
+    event AdminOperatorRemoved(address indexed adminWallet, address indexed removedBy, uint256 timestamp);
+    
+    event AgencyWalletAuthorized(
+        address indexed agencyWallet,
+        bytes32 indexed proofHash,
+        address indexed authorizedBy,
+        uint256 timestamp
+    );
+
+    event SupplierWalletAuthorized(
+        address indexed supplierWallet,
+        bytes32 indexed proofHash,
+        address indexed authorizedBy,
+        uint256 timestamp
+    );
+
+    event TenderCreated(
+        uint256 indexed tenderId,
+        address indexed agencyWallet,
+        bytes32 indexed tenderHash,
+        uint256 timestamp
+    );
+
+    event BidSubmitted(
+        uint256 indexed tenderId,
+        uint256 indexed bidId,
+        address indexed supplierWallet,
+        bytes32 bidHash,
+        uint256 timestamp
+    );
+
+    event WinnerSelected(
+        uint256 indexed tenderId,
+        uint256 indexed bidId,
+        address indexed agencyWallet,
+        bytes32 justificationHash,
+        uint256 timestamp
+    );
 
     modifier onlyOwner() {
-        if (msg.sender != owner) revert NotOwner();
+        require(msg.sender == owner, "Caller is not the owner");
+        _;
+    }
+
+    modifier onlyAdminOperator() {
+        require(adminOperators[msg.sender], "Caller is not an admin operator");
+        _;
+    }
+
+    modifier onlyAuthorizedAgency() {
+        require(authorizedAgencies[msg.sender], "Caller is not an authorized agency");
+        _;
+    }
+
+    modifier onlyAuthorizedSupplier() {
+        require(authorizedSuppliers[msg.sender], "Caller is not an authorized supplier");
         _;
     }
 
@@ -26,59 +77,57 @@ contract BGPSProcurement {
         owner = msg.sender;
     }
 
-    /**
-     * @dev Authorize a procuring agency wallet.
-     * @param agencyWallet Address of the agency's wallet.
-     * @param proofHash Hash of the agency's approval documents/identity.
-     */
-    function authorizeAgency(address agencyWallet, bytes32 proofHash) external onlyOwner {
-        emit AgencyWalletAuthorized(agencyWallet, proofHash);
+    // --- OWNER FUNCTIONS ---
+
+    function addAdminOperator(address adminWallet) external onlyOwner {
+        require(adminWallet != address(0), "Zero address");
+        adminOperators[adminWallet] = true;
+        emit AdminOperatorAdded(adminWallet, msg.sender, block.timestamp);
     }
 
-    /**
-     * @dev Authorize a supplier wallet.
-     * @param supplierWallet Address of the supplier's wallet.
-     * @param proofHash Hash of the supplier's approval documents/identity.
-     */
-    function authorizeSupplier(address supplierWallet, bytes32 proofHash) external onlyOwner {
-        emit SupplierWalletAuthorized(supplierWallet, proofHash);
+    function removeAdminOperator(address adminWallet) external onlyOwner {
+        require(adminWallet != address(0), "Zero address");
+        adminOperators[adminWallet] = false;
+        emit AdminOperatorRemoved(adminWallet, msg.sender, block.timestamp);
     }
 
-    /**
-     * @dev Record a tender hash.
-     * @param tenderId Numerical ID or reference for the tender (could be hash converted to uint).
-     * @param tenderHash Hash of the tender document.
-     */
-    function recordTenderHash(uint256 tenderId, bytes32 tenderHash) external {
-        // In a real system, we might check if msg.sender is an authorized agency.
-        // For MVP, we emit the event for auditability.
-        emit TenderCreated(tenderId, tenderHash);
+    // --- ADMIN OPERATOR FUNCTIONS ---
+
+    function authorizeAgency(address agencyWallet, bytes32 proofHash) external onlyAdminOperator {
+        require(agencyWallet != address(0), "Zero address");
+        require(proofHash != bytes32(0), "Empty hash");
+        authorizedAgencies[agencyWallet] = true;
+        emit AgencyWalletAuthorized(agencyWallet, proofHash, msg.sender, block.timestamp);
     }
 
-    /**
-     * @dev Record a bid hash.
-     * @param tenderId ID of the tender.
-     * @param bidId ID of the bid.
-     * @param bidHash Hash of the bid proposal.
-     */
-    function recordBidHash(uint256 tenderId, uint256 bidId, bytes32 bidHash) external {
-        emit BidSubmitted(tenderId, bidId, bidHash);
+    function authorizeSupplier(address supplierWallet, bytes32 proofHash) external onlyAdminOperator {
+        require(supplierWallet != address(0), "Zero address");
+        require(proofHash != bytes32(0), "Empty hash");
+        authorizedSuppliers[supplierWallet] = true;
+        emit SupplierWalletAuthorized(supplierWallet, proofHash, msg.sender, block.timestamp);
     }
 
-    /**
-     * @dev Record the winner selection proof.
-     * @param tenderId ID of the tender.
-     * @param bidId ID of the winning bid.
-     * @param justificationHash Hash of the award justification document.
-     */
-    function recordWinnerHash(uint256 tenderId, uint256 bidId, bytes32 justificationHash) external {
-        emit WinnerSelected(tenderId, bidId, justificationHash);
+    // --- AGENCY FUNCTIONS ---
+
+    function recordTenderHash(uint256 tenderId, bytes32 tenderHash) external onlyAuthorizedAgency {
+        require(tenderId > 0, "Invalid tender ID");
+        require(tenderHash != bytes32(0), "Empty hash");
+        emit TenderCreated(tenderId, msg.sender, tenderHash, block.timestamp);
     }
 
-    /**
-     * @dev Transfer ownership to a new address.
-     */
-    function transferOwnership(address newOwner) external onlyOwner {
-        owner = newOwner;
+    function recordWinnerHash(uint256 tenderId, uint256 bidId, bytes32 justificationHash) external onlyAuthorizedAgency {
+        require(tenderId > 0, "Invalid tender ID");
+        require(bidId > 0, "Invalid bid ID");
+        require(justificationHash != bytes32(0), "Empty hash");
+        emit WinnerSelected(tenderId, bidId, msg.sender, justificationHash, block.timestamp);
+    }
+
+    // --- SUPPLIER FUNCTIONS ---
+
+    function recordBidHash(uint256 tenderId, uint256 bidId, bytes32 bidHash) external onlyAuthorizedSupplier {
+        require(tenderId > 0, "Invalid tender ID");
+        require(bidId > 0, "Invalid bid ID");
+        require(bidHash != bytes32(0), "Empty hash");
+        emit BidSubmitted(tenderId, bidId, msg.sender, bidHash, block.timestamp);
     }
 }
