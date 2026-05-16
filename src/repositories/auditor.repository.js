@@ -18,7 +18,7 @@ export const AuditorRepository = {
     const { data, error } = await supabase
       .from('auditors')
       .select('*')
-      .eq('wallet_address', wallet_address.toLowerCase())
+      .ilike('wallet_address', wallet_address)
       .single();
     
     if (error) return null;

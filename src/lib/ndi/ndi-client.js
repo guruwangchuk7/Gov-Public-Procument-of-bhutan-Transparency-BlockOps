@@ -54,6 +54,14 @@ async function ndiRequest(method, path, body) {
 }
 
 /**
+ * Normalizes a status value for consistent comparison.
+ */
+function normalizeStatus(val) {
+  if (!val) return '';
+  return val.toString().trim().toLowerCase().replace(/[\s-]/g, '_');
+}
+
+/**
  * Production-ready Bhutan NDI Client.
  */
 export const NdiClient = {
@@ -96,39 +104,63 @@ export const NdiClient = {
     try {
       const response = await ndiRequest("GET", `/verifier/v1/proof-request?threadId=${encodeURIComponent(threadId)}`);
       
-      // The response structure from the NDI API verifier/v1/proof-request?threadId=...
-      // contains the state of the proof request.
-      const data = response.data;
+      // Handle both {data: ...} and direct object responses
+      const data = response.data || response;
       
       let status = 'pending';
       let profile = null;
 
-      if (data.presentation && data.presentation.verification_result === "ProofValidated") {
+      // 1. Extract raw status indicators from multiple possible paths
+      const rawVerificationResult = data.presentation?.verification_result || data.verification_result || data.proof?.verification_result;
+      const rawState = data.state || data.presentation?.state || data.status || data.presentation?.status || data.proof?.status;
+      
+      const normalizedVerification = normalizeStatus(rawVerificationResult);
+      const normalizedState = normalizeStatus(rawState);
+
+      // 2. Define accepted value sets for different lifecycle stages
+      const verifiedValues = ['proofvalidated', 'proof_validated', 'verified', 'success', 'validated', 'valid', 'done', 'completed'];
+      const pendingValues = ['requested', 'pending', 'processing', 'proof_requested', 'waiting', 'scanned', 'in_progress', 'request_sent', 'presentation_received'];
+      const failedValues = ['failed', 'rejected', 'expired', 'error', 'invalid', 'denied', 'prooffailed', 'proof_failed'];
+
+      // 3. Determine the final status based on normalized indicators
+      if (verifiedValues.includes(normalizedVerification) || verifiedValues.includes(normalizedState)) {
         status = 'ProofValidated';
-        const revealedAttrs = data.presentation.requested_presentation?.revealed_attrs || {};
         
-        // Extract attributes
+        // 4. Robust attribute extraction from multiple possible nested structures
+        const presentation = data.presentation || data.proof || data;
+        const requestedPresentation = presentation.requested_presentation || data.requested_presentation || presentation;
+        const revealedAttrs = requestedPresentation.revealed_attrs || requestedPresentation.revealed_attr || requestedPresentation.attributes || data.revealed_attrs || data.attributes || {};
+        
+        // Helper to extract the actual value from complex attribute objects
+        const extractValue = (attr) => {
+          if (!attr) return null;
+          if (typeof attr !== 'object') return attr;
+          return attr.raw ?? attr.value ?? attr.encoded ?? attr.name ?? null;
+        };
+
         const attrs = {};
         for (const [key, value] of Object.entries(revealedAttrs)) {
           const item = Array.isArray(value) ? value[0] : value;
-          attrs[key] = item?.value ?? null;
+          attrs[key] = extractValue(item);
         }
 
         profile = {
-          fullName: attrs["Full Name"] || attrs["FullName"],
-          idNumber: attrs["ID Number"] || attrs["ID No"] || attrs["IDNumber"],
-          idType: attrs["ID Type"] || attrs["IDType"],
-          gender: attrs["Gender"],
-          dateOfBirth: attrs["Date of Birth"] || attrs["DOB"] || attrs["DateOfBirth"],
-          relationshipDid: data.presentation.relationship_did || null,
-          holderDid: data.presentation.holder_did || null,
+          fullName: attrs["Full Name"] || attrs["FullName"] || attrs["full_name"] || attrs["Name"] || attrs["name"],
+          idNumber: attrs["ID Number"] || attrs["ID No"] || attrs["IDNumber"] || attrs["id_number"] || attrs["Citizenship ID"] || attrs["cid"] || attrs["citizen_id"],
+          idType: attrs["ID Type"] || attrs["IDType"] || attrs["id_type"],
+          gender: attrs["Gender"] || attrs["gender"],
+          dateOfBirth: attrs["Date of Birth"] || attrs["DOB"] || attrs["DateOfBirth"] || attrs["date_of_birth"] || attrs["dob"],
+          relationshipDid: presentation.relationship_did || data.relationship_did || null,
+          holderDid: presentation.holder_did || data.holder_did || presentation.holder || null,
         };
-      } else if (data.state === 'request_sent') {
-        status = 'requested';
-      } else if (data.state === 'presentation_received') {
-        status = 'processing';
-      } else if (data.presentation && data.presentation.verification_result === "ProofFailed") {
+        
+        // Explicitly set the identifier used for matching across the system
+        profile.ndi_identifier = profile.idNumber || profile.holderDid || profile.relationshipDid;
+      } else if (failedValues.includes(normalizedVerification) || failedValues.includes(normalizedState)) {
         status = 'ProofRejected';
+      } else if (pendingValues.includes(normalizedState)) {
+        // Distinguish between waiting for scan and verifying the proof
+        status = (normalizedState === 'presentation_received' || normalizedState === 'processing') ? 'processing' : 'requested';
       }
 
       return {

@@ -41,7 +41,7 @@ export const SupplierRepository = {
     const { data, error } = await supabase
       .from('suppliers')
       .select('*')
-      .eq('wallet_address', wallet_address.toLowerCase())
+      .ilike('wallet_address', wallet_address)
       .single();
     
     if (error) return null;

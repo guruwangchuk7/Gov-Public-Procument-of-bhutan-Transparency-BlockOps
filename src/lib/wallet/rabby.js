@@ -31,14 +31,23 @@ export const RabbyWallet = {
     }
 
     try {
-      // 1. Request Account Connection
+      // 1. Get the provider
       const ethereum = window.rabby || window.ethereum;
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const accounts = await provider.send('eth_requestAccounts', []);
       
-      // 2. Ensure we are on Sepolia network
-      const currentChain = await this.getChainId();
-      if (currentChain !== '0xaa36a7') {
+      // 2. Request Account Connection explicitly
+      // We use the raw request method to ensure compatibility and prompt the extension
+      const accounts = await ethereum.request({
+        method: 'eth_requestAccounts',
+        params: [],
+      });
+      
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found. Please unlock your wallet.');
+      }
+
+      // 3. Ensure we are on Sepolia network
+      const chainId = await ethereum.request({ method: 'eth_chainId' });
+      if (chainId !== '0xaa36a7') {
         const { SepoliaGuard } = await import('./sepolia-guard');
         await SepoliaGuard.ensureSepolia();
       }

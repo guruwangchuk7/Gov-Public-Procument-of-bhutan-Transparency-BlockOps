@@ -11,13 +11,13 @@ export async function resolveRoleAccess({
   mock_records = [] // Can be passed for demo mode
 }) {
   if (!selected_role) return { allowed: false, status: 'denied', reason: 'No role selected' };
-  
+
   // Public Citizen is always allowed without NDI/Wallet
   if (selected_role === 'Public_Citizen') {
-    return { 
-      allowed: true, 
-      status: 'allowed', 
-      redirect_target: '/transparency' 
+    return {
+      allowed: true,
+      status: 'allowed',
+      redirect_target: '/transparency'
     };
   }
 
@@ -29,9 +29,9 @@ export async function resolveRoleAccess({
     if (selected_role === 'Supplier_Bidder') target = '/supplier/login';
     if (selected_role === 'Auditor') target = '/auditor/login';
 
-    return { 
-      allowed: false, 
-      status: 'denied', 
+    return {
+      allowed: false,
+      status: 'denied',
       reason: 'NDI and Wallet linking required',
       redirect_target: target
     };
@@ -56,13 +56,13 @@ export async function resolveRoleAccess({
     if (data.success) {
       record = data.record;
     } else {
-      return { 
-        allowed: false, 
-        status: 'denied', 
-        reason: data.error || 'Access denied', 
-        redirect_target: selected_role === 'Admin' ? '/admin/login' : 
-                         selected_role === 'Auditor' ? '/auditor/login' : 
-                         selected_role === 'Procuring_Agency' ? '/agency/login' : '/supplier/login'
+      return {
+        allowed: false,
+        status: 'denied',
+        reason: data.error || 'Access denied',
+        redirect_target: selected_role === 'Admin' ? '/admin/login' :
+          selected_role === 'Auditor' ? '/auditor/login' :
+            selected_role === 'Procuring_Agency' ? '/agency/login' : '/supplier/login'
       };
     }
   } catch (err) {

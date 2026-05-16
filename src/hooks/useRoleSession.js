@@ -23,16 +23,14 @@ export function useRoleSession() {
   // Sync with storage on mount
   useEffect(() => {
     const savedNdi = NDISession.getSession();
-    const savedWallet = localStorage.getItem('bgps_wallet_address');
     const savedRole = localStorage.getItem('bgps_selected_role');
 
-    if (savedNdi || savedWallet || savedRole) {
+    if (savedNdi || savedRole) {
       setSession(prev => ({
         ...prev,
         ndi_identity: savedNdi,
         ndi_verified: !!savedNdi,
-        wallet_address: savedWallet,
-        wallet_connected: !!savedWallet,
+        // wallet_address is NO LONGER auto-loaded to ensure explicit connection
         selected_role: savedRole
       }));
     }
@@ -44,20 +42,20 @@ export function useRoleSession() {
   }, []);
 
   const updateNDI = useCallback((profile) => {
-    setSession(prev => ({ 
-      ...prev, 
-      ndi_identity: profile, 
-      ndi_verified: !!profile 
+    setSession(prev => ({
+      ...prev,
+      ndi_identity: profile,
+      ndi_verified: !!profile
     }));
     if (profile) NDISession.saveSession(profile);
     else NDISession.clearSession();
   }, []);
 
   const updateWallet = useCallback((address) => {
-    setSession(prev => ({ 
-      ...prev, 
-      wallet_address: address, 
-      wallet_connected: !!address 
+    setSession(prev => ({
+      ...prev,
+      wallet_address: address,
+      wallet_connected: !!address
     }));
     if (address) localStorage.setItem('bgps_wallet_address', address);
     else localStorage.removeItem('bgps_wallet_address');
@@ -65,7 +63,7 @@ export function useRoleSession() {
 
   const verifyRoleAccess = useCallback(async (mockRecords = []) => {
     setSession(prev => ({ ...prev, access_status: 'checking' }));
-    
+
     const result = await resolveRoleAccess({
       selected_role: session.selected_role,
       ndi_profile: session.ndi_identity,

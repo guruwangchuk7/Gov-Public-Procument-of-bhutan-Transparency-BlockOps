@@ -41,7 +41,7 @@ export const AgencyRepository = {
     const { data, error } = await supabase
       .from('agencies')
       .select('*')
-      .eq('wallet_address', wallet_address.toLowerCase())
+      .ilike('wallet_address', wallet_address)
       .single();
     
     if (error) return null;

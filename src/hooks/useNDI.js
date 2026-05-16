@@ -44,12 +44,32 @@ export function useNDI() {
    */
   useEffect(() => {
     let pollInterval;
+    const startTime = Date.now();
+    const TIMEOUT_MS = 120000; // 2 minute maximum wait
 
-    if (status === 'requested' && proofRequest?.threadId) {
+    // Poll if status is requested or processing
+    if ((status === 'requested' || status === 'processing') && proofRequest?.threadId) {
       pollInterval = setInterval(async () => {
+        // Check for timeout
+        if (Date.now() - startTime > TIMEOUT_MS) {
+          setStatus('failed');
+          setIsVerifying(false);
+          clearInterval(pollInterval);
+          toast.error('Identity verification timed out. Please try scanning again.');
+          return;
+        }
+
         try {
           const res = await fetch(`/api/auth/ndi/status?threadId=${proofRequest.threadId}`);
+          if (!res.ok) throw new Error('Status check failed');
+          
           const result = await res.json();
+
+          // Handle transition to processing
+          if (result.status === 'processing' && status !== 'processing') {
+            setStatus('processing');
+            toast.info('Proof received, verifying identity...');
+          }
 
           // Check if proof is validated
           if (result.status === 'ProofValidated') {
@@ -58,7 +78,7 @@ export function useNDI() {
             setStatus('verified');
             setIsVerifying(false);
             clearInterval(pollInterval);
-            toast.success(`Identity Verified: ${profile.fullName}`);
+            toast.success(`Identity Verified: ${profile.fullName || 'User'}`);
           } else if (result.status === 'ProofRejected') {
             setStatus('failed');
             setIsVerifying(false);
@@ -67,6 +87,7 @@ export function useNDI() {
           }
         } catch (err) {
           console.warn('NDI Polling error:', err);
+          // Don't stop polling on minor network glitches, wait for timeout
         }
       }, 3000); // Poll every 3 seconds
     }

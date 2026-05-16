@@ -15,10 +15,12 @@ export default function IdentityLinkingCard({
   onVerifyNDI,
   onConnectWallet,
   ndiStatus,
-  proofRequest
+  proofRequest,
+  walletStatus = 'idle',
+  isConnected = false
 }) {
   const isNDIReady = !!ndiProfile;
-  const isWalletReady = !!walletAddress;
+  const isWalletReady = isConnected && !!walletAddress;
   const isFullyLinked = isNDIReady && isWalletReady;
   const ndiIdentifier = NDIVerifier.extractNDIIdentifierFromProof(ndiProfile);
 
@@ -63,14 +65,18 @@ export default function IdentityLinkingCard({
           </div>
           
           {/* NDI QR Code Display */}
-          {ndiStatus === 'requested' && proofRequest?.proofRequestURL && !isNDIReady && (
+          {(ndiStatus === 'requested' || ndiStatus === 'processing') && proofRequest?.proofRequestURL && !isNDIReady && (
             <div className="mt-4 p-4 bg-white rounded-xl border border-gray-100 flex flex-col items-center gap-3 animate-in fade-in slide-in-from-top-2">
               <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-50">
                 <QRCode value={proofRequest.proofRequestURL} size={150} />
               </div>
               <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
                 <Loader2 size={12} className="animate-spin" />
-                Waiting for scan...
+                {ndiStatus === 'processing' ? (
+                  <span className="text-blue-600">Verifying proof...</span>
+                ) : (
+                  'Waiting for scan...'
+                )}
               </div>
               
               {proofRequest.deepLinkURL && (
@@ -93,61 +99,77 @@ export default function IdentityLinkingCard({
         </div>
 
 
-        <div className="flex justify-center -my-2 relative z-10">
-          <div className={`p-1.5 rounded-full border bg-white ${isFullyLinked ? 'text-green-500 border-green-200' : 'text-gray-300 border-gray-100'}`}>
-            <Link size={14} />
-          </div>
-        </div>
+        {isNDIReady && (
+          <>
+            <div className="flex justify-center -my-2 relative z-10">
+              <div className={`p-1.5 rounded-full border bg-white ${isFullyLinked ? 'text-green-500 border-green-200' : 'text-gray-300 border-gray-100'}`}>
+                <Link size={14} />
+              </div>
+            </div>
 
-        {/* Step 2: Rabby Wallet */}
-        <div className={`p-4 rounded-xl border transition-all ${
-          isWalletReady ? 'border-blue-200 bg-blue-50/30' : 'border-gray-100 bg-gray-50/50'
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${isWalletReady ? 'bg-blue-100 text-blue-600' : 'bg-white text-gray-400 shadow-sm'}`}>
-                <Wallet size={18} />
+            {/* Step 2: Rabby Wallet */}
+            <div className={`p-4 rounded-xl border transition-all ${
+              isWalletReady ? 'border-blue-200 bg-blue-50/30' : 'border-gray-100 bg-gray-50/50'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${isWalletReady ? 'bg-blue-100 text-blue-600' : 'bg-white text-gray-400 shadow-sm'}`}>
+                    <Wallet size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 2: On-Chain ID</p>
+                    <h4 className="text-sm font-bold text-gray-900">Rabby Wallet Address</h4>
+                  </div>
+                </div>
+                {isWalletReady ? (
+                  <CheckCircle2 size={20} className="text-blue-500" />
+                ) : walletStatus === 'unavailable' ? (
+                  <a
+                    href="https://rabby.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-orange-600 text-white text-[10px] font-black rounded-lg hover:bg-orange-700 transition-all flex items-center gap-2"
+                  >
+                    Install Rabby
+                  </a>
+                ) : (
+                  <button
+                    onClick={onConnectWallet}
+                    disabled={isConnectingWallet}
+                    className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center gap-2"
+                  >
+                    {isConnectingWallet ? <Loader2 size={14} className="animate-spin" /> : 'Connect Rabby Wallet'}
+                  </button>
+                )}
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Step 2: On-Chain ID</p>
-                <h4 className="text-sm font-bold text-gray-900">Rabby Wallet Address</h4>
-              </div>
+
+              {/* Status Hints */}
+              {!isWalletReady && walletStatus === 'detected' && (
+                <p className="mt-2 text-[10px] text-blue-600 font-bold uppercase animate-pulse">Rabby Wallet detected. Click to connect.</p>
+              )}
+              {!isWalletReady && walletStatus === 'rejected' && (
+                <p className="mt-2 text-[10px] text-red-500 font-bold uppercase">Connection rejected. Please try again.</p>
+              )}
+
+              {isWalletReady && (
+                <div className="mt-3 pt-3 border-t border-blue-100/50 flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-blue-600 font-bold uppercase">Linked Address</span>
+                    <span className="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md font-black uppercase">Verified</span>
+                  </div>
+                  <code className="text-xs text-blue-700 font-mono truncate">{walletAddress}</code>
+                </div>
+              )}
             </div>
-            {isWalletReady ? (
-              <CheckCircle2 size={20} className="text-blue-500" />
-            ) : !window.ethereum && !window.rabby ? (
-              <a
-                href="https://rabby.io/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-orange-600 text-white text-[10px] font-black rounded-lg hover:bg-orange-700 transition-all flex items-center gap-2"
-              >
-                Install Rabby
-              </a>
-            ) : (
-              <button
-                onClick={onConnectWallet}
-                disabled={isConnectingWallet}
-                className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center gap-2"
-              >
-                {isConnectingWallet ? <Loader2 size={14} className="animate-spin" /> : 'Link Wallet'}
-              </button>
-            )}
-          </div>
-          {isWalletReady && (
-            <div className="mt-3 pt-3 border-t border-blue-100/50 flex flex-col gap-1">
-              <span className="text-[10px] text-blue-600 font-bold uppercase">Linked Address</span>
-              <code className="text-xs text-blue-700 font-mono truncate">{walletAddress}</code>
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       {!isFullyLinked && (
         <div className="mt-6 flex items-start gap-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
           <AlertCircle size={14} className="text-amber-600 mt-0.5" />
           <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
-            Both identities must be linked to create an immutable cryptographic proof of your registration.
+            {walletStatus === 'connected' ? 'Both identities must be linked to proceed.' : 'Connect your Rabby Wallet after NDI verification to create an immutable link.'}
           </p>
         </div>
       )}

@@ -3,6 +3,7 @@ import { AdminRepository } from '@/repositories/admin.repository';
 import { AgencyRepository } from '@/repositories/agency.repository';
 import { SupplierRepository } from '@/repositories/supplier.repository';
 import { AuditorRepository } from '@/repositories/auditor.repository';
+import { WalletLinking } from '@/lib/wallet/wallet-linking';
 
 export async function POST(request) {
   try {
@@ -22,70 +23,42 @@ export async function POST(request) {
     }
 
     let record = null;
-    const normalized_wallet = wallet_address.toLowerCase();
+    let repository = null;
+    let roleName = '';
 
     switch (selected_role) {
-      case 'Admin':
-        const admin = await AdminRepository.findByIdentifier(ndi_identifier);
-        if (admin) {
-          if (admin.wallet_address.toLowerCase() === normalized_wallet) {
-            record = admin;
-          } else {
-            return NextResponse.json({ 
-              success: false, 
-              error: 'Connected Rabby wallet does not match this admin account.' 
-            }, { status: 403 });
-          }
-        }
-        break;
-      case 'Procuring_Agency':
-        const agency = await AgencyRepository.findByIdentifier(ndi_identifier);
-        // If agency exists, it MUST match the wallet
-        if (agency) {
-          if (agency.wallet_address.toLowerCase() === normalized_wallet) {
-            record = agency;
-          } else {
-            // Wallet mismatch for known NDI identity
-            return NextResponse.json({ 
-              success: false, 
-              error: 'Connected Rabby wallet does not match this agency account.' 
-            }, { status: 403 });
-          }
-        }
-        break;
-      case 'Supplier_Bidder':
-        const supplier = await SupplierRepository.findByIdentifier(ndi_identifier);
-        if (supplier) {
-          if (supplier.wallet_address.toLowerCase() === normalized_wallet) {
-            record = supplier;
-          } else {
-            return NextResponse.json({ 
-              success: false, 
-              error: 'Connected Rabby wallet does not match this supplier account.' 
-            }, { status: 403 });
-          }
-        }
-        break;
-      case 'Auditor':
-        const auditor = await AuditorRepository.findByIdentifier(ndi_identifier);
-        if (auditor) {
-          if (auditor.wallet_address.toLowerCase() === normalized_wallet) {
-            record = auditor;
-          } else {
-            return NextResponse.json({ 
-              success: false, 
-              error: 'Connected Rabby wallet does not match this auditor account.' 
-            }, { status: 403 });
-          }
-        }
-        break;
+      case 'Admin': repository = AdminRepository; roleName = 'admin'; break;
+      case 'Procuring_Agency': repository = AgencyRepository; roleName = 'agency'; break;
+      case 'Supplier_Bidder': repository = SupplierRepository; roleName = 'supplier'; break;
+      case 'Auditor': repository = AuditorRepository; roleName = 'auditor'; break;
       default:
         return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      record: record || null 
+    // 1. Try finding by NDI identifier first
+    if (ndi_identifier) {
+      record = await repository.findByIdentifier(ndi_identifier);
+    }
+
+    // 2. Fallback: Try finding by Wallet address if NDI lookup failed
+    if (!record && wallet_address) {
+      record = await repository.findByWallet(wallet_address);
+    }
+
+    // 3. Final validation: If record exists, verify the wallet matches
+    if (record) {
+      const dbWallet = record.wallet_address || record.blockchain_address;
+      if (!WalletLinking.isSameWallet(dbWallet, wallet_address)) {
+        return NextResponse.json({ 
+          success: false, 
+          error: `Connected Rabby wallet does not match this ${roleName} account.` 
+        }, { status: 403 });
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      record: record || null
     });
 
   } catch (error) {

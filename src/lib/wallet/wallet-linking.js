@@ -3,19 +3,38 @@
  */
 export const WalletLinking = {
   /**
-   * Normalizes an address to lowercase for case-insensitive comparison.
+   * Normalizes an address and validates its format.
+   * - Lowercase
+   * - Trimmed
+   * - Null check
    */
   normalizeWalletAddress(address) {
-    if (!address) return '';
-    return address.toString().toLowerCase().trim();
+    if (!address) return null;
+    
+    try {
+      const normalized = address.toString().trim().toLowerCase();
+      
+      // Minimal validation: must start with 0x and be at least 42 chars
+      if (!normalized.startsWith('0x') || normalized.length < 42) {
+        return null;
+      }
+      
+      return normalized;
+    } catch (e) {
+      return null;
+    }
   },
 
   /**
    * Checks if two wallet addresses are the same.
+   * Case-insensitive comparison.
    */
   isSameWallet(addressA, addressB) {
-    if (!addressA || !addressB) return false;
-    return this.normalizeWalletAddress(addressA) === this.normalizeWalletAddress(addressB);
+    const normA = this.normalizeWalletAddress(addressA);
+    const normB = this.normalizeWalletAddress(addressB);
+    
+    if (!normA || !normB) return false;
+    return normA === normB;
   },
 
   /**
