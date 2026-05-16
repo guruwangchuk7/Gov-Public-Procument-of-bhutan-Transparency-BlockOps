@@ -1,0 +1,563 @@
+flowchart TD
+
+  Start[User opens BGPS Web Application]
+  Role{Select User Role}
+
+  Start --> Role
+
+  Role --> AdminRole[Admin]
+  Role --> AgencyRole[Procuring Agency]
+  Role --> SupplierRole[Supplier / Bidder]
+  Role --> AuditorRole[Auditor]
+  Role --> PublicRole[Public Citizen]
+
+  %% ================= ADMIN SECTION =================
+  subgraph AdminFlow["Admin Section"]
+    A1[Admin logs in with Bhutan NDI]
+    A2[Admin connects Rabby Wallet]
+    A3[System verifies Admin NDI identity, wallet, and active status]
+    A4{Admin valid?}
+    A5[Admin Dashboard]
+    A6[Deny access]
+
+    A1 --> A2
+    A2 --> A3
+    A3 --> A4
+    A4 -- Yes --> A5
+    A4 -- No --> A6
+
+    %% Agency Approval
+    A7[View pending agency registrations]
+    A8[Review agency documents, NDI, and wallet]
+    A9{Approve agency?}
+
+    A10[Reject agency with reason]
+    A11[Store rejection reason]
+    A12[Create email notification as pending]
+    A13[Send agency rejection email]
+    A14{Email sent?}
+    A15[Update email status to sent]
+    A16[Update email status to failed]
+    A17[Agency remains blocked]
+
+    A18[Approve agency]
+    A19[Update agency status to approved]
+    A20[Store admin verifier and timestamp]
+    A21[Create blockchain event as pending]
+    A22[Authorize agency wallet on blockchain]
+    A23{Blockchain transaction confirmed?}
+    A24[Update blockchain event to confirmed]
+    A25[Mark agency blockchain_authorized true]
+    A26[Create agency approval email as pending]
+    A27[Send agency approval email]
+    A28[Agency approval completed]
+    A29[Update blockchain event to failed and keep agency pending/blocked]
+
+    A5 --> A7
+    A7 --> A8
+    A8 --> A9
+
+    A9 -- No --> A10
+    A10 --> A11
+    A11 --> A12
+    A12 --> A13
+    A13 --> A14
+    A14 -- Yes --> A15
+    A14 -- No --> A16
+    A15 --> A17
+    A16 --> A17
+
+    A9 -- Yes --> A18
+    A18 --> A19
+    A19 --> A20
+    A20 --> A21
+    A21 --> A22
+    A22 --> A23
+    A23 -- Yes --> A24
+    A24 --> A25
+    A25 --> A26
+    A26 --> A27
+    A27 --> A28
+    A23 -- No --> A29
+
+    %% Supplier Approval
+    A30[View pending supplier registrations]
+    A31[Review supplier documents, NDI, and wallet]
+    A32{Approve supplier?}
+
+    A33[Reject supplier with reason]
+    A34[Store rejection reason]
+    A35[Create supplier rejection email as pending]
+    A36[Send supplier rejection email]
+    A37{Email sent?}
+    A38[Update email status to sent]
+    A39[Update email status to failed]
+    A40[Supplier remains blocked]
+
+    A41[Approve supplier]
+    A42[Update supplier status to approved]
+    A43[Store admin verifier and timestamp]
+    A44[Create blockchain event as pending]
+    A45[Authorize supplier wallet on blockchain]
+    A46{Blockchain transaction confirmed?}
+    A47[Update blockchain event to confirmed]
+    A48[Mark supplier blockchain_authorized true]
+    A49[Create supplier approval email as pending]
+    A50[Send supplier approval email]
+    A51[Supplier approval completed]
+    A52[Update blockchain event to failed and keep supplier pending/blocked]
+
+    A5 --> A30
+    A30 --> A31
+    A31 --> A32
+
+    A32 -- No --> A33
+    A33 --> A34
+    A34 --> A35
+    A35 --> A36
+    A36 --> A37
+    A37 -- Yes --> A38
+    A37 -- No --> A39
+    A38 --> A40
+    A39 --> A40
+
+    A32 -- Yes --> A41
+    A41 --> A42
+    A42 --> A43
+    A43 --> A44
+    A44 --> A45
+    A45 --> A46
+    A46 -- Yes --> A47
+    A47 --> A48
+    A48 --> A49
+    A49 --> A50
+    A50 --> A51
+    A46 -- No --> A52
+
+    %% Add Auditor
+    A53[Select Add Auditor]
+    A54[Enter auditor name and email]
+    A55[Create auditor invitation record]
+    A56[Generate one-time temporary credentials]
+    A57[Store auditor token and expiry status]
+    A58[Create auditor invitation email as pending]
+    A59[Send auditor invitation email]
+    A60{Email sent?}
+    A61[Update email status to sent]
+    A62[Update email status to failed]
+    A63[Credentials expire after first use or expiry time]
+
+    A5 --> A53
+    A53 --> A54
+    A54 --> A55
+    A55 --> A56
+    A56 --> A57
+    A57 --> A58
+    A58 --> A59
+    A59 --> A60
+    A60 -- Yes --> A61
+    A60 -- No --> A62
+    A61 --> A63
+    A62 --> A63
+
+    A64[View activity logs and blockchain events]
+    A5 --> A64
+  end
+
+  %% ================= PROCURING AGENCY SECTION =================
+  subgraph AgencyFlow["Procuring Agency Section"]
+    AG1[Agency logs in with Bhutan NDI]
+    AG2[Agency connects Rabby Wallet]
+    AG3[System checks NDI, wallet, active status, and approval status]
+    AG4{Agency already approved and blockchain authorized?}
+
+    AG5[Agency Dashboard]
+    AG6[Show Agency Registration Form]
+    AG7[Submit agency details and documents]
+    AG8[Upload documents to Supabase Storage / IPFS]
+    AG9[Generate document hash using one backend hash method]
+    AG10[Store agency request as pending]
+    AG11[Agency sees Pending Approval page]
+
+    AG12[Agency receives approval email]
+    AG13[Agency logs in again]
+    AG14[System recognizes approved NDI and wallet]
+    AG15[Agency can access Dashboard]
+
+    AG16[Agency receives rejection email]
+    AG17[Agency remains blocked until corrected or resubmitted]
+
+    AG1 --> AG2
+    AG2 --> AG3
+    AG3 --> AG4
+    AG4 -- Yes --> AG5
+    AG4 -- No --> AG6
+    AG6 --> AG7
+    AG7 --> AG8
+    AG8 --> AG9
+    AG9 --> AG10
+    AG10 --> AG11
+
+    AG12 --> AG13
+    AG13 --> AG14
+    AG14 --> AG15
+    AG15 --> AG5
+
+    AG16 --> AG17
+
+    %% Tender Creation
+    T1[Create tender]
+    T2[Backend checks agency is approved and blockchain authorized]
+    T3{Agency allowed?}
+    T4[Deny tender creation]
+    T5[Enter tender details]
+    T6[Upload tender document]
+    T7[Store tender document in Supabase Storage / IPFS]
+    T8[Generate tender hash using one backend hash method]
+    T9[Save tender as draft]
+    T10{Publish tender?}
+    T11[Tender remains draft]
+
+    T12[Create blockchain event as pending]
+    T13[Confirm transaction with Rabby Wallet]
+    T14[Record tender hash on blockchain]
+    T15{Blockchain transaction confirmed?}
+    T16[Update blockchain event to confirmed]
+    T17[Store transaction hash]
+    T18[Tender status: Published]
+    T19[Suppliers view published tender]
+    T20[Update blockchain event to failed and keep tender as draft]
+
+    AG5 --> T1
+    T1 --> T2
+    T2 --> T3
+    T3 -- No --> T4
+    T3 -- Yes --> T5
+    T5 --> T6
+    T6 --> T7
+    T7 --> T8
+    T8 --> T9
+    T9 --> T10
+    T10 -- No --> T11
+    T10 -- Yes --> T12
+    T12 --> T13
+    T13 --> T14
+    T14 --> T15
+    T15 -- Yes --> T16
+    T16 --> T17
+    T17 --> T18
+    T18 --> T19
+    T15 -- No --> T20
+
+    %% Tender Evaluation
+    T21[Tender closes after deadline]
+    T22[Backend updates tender status to closed]
+    T23[Agency reviews bids]
+    T24[Compare bid details]
+    T25[Verify bid hashes against blockchain events]
+    T26{All required hashes valid?}
+    T27[Flag invalid bid for review]
+    T28{Select winner?}
+    T29[Continue evaluation]
+    T30[Backend checks tender is closed]
+    T31{Tender closed?}
+    T32[Deny winner selection]
+    T33[Generate winner justification hash]
+    T34[Create award record]
+    T35[Create blockchain event as pending]
+    T36[Confirm winner selection with Rabby Wallet]
+    T37[Record award decision on blockchain]
+    T38{Blockchain transaction confirmed?}
+    T39[Update blockchain event to confirmed]
+    T40[Store award transaction hash]
+    T41[Tender status: Awarded]
+    T42[Winning bid status: winner]
+    T43[Other bids status: rejected]
+    T44[Create winning supplier email as pending]
+    T45[Notify winning supplier]
+    T46{Email sent?}
+    T47[Update email status to sent]
+    T48[Update email status to failed]
+    T49[Update blockchain event to failed and keep tender closed]
+
+    T19 --> T21
+    T21 --> T22
+    T22 --> T23
+    T23 --> T24
+    T24 --> T25
+    T25 --> T26
+    T26 -- No --> T27
+    T27 --> T23
+    T26 -- Yes --> T28
+    T28 -- No --> T29
+    T29 --> T23
+    T28 -- Yes --> T30
+    T30 --> T31
+    T31 -- No --> T32
+    T31 -- Yes --> T33
+    T33 --> T34
+    T34 --> T35
+    T35 --> T36
+    T36 --> T37
+    T37 --> T38
+    T38 -- Yes --> T39
+    T39 --> T40
+    T40 --> T41
+    T41 --> T42
+    T42 --> T43
+    T43 --> T44
+    T44 --> T45
+    T45 --> T46
+    T46 -- Yes --> T47
+    T46 -- No --> T48
+    T38 -- No --> T49
+  end
+
+  %% ================= SUPPLIER / BIDDER SECTION =================
+  subgraph SupplierFlow["Supplier / Bidder Section"]
+    SP1[Supplier logs in with Bhutan NDI]
+    SP2[Supplier connects Rabby Wallet]
+    SP3[System checks NDI, wallet, active status, and approval status]
+    SP4{Supplier already approved and blockchain authorized?}
+
+    SP5[Supplier Dashboard]
+    SP6[Show Supplier Registration Form]
+    SP7[Submit company details and documents]
+    SP8[Upload documents to Supabase Storage / IPFS]
+    SP9[Generate document hash using one backend hash method]
+    SP10[Store supplier request as pending]
+    SP11[Supplier sees Pending Approval page]
+
+    SP12[Supplier receives approval email]
+    SP13[Supplier logs in again]
+    SP14[System recognizes approved NDI and wallet]
+    SP15[Supplier can access Dashboard]
+
+    SP16[Supplier receives rejection email]
+    SP17[Supplier remains blocked until corrected or resubmitted]
+
+    SP1 --> SP2
+    SP2 --> SP3
+    SP3 --> SP4
+    SP4 -- Yes --> SP5
+    SP4 -- No --> SP6
+    SP6 --> SP7
+    SP7 --> SP8
+    SP8 --> SP9
+    SP9 --> SP10
+    SP10 --> SP11
+
+    SP12 --> SP13
+    SP13 --> SP14
+    SP14 --> SP15
+    SP15 --> SP5
+
+    SP16 --> SP17
+
+    %% Bid Submission
+    B1[View open tenders]
+    B2[Open tender details]
+    B3{Submit bid?}
+    B4[Continue browsing]
+
+    B5[Backend checks supplier approved and blockchain authorized]
+    B6[Backend checks tender status is published]
+    B7[Backend checks current time before submission deadline]
+    B8[Backend checks supplier has not already submitted bid]
+    B9{Bid allowed?}
+    B10[Deny bid submission]
+
+    B11[Fill bid form]
+    B12[Upload proposal documents]
+    B13[Store bid documents in Supabase Storage / IPFS]
+    B14[Generate bid hash using one backend hash method]
+    B15[Create bid record as submitted]
+    B16[Create blockchain event as pending]
+    B17[Confirm bid transaction with Rabby Wallet]
+    B18[Record bid hash on blockchain]
+    B19{Blockchain transaction confirmed?}
+    B20[Update blockchain event to confirmed]
+    B21[Store transaction hash]
+    B22[Bid status: On-chain Confirmed]
+    B23[Track bid status]
+    B24[View award result]
+    B25[Update blockchain event to failed and keep bid submitted/failed]
+
+    SP5 --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 -- No --> B4
+    B4 --> B1
+    B3 -- Yes --> B5
+    B5 --> B6
+    B6 --> B7
+    B7 --> B8
+    B8 --> B9
+    B9 -- No --> B10
+    B9 -- Yes --> B11
+    B11 --> B12
+    B12 --> B13
+    B13 --> B14
+    B14 --> B15
+    B15 --> B16
+    B16 --> B17
+    B17 --> B18
+    B18 --> B19
+    B19 -- Yes --> B20
+    B20 --> B21
+    B21 --> B22
+    B22 --> B23
+    B23 --> B24
+    B19 -- No --> B25
+  end
+
+  %% ================= AUDITOR SECTION =================
+  subgraph AuditorFlow["Auditor Section"]
+    AU1[Auditor receives invitation email]
+    AU2[Auditor opens invitation link]
+    AU3[Enter temporary username and password]
+    AU4[System checks token, expiry time, and used status]
+    AU5{Credentials valid and unused?}
+
+    AU6[Show invalid or expired message]
+    AU7[Access denied]
+
+    AU8[Open Bhutan NDI login]
+    AU9[Verify auditor NDI identity]
+    AU10[Auditor connects Rabby Wallet]
+    AU11[Store NDI, wallet, role, and timestamp]
+    AU12[Mark temporary credentials as used]
+    AU13[Auditor account becomes active]
+
+    AU14[Future login with Bhutan NDI]
+    AU15[Verify Rabby Wallet]
+    AU16{Identity and wallet match active account?}
+    AU17[Deny access]
+    AU18[Auditor Dashboard]
+
+    AU19[Search by tender ID, transaction hash, or document hash]
+    AU20[Open audit timeline from activity logs and blockchain events]
+    AU21[View tender, bid, approval, winner, and blockchain records]
+    AU22[Compare Supabase hash with blockchain hash]
+    AU23{Do hashes match?}
+
+    AU24[Mark record as verified]
+    AU25[Flag suspicious activity]
+    AU26[Update audit report]
+
+    AU1 --> AU2
+    AU2 --> AU3
+    AU3 --> AU4
+    AU4 --> AU5
+    AU5 -- No --> AU6
+    AU6 --> AU7
+    AU5 -- Yes --> AU8
+    AU8 --> AU9
+    AU9 --> AU10
+    AU10 --> AU11
+    AU11 --> AU12
+    AU12 --> AU13
+
+    AU13 --> AU14
+    AU14 --> AU15
+    AU15 --> AU16
+    AU16 -- No --> AU17
+    AU16 -- Yes --> AU18
+
+    AU18 --> AU19
+    AU19 --> AU20
+    AU20 --> AU21
+    AU21 --> AU22
+    AU22 --> AU23
+    AU23 -- Yes --> AU24
+    AU24 --> AU26
+    AU23 -- No --> AU25
+    AU25 --> AU26
+  end
+
+  %% ================= PUBLIC CITIZEN SECTION =================
+  subgraph PublicFlow["Public Citizen Section"]
+    P1[Open Public Transparency Portal]
+    P2[View published and awarded tenders]
+    P3[Open public tender record]
+    P4[View agency, winner, amount, timeline, and proof]
+    P5[Click verify blockchain proof]
+    P6[Check Ethereum Sepolia transaction or hash]
+    P7{Blockchain proof found and hash matches?}
+    P8[Show trusted procurement status]
+    P9[Show verification failed or pending status]
+    P10[Store public tender view only, no login required]
+
+    P1 --> P2
+    P2 --> P3
+    P3 --> P4
+    P4 --> P5
+    P5 --> P6
+    P6 --> P7
+    P7 -- Yes --> P8
+    P7 -- No --> P9
+    P8 --> P10
+    P9 --> P10
+  end
+
+  %% ================= SYSTEM INTEGRATIONS =================
+  subgraph SystemFlow["System Integrations"]
+    DB[(Supabase Database)]
+    ST[(Supabase Storage / IPFS)]
+    BC[(Ethereum Sepolia Smart Contract)]
+    SMTP[(SMTP Email Service)]
+  end
+
+  %% Role Routing
+  AdminRole --> A1
+  AgencyRole --> AG1
+  SupplierRole --> SP1
+  AuditorRole --> AU1
+  PublicRole --> P1
+
+  %% Cross-section Links
+  AG10 --> A7
+  A28 --> AG12
+  A17 --> AG16
+
+  SP10 --> A30
+  A51 --> SP12
+  A40 --> SP16
+
+  A61 --> AU1
+
+  %% System Links
+  AG8 --> ST
+  SP8 --> ST
+  T7 --> ST
+  B13 --> ST
+
+  AG10 --> DB
+  SP10 --> DB
+  A19 --> DB
+  A42 --> DB
+  A55 --> DB
+  A57 --> DB
+  AU11 --> DB
+  AU12 --> DB
+  T17 --> DB
+  B21 --> DB
+  T40 --> DB
+  P10 --> DB
+
+  A22 --> BC
+  A45 --> BC
+  T14 --> BC
+  B18 --> BC
+  T37 --> BC
+  AU22 --> BC
+  P6 --> BC
+
+  A13 --> SMTP
+  A27 --> SMTP
+  A36 --> SMTP
+  A50 --> SMTP
+  A59 --> SMTP
+  T45 --> SMTP
+
+

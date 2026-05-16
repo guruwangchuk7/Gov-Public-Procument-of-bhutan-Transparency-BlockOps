@@ -1,0 +1,358 @@
+Project BGPS {
+  database_type: "PostgreSQL"
+}
+
+Enum approval_status {
+  pending
+  approved
+  rejected
+  blocked
+}
+
+Enum tender_status {
+  draft
+  published
+  closed
+  awarded
+}
+
+Enum bid_status {
+  submitted
+  on_chain_confirmed
+  under_review
+  rejected
+  winner
+  failed
+}
+
+Enum document_type {
+  agency_registration
+  supplier_registration
+  tender_document
+  bid_proposal
+  winner_justification
+}
+
+Enum audit_status {
+  pending
+  verified
+  suspicious
+}
+
+Enum email_status {
+  pending
+  sent
+  failed
+}
+
+Enum blockchain_event_name {
+  AgencyWalletAuthorized
+  SupplierWalletAuthorized
+  TenderCreated
+  BidSubmitted
+  WinnerSelected
+}
+
+Enum blockchain_tx_status {
+  pending
+  confirmed
+  failed
+}
+
+Enum actor_type {
+  Admin
+  Procuring_Agency
+  Supplier_Bidder
+  Auditor
+  System
+  Public_Citizen
+}
+
+Enum entity_type {
+  admin
+  agency
+  supplier
+  auditor_invitation
+  auditor
+  tender
+  bid
+  award
+  document
+  blockchain_event
+  audit_report
+  email_notification
+  public_tender_view
+}
+
+Enum invitation_status {
+  pending
+  used
+  expired
+}
+
+Table admins {
+  id uuid [pk]
+  full_name varchar
+  email varchar [unique]
+  ndi_identifier varchar [unique]
+  wallet_address varchar [unique]
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table agencies {
+  id uuid [pk]
+  agency_name varchar
+  email varchar [unique]
+  phone varchar
+  registration_number varchar
+  ndi_identifier varchar [unique]
+  wallet_address varchar [unique]
+
+  status approval_status
+  rejection_reason text
+
+  verified_by_admin_id uuid [ref: > admins.id, null]
+  verified_at timestamp
+
+  blockchain_authorized boolean
+  authorization_tx_hash varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table suppliers {
+  id uuid [pk]
+  company_name varchar
+  email varchar [unique]
+  phone varchar
+  license_number varchar
+  ndi_identifier varchar [unique]
+  wallet_address varchar [unique]
+
+  status approval_status
+  rejection_reason text
+
+  verified_by_admin_id uuid [ref: > admins.id, null]
+  verified_at timestamp
+
+  blockchain_authorized boolean
+  authorization_tx_hash varchar
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table auditor_invitations {
+  id uuid [pk]
+
+  auditor_name varchar
+  auditor_email varchar
+
+  temporary_username varchar
+  temporary_password_hash varchar
+  invitation_token varchar [unique]
+
+  status invitation_status
+  expires_at timestamp
+  used_at timestamp
+
+  created_by_admin_id uuid [ref: > admins.id]
+  created_at timestamp
+}
+
+Table auditors {
+  id uuid [pk]
+
+  invitation_id uuid [ref: > auditor_invitations.id]
+
+  full_name varchar
+  email varchar [unique]
+  ndi_identifier varchar [unique]
+  wallet_address varchar [unique]
+
+  is_active boolean
+  activated_at timestamp
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table tenders {
+  id uuid [pk]
+
+  agency_id uuid [ref: > agencies.id]
+
+  title varchar
+  description text
+  estimated_amount decimal
+  submission_deadline timestamp
+
+  status tender_status
+
+  tender_hash varchar
+  wallet_confirmed boolean
+  blockchain_tx_hash varchar
+
+  published_at timestamp
+  closed_at timestamp
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table bids {
+  id uuid [pk]
+
+  tender_id uuid [ref: > tenders.id]
+  supplier_id uuid [ref: > suppliers.id]
+
+  bid_amount decimal
+  proposal_summary text
+
+  bid_hash varchar
+  wallet_confirmed boolean
+  blockchain_tx_hash varchar
+
+  status bid_status
+
+  submitted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (tender_id, supplier_id) [unique]
+  }
+}
+
+Table awards {
+  id uuid [pk]
+
+  tender_id uuid [ref: > tenders.id]
+  winning_bid_id uuid [ref: > bids.id]
+  winning_supplier_id uuid [ref: > suppliers.id]
+  awarded_by_agency_id uuid [ref: > agencies.id]
+
+  justification text
+  justification_hash varchar
+
+  wallet_confirmed boolean
+  blockchain_tx_hash varchar
+
+  awarded_at timestamp
+  created_at timestamp
+}
+
+Table documents {
+  id uuid [pk]
+
+  agency_id uuid [ref: > agencies.id, null]
+  supplier_id uuid [ref: > suppliers.id, null]
+  tender_id uuid [ref: > tenders.id, null]
+  bid_id uuid [ref: > bids.id, null]
+  award_id uuid [ref: > awards.id, null]
+
+  document_type document_type
+
+  file_name varchar
+  storage_url text
+  ipfs_hash varchar
+  document_hash varchar
+  hash_algorithm varchar
+
+  uploaded_at timestamp
+}
+
+Table blockchain_events {
+  id uuid [pk]
+
+  event_name blockchain_event_name
+  tx_status blockchain_tx_status
+
+  contract_address varchar
+  tx_hash varchar [unique]
+  block_number bigint
+  wallet_address varchar
+
+  related_agency_id uuid [ref: > agencies.id, null]
+  related_supplier_id uuid [ref: > suppliers.id, null]
+  related_tender_id uuid [ref: > tenders.id, null]
+  related_bid_id uuid [ref: > bids.id, null]
+  related_award_id uuid [ref: > awards.id, null]
+
+  payload_hash varchar
+  error_message text
+
+  created_at timestamp
+  confirmed_at timestamp
+  failed_at timestamp
+}
+
+Table audit_reports {
+  id uuid [pk]
+
+  auditor_id uuid [ref: > auditors.id]
+
+  tender_id uuid [ref: > tenders.id]
+  bid_id uuid [ref: > bids.id, null]
+  document_id uuid [ref: > documents.id, null]
+  blockchain_event_id uuid [ref: > blockchain_events.id, null]
+
+  database_hash varchar
+  blockchain_hash varchar
+
+  status audit_status
+  notes text
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table activity_logs {
+  id uuid [pk]
+
+  actor_type actor_type
+  actor_id uuid
+
+  action varchar
+
+  entity_type entity_type
+  entity_id uuid
+
+  details text
+  created_at timestamp
+}
+
+Table email_notifications {
+  id uuid [pk]
+
+  recipient_email varchar
+  subject varchar
+  message text
+  status email_status
+
+  related_agency_id uuid [ref: > agencies.id, null]
+  related_supplier_id uuid [ref: > suppliers.id, null]
+  related_auditor_invitation_id uuid [ref: > auditor_invitations.id, null]
+  related_tender_id uuid [ref: > tenders.id, null]
+  related_bid_id uuid [ref: > bids.id, null]
+  related_award_id uuid [ref: > awards.id, null]
+
+  error_message text
+
+  sent_at timestamp
+  created_at timestamp
+}
+
+Table public_tender_views {
+  id uuid [pk]
+
+  tender_id uuid [ref: > tenders.id]
+
+  viewed_at timestamp
+  verification_clicked boolean
+  blockchain_tx_hash varchar
+}
+
