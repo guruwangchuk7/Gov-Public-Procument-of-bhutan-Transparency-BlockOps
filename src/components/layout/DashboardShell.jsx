@@ -10,7 +10,9 @@ import {
   LogOut, 
   Menu, 
   X,
-  Bell
+  Bell,
+  Search,
+  ChevronRight
 } from 'lucide-react';
 
 import { useRoleSession } from '@/hooks/useRoleSession';
@@ -31,97 +33,122 @@ export default function DashboardShell({ children, role, navigation }) {
   const displayWallet = wallet_address ? `${wallet_address.slice(0, 6)}...${wallet_address.slice(-4)}` : 'No Wallet';
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-[#F9F9F9] flex font-sans">
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200">
-        <div className="h-20 flex items-center px-6 border-b border-gray-100">
-          <Link href="/" className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded flex items-center justify-center text-white font-bold text-xs ${
-              role === 'Admin' ? 'bg-slate-900' : 
-              role === 'Supplier' ? 'bg-emerald-500' : 
-              role === 'Auditor' ? 'bg-indigo-600' : 'bg-primary'
-            }`}>B</div>
-            <span className="font-bold text-gray-900 tracking-tight">BGPS Portal</span>
+      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-zinc-200">
+        <div className="h-20 flex items-center px-8 border-b border-zinc-100">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex flex-wrap w-6 h-6 gap-0.5">
+              <div className="w-[11px] h-[11px] bg-zinc-900 rounded-[2px]" />
+              <div className="w-[11px] h-[11px] bg-zinc-300 rounded-[2px]" />
+              <div className="w-[11px] h-[11px] bg-zinc-300 rounded-[2px]" />
+              <div className="w-[11px] h-[11px] bg-zinc-900 rounded-[2px]" />
+            </div>
+            <span className="font-semibold text-zinc-900 tracking-tightest">BGPS</span>
           </Link>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          {navigation.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  isActive 
-                    ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                    : 'text-gray-600 hover:bg-primary-50 hover:text-primary'
-                }`}
-              >
-                <Icon size={18} />
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
+          <div>
+            <p className="px-4 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-4">Menu</p>
+            <nav className="space-y-1">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center justify-between px-4 py-2 rounded-lg text-sm transition-all duration-200 ${
+                      isActive 
+                        ? 'bg-zinc-100 text-zinc-900 font-medium' 
+                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon size={18} className={isActive ? 'text-zinc-900' : 'text-zinc-400'} />
+                      {item.name}
+                    </div>
+                    {isActive && <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
 
-        <div className="p-4 border-t border-gray-100">
-          <button 
-            onClick={handleSignOut}
-            className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
+        <div className="p-4 border-t border-zinc-100">
+          <div className="bg-zinc-50 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-900 font-bold text-xs uppercase">
+                {role[0]}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-zinc-900 truncate uppercase tracking-wider">{role.replace('_', ' ')}</p>
+                <p className="text-[10px] text-zinc-400 font-medium truncate uppercase tracking-widest">Active Session</p>
+              </div>
+            </div>
+            <button 
+              onClick={handleSignOut}
+              className="flex items-center justify-center gap-2 w-full py-2 bg-white border border-zinc-200 rounded-lg text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:border-zinc-300 transition-all"
+            >
+              <LogOut size={14} />
+              Sign Out
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8">
-          <button 
-            className="lg:hidden p-2 text-gray-600"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <Menu size={24} />
-          </button>
-
-          <div className="flex-1 lg:flex-none">
-            <h2 className="text-xl font-bold text-gray-900 hidden md:block">
-              {navigation.find(n => n.href === pathname)?.name || 'Dashboard'}
-            </h2>
+        <header className="h-20 bg-white border-b border-zinc-200 flex items-center justify-between px-8 z-20">
+          <div className="flex items-center gap-4">
+            <button 
+              className="lg:hidden p-2 text-zinc-600"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
+            <div className="hidden md:flex items-center gap-2 text-sm text-zinc-400 font-medium">
+              <span>Dashboard</span>
+              <ChevronRight size={14} />
+              <span className="text-zinc-900 font-semibold tracking-tight">
+                {navigation.find(n => n.href === pathname)?.name || 'Overview'}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden lg:flex flex-col items-end mr-2">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">On-Chain ID</span>
-              <code className="text-[10px] bg-slate-50 px-2 py-0.5 rounded border border-slate-100 text-slate-500 font-mono">{displayWallet}</code>
+          <div className="flex items-center gap-6">
+            <div className="hidden lg:flex items-center px-4 py-2 bg-zinc-50 border border-zinc-100 rounded-lg">
+              <Search size={16} className="text-zinc-400 mr-3" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                className="bg-transparent border-none text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-0 w-48 font-medium"
+              />
             </div>
+
+            <div className="h-6 w-px bg-zinc-200" />
             
-            <button className="p-2 text-gray-400 hover:text-primary transition-colors relative">
-              <Bell size={20} />
-              <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-            </button>
-            
-            <div className="h-8 w-px bg-gray-200 mx-1" />
-            
-            <div className="flex items-center gap-3 pl-2">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-black text-gray-900 leading-tight">{displayName}</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{role.replace('_', ' ')}</p>
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col items-end">
+                <p className="text-sm font-semibold text-zinc-900 leading-none mb-1">{displayName}</p>
+                <code className="text-[10px] text-zinc-400 font-mono tracking-tight">{displayWallet}</code>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black">
-                {displayName.slice(0, 2).toUpperCase()}
+              <div className="relative group">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-sm tracking-tighter">
+                  {displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white" />
               </div>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-8 fade-in">
+          <div className="max-w-[1280px] mx-auto">
             {children}
           </div>
         </main>
@@ -129,19 +156,22 @@ export default function DashboardShell({ children, role, navigation }) {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-          <aside className="absolute top-0 left-0 bottom-0 w-72 bg-white flex flex-col animate-in slide-in-from-left duration-300">
-            <div className="h-20 flex items-center justify-between px-6 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-bold text-xs">B</div>
-                <span className="font-bold text-gray-900 uppercase">BGPS Portal</span>
+        <div className="fixed inset-0 z-[60] lg:hidden">
+          <div className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+          <aside className="absolute top-0 left-0 bottom-0 w-72 bg-white flex flex-col shadow-2xl animate-in slide-in-from-left duration-300">
+            <div className="h-20 flex items-center justify-between px-8 border-b border-zinc-100">
+              <div className="flex items-center gap-3">
+                <div className="flex flex-wrap w-6 h-6 gap-0.5">
+                  <div className="w-[11px] h-[11px] bg-zinc-900 rounded-[2px]" />
+                  <div className="w-[11px] h-[11px] bg-zinc-300 rounded-[2px]" />
+                </div>
+                <span className="font-semibold text-zinc-900 tracking-tightest">BGPS</span>
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)}>
-                <X size={24} className="text-gray-400" />
+                <X size={20} className="text-zinc-400" />
               </button>
             </div>
-            <nav className="flex-1 p-4 space-y-2">
+            <nav className="flex-1 p-6 space-y-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -150,10 +180,10 @@ export default function DashboardShell({ children, role, navigation }) {
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all ${
                       isActive 
-                        ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                        : 'text-gray-600 hover:bg-primary-50 hover:text-primary'
+                        ? 'bg-zinc-100 text-zinc-900 font-semibold' 
+                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
                     }`}
                   >
                     <Icon size={18} />
@@ -162,10 +192,10 @@ export default function DashboardShell({ children, role, navigation }) {
                 );
               })}
             </nav>
-            <div className="p-4 border-t border-gray-100">
+            <div className="p-6 border-t border-zinc-100">
               <button 
                 onClick={handleSignOut}
-                className="flex items-center gap-3 px-4 py-3 w-full text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                className="flex items-center gap-3 px-4 py-3 w-full text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               >
                 <LogOut size={18} />
                 Sign Out

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Landmark, Users, Search, AlertCircle, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Landmark, Users, Search, AlertCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export default function AdminDashboardSummary() {
@@ -31,22 +31,29 @@ export default function AdminDashboardSummary() {
   };
 
   const statCards = [
-    { title: 'Total Agencies', value: stats.agencies, icon: Landmark, color: 'text-primary', bg: 'bg-primary/10' },
-    { title: 'Total Suppliers', value: stats.suppliers, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-    { title: 'Active Auditors', value: stats.auditors, icon: Search, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
-    { title: 'Pending Approval', value: stats.pending, icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+    { title: 'Total Agencies', value: stats.agencies, icon: Landmark },
+    { title: 'Total Suppliers', value: stats.suppliers, icon: Users },
+    { title: 'Active Auditors', value: stats.auditors, icon: Search },
+    { title: 'Pending Approval', value: stats.pending, icon: AlertCircle, highlight: true },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {statCards.map((stat, i) => (
-        <div key={i} className="card flex items-center gap-4 py-8">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
-            <stat.icon size={24} />
+        <div key={i} className="card p-6 border-zinc-200 shadow-none hover:border-zinc-400 transition-all flex flex-col justify-between h-32 group">
+          <div className="flex justify-between items-start">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{stat.title}</p>
+            <div className="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 group-hover:border-zinc-200 transition-all">
+              <stat.icon size={16} />
+            </div>
           </div>
-          <div>
-            <p className="text-3xl font-black text-slate-900">{stat.value}</p>
-            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{stat.title}</p>
+          <div className="flex items-center gap-3">
+            <p className="text-3xl font-semibold text-zinc-900 tracking-tightest">{stat.value}</p>
+            {stat.highlight && stats.pending > 0 && (
+              <div className="bg-zinc-900 text-white px-1.5 py-0.5 rounded text-[9px] font-bold tracking-widest uppercase">
+                ACTION
+              </div>
+            )}
           </div>
         </div>
       ))}

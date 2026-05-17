@@ -2,11 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import IdentityWalletVerifier from '@/components/auth/IdentityWalletVerifier';
 import { useRoleSession } from '@/hooks/useRoleSession';
+import { motion } from 'framer-motion';
 
-// Mock records for active auditors
 const MOCK_AUDITORS = [
   {
     id: 'auditor-001',
@@ -25,37 +25,52 @@ export default function AuditorLoginPage() {
   }, [selectRole]);
 
   return (
-    <main className="min-h-screen bg-indigo-50/30 py-20 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-12">
-          <Link href="/select-role" className="flex items-center gap-2 text-indigo-400 hover:text-indigo-900 transition-colors font-medium">
-            <ArrowLeft size={18} /> Back
-          </Link>
-          <div className="flex items-center gap-2 text-indigo-900">
-            <Search size={20} />
-            <span className="font-bold uppercase tracking-tighter">Auditor Access</span>
-          </div>
-        </div>
+    <main className="h-screen w-screen bg-zinc-50 flex items-center justify-center p-6 overflow-hidden selection:bg-zinc-900 selection:text-white font-sans relative">
+      {/* Absolute Navigation */}
+      <Link
+        href="/select-role"
+        className="absolute top-10 left-10 text-zinc-400 hover:text-zinc-900 transition-colors flex items-center gap-2 text-[10px] font-medium z-50"
+      >
+        <ArrowLeft size={12} /> Back to Selection
+      </Link>
 
-        <div className="card shadow-2xl border-indigo-100 p-8">
-          <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mx-auto mb-6">
-            <Search size={32} />
-          </div>
-          
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-black text-gray-900 mb-2">Audit Portal</h1>
-            <p className="text-gray-500 text-sm">Independent verification of on-chain procurement logs.</p>
+      {/* Subtle Ambient Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-[440px]">
+        {/* Focused Security Square */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border border-zinc-200 rounded-[32px] p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] flex flex-col items-center"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white mb-8 shadow-xl shadow-indigo-100">
+            <ShieldCheck size={28} />
           </div>
 
-          <IdentityWalletVerifier 
-            role="Auditor" 
-            mockRecords={MOCK_AUDITORS}
-          />
+          <div className="text-center mb-10">
+            <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">System Auditor</h1>
+          </div>
 
-          <p className="mt-8 text-center text-xs text-gray-400">
-            Received an invitation? <Link href="/auditor/invitation/valid-token" className="text-indigo-600 font-bold hover:underline">Activate your account</Link>
-          </p>
-        </div>
+          <div className="w-full">
+            <IdentityWalletVerifier
+              role="Auditor"
+              mockRecords={MOCK_AUDITORS}
+            />
+          </div>
+
+          {/* Minimal Footer */}
+          <div className="mt-10 pt-8 border-t border-zinc-100 w-full flex flex-col gap-4">
+            <p className="text-[10px] text-zinc-400 text-center font-medium">
+              Received an invitation? <Link href="/auditor/invitation/valid-token" className="text-zinc-900 font-bold hover:underline">Activate account</Link>
+            </p>
+            <div className="flex items-center justify-between text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+              <span>Secured by NDI</span>
+              <span>v2.4.1</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </main>
   );

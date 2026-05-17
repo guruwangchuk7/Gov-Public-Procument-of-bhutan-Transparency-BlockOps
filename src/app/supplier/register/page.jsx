@@ -1,28 +1,47 @@
+'use client';
+
 import SupplierRegistrationForm from '@/components/supplier/SupplierRegistrationForm';
 import Link from 'next/link';
 import { ArrowLeft, Building2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function SupplierRegisterPage() {
   return (
-    <div className="min-h-screen bg-slate-50 py-20 px-6">
-      <div className="max-w-7xl mx-auto space-y-12">
-        <div className="flex items-center justify-between">
-          <Link href="/select-role" className="btn btn-outline">
-            <ArrowLeft size={16} /> Back to Roles
-          </Link>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">Supplier Onboarding</h1>
-              <p className="text-sm font-medium text-slate-500 italic">Official Bidder Registration</p>
-            </div>
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg">
-              <Building2 size={28} />
-            </div>
+    <main className="min-h-screen bg-zinc-50 flex flex-col items-center py-20 px-6 selection:bg-zinc-900 selection:text-white font-sans relative">
+      {/* Absolute Navigation */}
+      <Link 
+        href="/select-role" 
+        className="absolute top-10 left-10 text-zinc-400 hover:text-zinc-900 transition-colors flex items-center gap-2 text-[10px] font-medium z-50"
+      >
+        <ArrowLeft size={12} /> Back to Selection
+      </Link>
+
+      <div className="w-full max-w-4xl space-y-12">
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center space-y-6">
+          <div className="w-16 h-16 rounded-[24px] bg-blue-600 flex items-center justify-center text-white shadow-2xl shadow-blue-100">
+            <Building2 size={28} />
+          </div>
+          
+          <div className="space-y-2">
+            <h1 className="text-4xl font-semibold text-zinc-900 tracking-tightest uppercase">Supplier Onboarding</h1>
+            <p className="text-zinc-500 text-sm max-w-md mx-auto">Onboard your business as an authorized government bidder to participate in secure, blockchain-verified tenders.</p>
           </div>
         </div>
 
-        <SupplierRegistrationForm />
+        {/* Focused Form Container */}
+        <div className="bg-white border border-zinc-200 rounded-[40px] p-8 md:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)]">
+          <SupplierRegistrationForm />
+        </div>
+
+        {/* Support Footer */}
+        <div className="text-center">
+          <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest leading-relaxed">
+            Secured by Bhutan National Digital Identity<br />
+            Official Bidder & Supplier Network
+          </p>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

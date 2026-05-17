@@ -1,9 +1,12 @@
-import { Outfit } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { BgpsProvider } from '@/hooks/useBgpsFlowState';
 import { Toaster } from 'sonner';
 
-const outfit = Outfit({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
 
 export const metadata = {
   title: 'BGPS - Blockchain-Based Government Procurement System',
@@ -12,10 +15,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={outfit.className}>
+    <html lang="en" className={inter.variable}>
+      <body className="font-sans">
         <BgpsProvider>
-          <div className="min-h-screen selection:bg-primary/30">
+          <div className="min-h-screen selection:bg-zinc-900 selection:text-white">
             {children}
             <Toaster position="top-right" expand={true} richColors />
           </div>

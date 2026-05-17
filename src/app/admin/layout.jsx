@@ -1,13 +1,8 @@
 'use client';
-import { 
-  LayoutDashboard, 
-  Building2, 
-  UserCheck, 
-  ShieldCheck, 
-  History, 
-  Globe 
-} from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Building2, UserCheck, ShieldCheck, History, Globe } from 'lucide-react';
 import DashboardShell from '@/components/layout/DashboardShell';
+import RoleGuard from '@/components/layout/RoleGuard';
 
 const adminNavigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -18,9 +13,14 @@ const adminNavigation = [
   { name: 'Activity Logs', href: '/admin/activity-logs', icon: History },
 ];
 
-import RoleGuard from '@/components/layout/RoleGuard';
-
 export default function AdminLayout({ children }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/admin/login';
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
     <RoleGuard requiredRole="Admin">
       <DashboardShell role="Admin" navigation={adminNavigation}>

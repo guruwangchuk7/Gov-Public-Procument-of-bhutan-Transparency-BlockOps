@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ShieldCheck, Cpu, ArrowRight, Loader2, CheckCircle2, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Cpu, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase/client';
 import { WalletAuthorizationService } from '@/services/blockchain/wallet-authorization.service';
@@ -31,7 +31,6 @@ export default function BlockchainVerificationQueue() {
     try {
       let txResult;
       
-      // 1. Initiate Real Blockchain Transaction via Rabby
       if (event.event_name === 'AgencyWalletAuthorized') {
         const wallet = event.agencies?.wallet_address || event.wallet_address;
         if (!wallet) throw new Error('Agency wallet address missing');
@@ -56,7 +55,6 @@ export default function BlockchainVerificationQueue() {
         throw new Error('Unsupported event type in queue');
       }
 
-      // 2. Send real txHash to Backend to complete handshake
       const { data: { user } } = await supabase.auth.getUser();
 
       const res = await fetch('/api/admin/confirm-blockchain', {
@@ -90,32 +88,36 @@ export default function BlockchainVerificationQueue() {
   if (pendingEvents.length === 0) return null;
 
   return (
-    <div className="card bg-slate-900 border-slate-800 space-y-6">
+    <div className="card bg-zinc-900 border-zinc-800 p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-emerald-400">
-          <Cpu size={18} className="animate-pulse" />
-          <h3 className="text-xs font-black uppercase tracking-[0.2em]">Blockchain Verification Queue</h3>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <Cpu size={16} className="text-emerald-500" />
+          </div>
+          <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">Verification Queue</h3>
         </div>
-        <span className="badge bg-emerald-500/10 text-emerald-400">{pendingEvents.length} Actions Required</span>
+        <div className="badge bg-emerald-500/10 text-emerald-400 text-[10px] border border-emerald-500/20">
+          {pendingEvents.length} Pending Actions
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {pendingEvents.map((event) => (
-          <div key={event.id} className="p-4 bg-slate-800/50 rounded-2xl border border-slate-800 flex items-center justify-between group">
+          <div key={event.id} className="p-4 bg-zinc-800/40 rounded-xl border border-zinc-800 flex items-center justify-between hover:bg-zinc-800/60 transition-all group">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-primary">
-                <ShieldCheck size={20} />
+              <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
+                <ShieldCheck size={18} />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">
+                <p className="text-sm font-medium text-white">
                   {event.agencies?.agency_name || event.suppliers?.company_name || 'System Action'}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{event.event_name}</span>
-                  <div className="w-1 h-1 bg-slate-700 rounded-full" />
-                  <span className="text-[9px] font-bold text-emerald-500/70 italic">
-                    Payload: {event.payload_hash?.slice(0, 10)}...
-                  </span>
+                  <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">{event.event_name}</span>
+                  <div className="w-1 h-1 bg-zinc-700 rounded-full" />
+                  <code className="text-[10px] text-zinc-500 font-mono">
+                    {event.payload_hash?.slice(0, 8)}...
+                  </code>
                 </div>
               </div>
             </div>
@@ -123,22 +125,22 @@ export default function BlockchainVerificationQueue() {
             <button 
               onClick={() => handleConfirm(event)}
               disabled={verifyingId === event.id}
-              className="btn bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-2 text-[10px] uppercase tracking-widest disabled:opacity-50 flex items-center gap-2"
+              className="btn btn-primary bg-white text-zinc-900 hover:bg-zinc-100 h-9 px-4 text-xs disabled:opacity-50"
             >
               {verifyingId === event.id ? (
                 <Loader2 size={14} className="animate-spin" />
               ) : (
-                <>Sign & Authorize <ArrowRight size={14} /></>
+                <span className="flex items-center gap-2">Sign & Authorize <ArrowRight size={14} /></span>
               )}
             </button>
           </div>
         ))}
       </div>
 
-      <div className="p-3 bg-slate-800/30 rounded-xl border border-slate-800/50 flex items-center gap-3">
-        <AlertCircle size={12} className="text-amber-500" />
-        <p className="text-[9px] text-slate-500 font-medium italic">
-          Authorizing wallets requires an Admin signature. This records the registration proof hash on the immutable ledger.
+      <div className="p-3 bg-zinc-800/20 rounded-lg border border-zinc-800/50 flex items-center gap-3">
+        <AlertCircle size={14} className="text-zinc-500" />
+        <p className="text-[11px] text-zinc-500 font-medium italic">
+          Wallet authorization requires an Admin signature. This commits the registration hash to Ethereum Sepolia.
         </p>
       </div>
     </div>

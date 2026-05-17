@@ -34,37 +34,42 @@ export default function PublicTrustDashboard() {
   ];
 
   if (loading) return (
-    <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-3">
-      <Loader2 className="animate-spin" size={32} />
-      <p className="text-sm font-bold uppercase tracking-widest">Loading Trust Data...</p>
+    <div className="py-20 flex flex-col items-center justify-center text-zinc-400 gap-4">
+      <Loader2 className="animate-spin text-zinc-900" size={32} />
+      <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Syncing Trust Ledger...</p>
     </div>
   );
 
   return (
-    <div className="py-10">
-      <div className="flex items-center gap-2 mb-8">
-        <Bell className="text-emerald-500" size={20} />
-        <h2 className="text-xl font-black text-gray-900">BGPS Public Trust Explorer</h2>
+    <div className="py-12">
+      <div className="flex items-center gap-3 mb-10">
+        <div className="w-10 h-10 rounded-[12px] bg-zinc-900 flex items-center justify-center text-white shadow-md">
+          <ShieldCheck size={20} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-semibold text-zinc-900 tracking-tightest">Public Trust Explorer</h2>
+          <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Real-time Verified Network</p>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-8">
+      <div className="flex flex-wrap gap-3 mb-10">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-[16px] text-sm font-semibold transition-all ${
               activeTab === tab.id 
-              ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' 
-              : 'bg-white border border-gray-100 text-gray-500 hover:border-emerald-200 hover:bg-emerald-50/30'
+              ? 'bg-zinc-900 text-white shadow-[0_8px_16px_-6px_rgba(0,0,0,0.2)]' 
+              : 'bg-white border border-zinc-200 text-zinc-500 hover:border-zinc-900 hover:text-zinc-900'
             }`}
           >
-            <tab.icon size={18} />
+            <tab.icon size={16} />
             {tab.label}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[300px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[300px]">
         {activeTab === 'agencies' && (data?.verified_agencies?.length > 0 ? (
           data.verified_agencies.map((agency, i) => (
             <TrustCard key={i} title={agency.agency_name} date={agency.verified_at} tx={agency.authorization_tx_hash} type="Agency" />
@@ -102,25 +107,25 @@ export default function PublicTrustDashboard() {
 
 function TrustCard({ title, subtitle, date, tx, type }) {
   return (
-    <div className="bg-white border border-gray-100 p-5 rounded-2xl hover:border-emerald-500 transition-all group flex flex-col justify-between">
+    <div className="bg-white border border-zinc-200 p-6 rounded-[24px] hover:border-zinc-900 transition-all group flex flex-col justify-between shadow-sm hover:shadow-xl">
       <div>
-        <div className="flex justify-between items-start mb-4">
-          <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase rounded-lg border border-emerald-100">
+        <div className="flex justify-between items-start mb-6">
+          <span className="px-2.5 py-1 bg-zinc-100 text-zinc-900 text-[9px] font-black uppercase tracking-widest rounded-md border border-zinc-200">
             {type}
           </span>
           {tx && (
-            <a href={`https://sepolia.etherscan.io/tx/${tx}`} target="_blank" className="text-gray-400 hover:text-emerald-500 transition-colors">
+            <a href={`https://sepolia.etherscan.io/tx/${tx}`} target="_blank" className="text-zinc-400 hover:text-zinc-900 transition-colors bg-zinc-50 p-1.5 rounded-lg border border-zinc-100 hover:border-zinc-300">
               <ExternalLink size={14} />
             </a>
           )}
         </div>
-        <h4 className="font-bold text-gray-900 text-sm line-clamp-2 leading-tight mb-2">{title}</h4>
-        {subtitle && <p className="text-xs text-gray-500 font-medium mb-2">{subtitle}</p>}
+        <h4 className="font-semibold text-zinc-900 text-sm line-clamp-2 leading-snug mb-2">{title}</h4>
+        {subtitle && <p className="text-[11px] text-zinc-500 font-medium mb-2">{subtitle}</p>}
       </div>
-      <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-        <p className="text-[10px] text-gray-400 font-bold uppercase">{date ? format(new Date(date), 'MMM dd, yyyy') : 'Recently Verified'}</p>
-        <div className="flex items-center gap-1 text-emerald-600 font-black text-[10px] uppercase">
-          <ShieldCheck size={12} />
+      <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between">
+        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{date ? format(new Date(date), 'MMM dd, yyyy') : 'Recently Verified'}</p>
+        <div className="flex items-center gap-1.5 text-zinc-900 font-bold text-[10px] uppercase tracking-wider">
+          <ShieldCheck size={14} className="text-zinc-900" />
           On-Chain
         </div>
       </div>
@@ -130,9 +135,9 @@ function TrustCard({ title, subtitle, date, tx, type }) {
 
 function EmptyState() {
   return (
-    <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-400">
-      <Bell size={48} className="opacity-10 mb-4" />
-      <p className="text-sm font-medium">No verified records found in this category.</p>
+    <div className="col-span-full flex flex-col items-center justify-center py-24 text-zinc-400 bg-white border border-zinc-200 border-dashed rounded-[32px]">
+      <ShieldCheck size={40} className="opacity-20 mb-4 text-zinc-900" />
+      <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500">No verified records in this ledger</p>
     </div>
   );
 }

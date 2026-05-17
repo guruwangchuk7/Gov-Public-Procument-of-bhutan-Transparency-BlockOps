@@ -5,24 +5,16 @@ import Link from 'next/link';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import IdentityWalletVerifier from '@/components/auth/IdentityWalletVerifier';
 import { useRoleSession } from '@/hooks/useRoleSession';
+import { motion } from 'framer-motion';
 
-// Mock records for approved/pending agencies
 const MOCK_AGENCIES = [
   {
     id: 'agency-001',
     agency_name: 'Ministry of Infrastructure',
-    ndi_identifier: 'MOCK_NDI_ID', // Matches demo scan
+    ndi_identifier: 'MOCK_NDI_ID', 
     wallet_address: '0xMockWalletAddress',
     status: 'approved',
     blockchain_authorized: true
-  },
-  {
-    id: 'agency-002',
-    agency_name: 'Department of IT',
-    ndi_identifier: 'NDI-AGENCY-002',
-    wallet_address: '0x669877b026639906646199623838383838383838',
-    status: 'pending',
-    blockchain_authorized: false
   }
 ];
 
@@ -34,38 +26,52 @@ export default function AgencyLoginPage() {
   }, [selectRole]);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-20 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-12">
-          <Link href="/select-role" className="flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium">
-            <ArrowLeft size={18} /> Back
-          </Link>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-bold text-xs">B</div>
-            <span className="font-bold text-gray-900 uppercase tracking-tighter">Agency Portal</span>
-          </div>
-        </div>
+    <main className="h-screen w-screen bg-zinc-50 flex items-center justify-center p-6 overflow-hidden selection:bg-zinc-900 selection:text-white font-sans relative">
+      {/* Absolute Navigation */}
+      <Link 
+        href="/select-role" 
+        className="absolute top-10 left-10 text-zinc-400 hover:text-zinc-900 transition-colors flex items-center gap-2 text-[10px] font-medium z-50"
+      >
+        <ArrowLeft size={12} /> Back to Selection
+      </Link>
 
-        <div className="card shadow-2xl border-white p-8">
-          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6">
-            <Building2 size={32} />
-          </div>
-          
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-black text-gray-900 mb-2">Agency Workspace</h1>
-            <p className="text-gray-500 text-sm">Secure identity-gated access for government officers.</p>
+      {/* Subtle Ambient Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
+      
+      <div className="relative z-10 w-full max-w-[440px]">
+        {/* Focused Security Square */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border border-zinc-200 rounded-[32px] p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] flex flex-col items-center"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white mb-8 shadow-xl shadow-emerald-100">
+            <Building2 size={28} />
           </div>
 
-          <IdentityWalletVerifier 
-            role="Procuring_Agency" 
-            mockRecords={MOCK_AGENCIES}
-          />
+          <div className="text-center mb-10">
+            <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">Agency Workspace</h1>
+          </div>
 
-          <p className="mt-8 text-center text-xs text-gray-400">
-            Unauthorized access to government systems is strictly prohibited. <br />
-            New agency? <Link href="/agency/register" className="text-primary font-bold hover:underline">Register your office</Link>
-          </p>
-        </div>
+          <div className="w-full">
+            <IdentityWalletVerifier 
+              role="Procuring_Agency" 
+              mockRecords={MOCK_AGENCIES}
+            />
+          </div>
+
+          {/* Minimal Footer */}
+          <div className="mt-10 pt-8 border-t border-zinc-100 w-full flex flex-col gap-4">
+            <p className="text-[10px] text-zinc-400 text-center font-medium">
+              New agency? <Link href="/agency/register" className="text-zinc-900 font-bold hover:underline">Register your office</Link>
+            </p>
+            <div className="flex items-center justify-between text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+              <span>Secured by NDI</span>
+              <span>v2.4.1</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </main>
   );

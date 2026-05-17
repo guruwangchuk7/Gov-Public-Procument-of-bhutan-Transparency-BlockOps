@@ -1,9 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Mail, Phone, Hash, ShieldCheck, Wallet, FileUp, Send, CheckCircle2, Briefcase } from 'lucide-react';
+import { Building2, Mail, Phone, Hash, ShieldCheck, Wallet, FileUp, Send, CheckCircle2, Briefcase, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import PayloadPreview from '@/components/common/PayloadPreview';
 import { useRouter } from 'next/navigation';
 import { useNDI } from '@/hooks/useNDI';
 import { RabbyWallet } from '@/lib/wallet/rabby';
@@ -77,81 +76,83 @@ export default function SupplierRegistrationForm() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="card space-y-8"
-      >
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 text-emerald-500">
-            <Building2 size={24} />
-            <h2 className="text-2xl font-black text-slate-900">Supplier Registration</h2>
+    <div className="w-full max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-10">
+        {/* Section 1: Business Details */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+            <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Business Details</h3>
           </div>
-          <p className="text-sm text-slate-500 font-medium">Onboard your business as an authorized government bidder.</p>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
-              <label className="label-text">Company Name</label>
-              <div className="relative">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Company Name</label>
+              <div className="relative group">
                 <input 
                   name="company_name" 
                   value={formData.company_name} 
                   onChange={handleChange}
-                  placeholder="e.g. Bhutan Tech Solutions" 
-                  className="input-field pl-11" 
+                  placeholder="Bhutan Tech Solutions" 
+                  className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-2xl px-12 text-sm font-medium focus:bg-white focus:border-zinc-900 focus:ring-0 transition-all outline-none" 
                   required 
                 />
-                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" size={18} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="label-text">Business Email</label>
-              <div className="relative">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Business Email</label>
+              <div className="relative group">
                 <input 
                   name="email" 
                   type="email"
                   value={formData.email} 
                   onChange={handleChange}
                   placeholder="contact@business.bt" 
-                  className="input-field pl-11" 
+                  className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-2xl px-12 text-sm font-medium focus:bg-white focus:border-zinc-900 focus:ring-0 transition-all outline-none" 
                   required 
                 />
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" size={18} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="label-text">Phone Number</label>
-              <div className="relative">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Phone Number</label>
+              <div className="relative group">
                 <input 
                   name="phone" 
                   value={formData.phone} 
                   onChange={handleChange}
-                  placeholder="+975-XXXXXXX" 
-                  className="input-field pl-11" 
+                  placeholder="+975 17XXXXXX" 
+                  className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-2xl px-12 text-sm font-medium focus:bg-white focus:border-zinc-900 focus:ring-0 transition-all outline-none" 
                 />
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" size={18} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="label-text">Trade License No.</label>
-              <div className="relative">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest ml-1">Trade License No.</label>
+              <div className="relative group">
                 <input 
                   name="license_number" 
                   value={formData.license_number} 
                   onChange={handleChange}
-                  placeholder="LIC-2024-XXX" 
-                  className="input-field pl-11" 
+                  placeholder="LIC-XXXX-XXX" 
+                  className="w-full h-14 bg-zinc-50 border border-zinc-200 rounded-2xl px-12 text-sm font-medium focus:bg-white focus:border-zinc-900 focus:ring-0 transition-all outline-none" 
                   required 
                 />
-                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" size={18} />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Section 2: Identity Verification */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+            <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Identity Handshake</h3>
           </div>
 
           <IdentityLinkingCard 
@@ -175,50 +176,55 @@ export default function SupplierRegistrationForm() {
             ndiStatus={ndiStatus}
             proofRequest={proofRequest}
           />
+        </div>
 
-          <div className="space-y-1.5">
-            <label className="label-text">Valid Trade License</label>
-            <div className="group relative w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all cursor-pointer">
-              <FileUp className="text-slate-400 group-hover:text-emerald-500" size={24} />
-              <p className="text-xs font-bold text-slate-400 group-hover:text-emerald-500">Upload scanned Trade License (PDF/Image)</p>
-              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
+        {/* Section 3: Authorization */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+            <h3 className="text-lg font-bold text-zinc-900 tracking-tight">Authorization Documents</h3>
+          </div>
+
+          <div className="group relative w-full h-40 border-2 border-dashed border-zinc-100 rounded-3xl flex flex-col items-center justify-center gap-3 hover:border-blue-600 hover:bg-blue-50/30 transition-all cursor-pointer overflow-hidden">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-50 flex items-center justify-center text-zinc-400 group-hover:bg-white group-hover:text-blue-600 transition-all shadow-sm">
+              <FileUp size={24} />
             </div>
+            <div className="text-center">
+              <p className="text-xs font-bold text-zinc-900">Upload scanned Trade License (PDF/Image)</p>
+              <p className="text-[10px] text-zinc-400 mt-1 font-medium">Max file size: 10MB</p>
+            </div>
+            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
           </div>
+        </div>
 
-          <div className="pt-4 flex items-center gap-4">
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="btn bg-emerald-500 text-white hover:bg-emerald-600 flex-1 h-14"
-            >
-              {loading ? 'Submitting...' : 'Register Business'} <Send size={18} />
-            </button>
-            <button type="reset" className="btn btn-outline h-14 px-6 text-slate-400">Reset</button>
-          </div>
-        </form>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="space-y-8"
-      >
-        <PayloadPreview data={formData} title="Supplier Payload (ERD)" />
-        
-        <div className="card bg-emerald-50 border-emerald-100">
-          <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-emerald-500 shadow-sm">
-              <CheckCircle2 size={20} />
+        {/* Final Submission */}
+        <div className="pt-6">
+          <div className="bg-blue-50/50 border border-blue-100/50 p-6 rounded-[32px] mb-8 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
+              <ShieldCheck size={20} />
             </div>
             <div>
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">Eligibility Hint</h4>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed mt-1">
-                Approved suppliers can browse open tenders and submit cryptographically signed bids. Registration ensures your business identity is verified on the <span className="text-emerald-600 font-bold">BGPS Blockchain</span>.
+              <p className="text-[11px] text-blue-800 font-bold uppercase tracking-tight">Eligibility Verification</p>
+              <p className="text-[10px] text-blue-600 font-medium leading-relaxed mt-1">
+                Once submitted, your business will enter <span className="font-bold">Pending</span> status. Our administrators will verify your credentials and license before on-chain authorization.
               </p>
             </div>
           </div>
+
+          <button 
+            type="submit" 
+            disabled={loading || !ndiProfile || !walletAddress}
+            className="w-full h-16 bg-zinc-900 hover:bg-black text-white rounded-[24px] font-bold flex items-center justify-center gap-3 transition-all disabled:opacity-20 disabled:grayscale shadow-2xl shadow-blue-100"
+          >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : (
+              <>
+                <span>Register Business Account</span>
+                <Send size={18} />
+              </>
+            )}
+          </button>
         </div>
-      </motion.div>
+      </form>
     </div>
   );
 }

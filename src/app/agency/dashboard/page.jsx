@@ -5,7 +5,9 @@ import {
   CheckCircle2, 
   Clock, 
   Activity, 
-  Plus 
+  Plus,
+  ChevronRight,
+  ExternalLink
 } from 'lucide-react';
 import StatsCard from '@/components/common/StatsCard';
 import Link from 'next/link';
@@ -37,44 +39,46 @@ export default function AgencyDashboard() {
       title: 'Active Tenders',
       value: '4',
       subtext: '2 closing this week',
-      icon: FileText,
-      color: 'bg-primary'
+      icon: FileText
     },
     {
       title: 'Bids Received',
       value: '18',
       subtext: 'Avg. 4.5 bids per tender',
-      icon: Send,
-      color: 'bg-indigo-500'
+      icon: Send
     },
     {
       title: 'Awarded Tenders',
       value: '8',
       subtext: 'Nu. 32M total value',
-      icon: CheckCircle2,
-      color: 'bg-emerald-500'
+      icon: CheckCircle2
     },
     {
       title: 'Awaiting Publish',
       value: '2',
       subtext: 'Drafts ready for blockchain',
-      icon: Clock,
-      color: 'bg-amber-500'
+      icon: Clock
     }
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Agency Workspace</h1>
-          <p className="text-gray-500 font-medium">Welcome, <span className="text-primary font-bold">{session.full_name || 'Verified Officer'}</span></p>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-md uppercase tracking-widest border border-primary/20">Authenticated Agency</div>
-            <code className="text-[10px] text-gray-400 font-mono truncate max-w-[200px]">{wallet}</code>
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-zinc-100 rounded-full mb-3">
+            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Authenticated Agency</span>
+          </div>
+          <h1 className="text-4xl font-semibold text-zinc-900 tracking-tightest">
+            Welcome, {session.full_name?.split(' ')[0] || 'Officer'}
+          </h1>
+          <div className="flex items-center gap-3 mt-2">
+            <code className="text-xs text-zinc-400 font-mono bg-zinc-50 px-2 py-0.5 rounded border border-zinc-100">
+              {wallet?.slice(0, 18)}...
+            </code>
           </div>
         </div>
-        <Link href="/agency/tenders/create" className="btn-primary flex items-center gap-2">
+        <Link href="/agency/tenders/create" className="btn btn-primary px-6 h-11">
           <Plus size={18} /> New Tender
         </Link>
       </div>
@@ -85,56 +89,67 @@ export default function AgencyDashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Recent Tenders */}
-        <div className="card lg:col-span-2">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-bold text-gray-900 flex items-center gap-2">
-              <Activity size={18} className="text-primary" />
+        <div className="lg:col-span-8 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-zinc-900 tracking-tight flex items-center gap-2">
+              <Activity size={16} className="text-zinc-400" />
               Latest Tenders
             </h3>
-            <Link href="/agency/tenders" className="text-xs text-primary font-bold hover:underline">View All</Link>
+            <Link href="/agency/tenders" className="text-xs font-semibold text-zinc-400 hover:text-zinc-900 transition-colors">View All</Link>
           </div>
-          <div className="space-y-4">
-            {[
-              { title: 'Rural Road Maintenance Project', status: 'Published', bids: 6 },
-              { title: 'Supply of Office Stationery', status: 'Draft', bids: 0 },
-              { title: 'Bridge Construction Phase I', status: 'Published', bids: 3 },
-            ].map((tender, i) => (
-              <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-primary-50/50 transition-colors cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-primary">
-                    <FileText size={20} />
+          
+          <div className="table-container shadow-none border-zinc-200">
+            <div className="divide-y divide-zinc-100">
+              {[
+                { title: 'Rural Road Maintenance Project', status: 'Published', bids: 6, date: '2 days ago' },
+                { title: 'Supply of Office Stationery', status: 'Draft', bids: 0, date: '5 days ago' },
+                { title: 'Bridge Construction Phase I', status: 'Published', bids: 3, date: '1 week ago' },
+              ].map((tender, i) => (
+                <div key={i} className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 transition-colors">
+                      <FileText size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-zinc-900">{tender.title}</p>
+                      <p className="text-[11px] text-zinc-400 font-medium tracking-tight">
+                        {tender.bids} Bids Received • Last modified {tender.date}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-gray-900">{tender.title}</p>
-                    <p className="text-xs text-gray-500">{tender.bids} Bids Received</p>
+                  <div className="flex items-center gap-4">
+                    <span className={`badge ${
+                      tender.status === 'Published' ? 'bg-sky-50 text-sky-600 border border-sky-100' : 'bg-zinc-100 text-zinc-500 border border-zinc-200'
+                    }`}>
+                      {tender.status}
+                    </span>
+                    <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500 transition-colors" />
                   </div>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
-                  tender.status === 'Published' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-600'
-                }`}>
-                  {tender.status}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Quick Help / Resources */}
-        <div className="card">
-          <h3 className="font-bold text-gray-900 mb-4">Quick Resources</h3>
-          <div className="space-y-3">
-            {[
-              'SBD Preparation Guide',
-              'Tender Evaluation Manual',
-              'Blockchain Proof Verification',
-              'Identity Management'
-            ].map((item, i) => (
-              <button key={i} className="w-full text-left p-3 text-sm font-medium text-gray-600 hover:text-primary hover:bg-primary-50 rounded-lg transition-all border border-transparent hover:border-primary-100">
-                {item}
-              </button>
-            ))}
+        <div className="lg:col-span-4 space-y-4">
+          <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">Quick Resources</h3>
+          <div className="card border-zinc-200 shadow-none overflow-hidden">
+            <div className="divide-y divide-zinc-100">
+              {[
+                'SBD Preparation Guide',
+                'Tender Evaluation Manual',
+                'Blockchain Proof Verification',
+                'Identity Management'
+              ].map((item, i) => (
+                <button key={i} className="w-full flex items-center justify-between p-4 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-all text-left group">
+                  {item}
+                  <ExternalLink size={12} className="text-zinc-300 group-hover:text-zinc-500" />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

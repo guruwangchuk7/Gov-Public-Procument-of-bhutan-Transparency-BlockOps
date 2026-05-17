@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShieldAlert, Building2, Users, Search, Landmark, ArrowLeft, ArrowRight, Wallet, UserPlus } from 'lucide-react';
+import { ShieldAlert, Building2, Users, Search, Landmark, ArrowLeft, ArrowRight, Wallet, UserPlus, ChevronRight } from 'lucide-react';
 
 const ROLES = [
   {
@@ -9,104 +9,101 @@ const ROLES = [
     title: 'System Admin',
     desc: 'Approve procuring agencies, suppliers, and manage system auditors.',
     icon: ShieldAlert,
-    color: 'slate',
     route: '/admin/login',
-    features: ['Verify Agencies', 'Manage Auditors', 'Audit Logs']
+    features: ['Agencies', 'Auditors', 'Logs']
   },
   {
     id: 'agency',
     title: 'Procuring Agency',
     desc: 'Government departments creating and awarding public tenders.',
     icon: Landmark,
-    color: 'primary',
     registerRoute: '/agency/register',
     dashboardRoute: '/agency/login',
-    features: ['Create Tenders', 'Evaluate Bids', 'Award Contracts']
+    features: ['Tenders', 'Bids', 'Awards']
   },
   {
     id: 'supplier',
     title: 'Supplier / Bidder',
     desc: 'Authorized businesses bidding for government procurement projects.',
     icon: Building2,
-    color: 'emerald',
     registerRoute: '/supplier/register',
     dashboardRoute: '/supplier/login',
-    features: ['View Tenders', 'Secure Bidding', 'Track Awards']
+    features: ['View', 'Bid', 'Track']
   },
   {
     id: 'auditor',
     title: 'System Auditor',
     desc: 'Independent entities verifying procurement integrity on-chain.',
     icon: Search,
-    color: 'indigo',
     route: '/auditor/login',
-    features: ['Verify Hashes', 'Timeline Audit', 'Compliance']
+    features: ['Hashes', 'Timeline', 'Compliance']
   },
   {
     id: 'public',
     title: 'Public Citizen',
     desc: 'Read-only access to verify blockchain proofs and awarded results.',
     icon: Users,
-    color: 'amber',
     route: '/transparency',
-    features: ['Public Records', 'Blockchain Verify', 'No Login']
+    features: ['Records', 'Verification', 'No Login']
   }
 ];
 
 export default function SelectRolePage() {
   return (
-    <div className="min-h-screen bg-slate-50 py-20 px-6">
-      <div className="max-w-6xl mx-auto space-y-12">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="btn btn-outline">
+    <div className="min-h-screen bg-white py-24 px-6 selection:bg-zinc-900 selection:text-white font-sans">
+      <div className="max-w-6xl mx-auto space-y-20">
+        {/* Header */}
+        <div className="flex flex-col items-center text-center space-y-4">
+          <Link href="/" className="text-zinc-400 hover:text-zinc-900 transition-colors flex items-center gap-2 text-sm font-medium mb-4">
             <ArrowLeft size={16} /> Back to Home
           </Link>
-          <div className="text-right">
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Select Portal</h1>
-            <p className="text-sm font-medium text-slate-500 italic">Choose your role to continue the flow</p>
-          </div>
+          <h1 className="text-5xl font-semibold text-zinc-900 tracking-tightest">Select Portal</h1>
+          <p className="text-lg text-zinc-500 max-w-lg leading-relaxed">Choose your specialized workspace to interact with the BGPS ecosystem.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Roles Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {ROLES.map((role, i) => (
             <motion.div
               key={role.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="card h-full flex flex-col justify-between hover:border-slate-900 hover:shadow-xl transition-all duration-300 group"
+              transition={{ delay: i * 0.05 }}
+              className="card p-8 border-zinc-200 shadow-none hover:border-zinc-900 transition-all group flex flex-col justify-between"
             >
-              <div className="space-y-6">
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg bg-${role.color === 'primary' ? 'primary' : role.color === 'emerald' ? 'emerald-500' : role.color === 'indigo' ? 'indigo-500' : role.color === 'amber' ? 'amber-500' : 'slate-900'}`}>
-                  <role.icon size={28} />
+              <div className="space-y-8">
+                <div className="w-12 h-12 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 group-hover:border-zinc-900 transition-all">
+                  <role.icon size={22} />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-black text-slate-900">{role.title}</h3>
-                  <p className="text-sm text-slate-500 font-medium leading-relaxed">{role.desc}</p>
+
+                <div className="space-y-3">
+                  <h3 className="text-xl font-semibold text-zinc-900 tracking-tight">{role.title}</h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed min-h-[60px]">{role.desc}</p>
                 </div>
-                <div className="flex flex-wrap gap-2 pt-2">
+
+                <div className="flex flex-wrap gap-2">
                   {role.features.map(f => (
-                    <span key={f} className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-slate-100 text-slate-400 rounded-md">
+                    <span key={f} className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
                       {f}
                     </span>
                   ))}
                 </div>
               </div>
-              
-              <div className="mt-8 pt-6 border-t border-slate-50 flex flex-col gap-3">
+
+              <div className="mt-12 space-y-3">
                 {role.registerRoute ? (
                   <>
-                    <Link href={role.registerRoute} className="btn btn-primary w-full py-3 text-[10px] uppercase tracking-widest">
+                    <Link href={role.registerRoute} className="btn btn-primary w-full h-11 text-xs">
                       New Registration <UserPlus size={14} />
                     </Link>
-                    <Link href={role.dashboardRoute} className="btn btn-outline w-full py-3 text-[10px] uppercase tracking-widest">
-                      Access Dashboard <ArrowRight size={14} />
+                    <Link href={role.dashboardRoute} className="btn btn-outline w-full h-11 text-xs">
+                      Access Dashboard <ChevronRight size={14} />
                     </Link>
                   </>
                 ) : (
-                  <Link href={role.route} className="btn btn-primary w-full py-3 text-[10px] uppercase tracking-widest flex items-center justify-between">
+                  <Link href={role.route} className="btn btn-primary w-full h-11 text-xs justify-between group/btn">
                     <span>Enter Portal</span>
-                    <ArrowRight size={16} />
+                    <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 )}
               </div>
@@ -114,14 +111,14 @@ export default function SelectRolePage() {
           ))}
         </div>
 
-        <div className="pt-12 text-center">
-          <div className="inline-flex items-center gap-4 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+        {/* Security Footer Info */}
+        <div className="pt-20 text-center">
+          <div className="inline-flex items-center gap-6 p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
+            <div className="w-12 h-12 rounded-full bg-white border border-zinc-100 flex items-center justify-center text-zinc-400 shadow-sm">
               <Wallet size={20} />
             </div>
-            <p className="text-sm text-slate-500 font-medium text-left">
-              BGPS uses <span className="text-slate-900 font-bold">Bhutan NDI</span> and <span className="text-slate-900 font-bold">Rabby Wallet</span> <br />
-              for secure cryptographic identity verification.
+            <p className="text-sm text-zinc-500 font-medium text-left leading-relaxed">
+              BGPS leverages <span className="text-zinc-900 font-bold">Bhutan NDI</span> for identity verification<br />and <span className="text-zinc-900 font-bold">Ethereum Sepolia</span> for immutable on-chain finality.
             </p>
           </div>
         </div>

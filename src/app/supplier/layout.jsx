@@ -1,12 +1,8 @@
 'use client';
-import { 
-  LayoutDashboard, 
-  Search, 
-  Send, 
-  Trophy, 
-  Settings 
-} from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Search, Send, Trophy, Settings } from 'lucide-react';
 import DashboardShell from '@/components/layout/DashboardShell';
+import RoleGuard from '@/components/layout/RoleGuard';
 
 const supplierNavigation = [
   { name: 'Dashboard', href: '/supplier/dashboard', icon: LayoutDashboard },
@@ -16,9 +12,14 @@ const supplierNavigation = [
   { name: 'Settings', href: '/supplier/settings', icon: Settings },
 ];
 
-import RoleGuard from '@/components/layout/RoleGuard';
-
 export default function SupplierLayout({ children }) {
+  const pathname = usePathname();
+  const isAuthPage = pathname === '/supplier/login' || pathname === '/supplier/register';
+
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
+
   return (
     <RoleGuard requiredRole="Supplier_Bidder" requireApproved={true}>
       <DashboardShell role="Supplier" navigation={supplierNavigation}>

@@ -1,4 +1,6 @@
 'use client';
+
+import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Search, 
@@ -7,6 +9,7 @@ import {
   Settings 
 } from 'lucide-react';
 import DashboardShell from '@/components/layout/DashboardShell';
+import RoleGuard from '@/components/layout/RoleGuard';
 
 const auditorNavigation = [
   { name: 'Dashboard', href: '/auditor/dashboard', icon: LayoutDashboard },
@@ -16,9 +19,19 @@ const auditorNavigation = [
   { name: 'Profile', href: '/auditor/profile', icon: Settings },
 ];
 
-import RoleGuard from '@/components/layout/RoleGuard';
-
 export default function AuditorLayout({ children }) {
+  const pathname = usePathname();
+  
+  // Define paths that should NOT have the DashboardShell
+  const isAuthPath = pathname?.endsWith('/login') || 
+                     pathname?.includes('/login/') ||
+                     pathname?.includes('/register') || 
+                     pathname?.includes('/invitation');
+
+  if (isAuthPath) {
+    return <div className="min-h-screen bg-zinc-50">{children}</div>;
+  }
+
   return (
     <RoleGuard requiredRole="Auditor">
       <DashboardShell role="Auditor" navigation={auditorNavigation}>
