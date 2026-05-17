@@ -52,8 +52,8 @@ export default function LandingPage() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-6"
           >
-            <h1 className="text-5xl md:text-[72px] font-semibold text-zinc-900 leading-[1.1] tracking-tightest">
-              Absolute Trust.<br />Total Integrity.
+            <h1 className="text-5xl md:text-[64px] font-semibold text-zinc-900 leading-[1.1] tracking-tightest">
+              Blockchain Based<br />Government Procurement system
             </h1>
             
             <p className="text-lg md:text-xl text-zinc-500 font-normal max-w-2xl mx-auto leading-relaxed">
