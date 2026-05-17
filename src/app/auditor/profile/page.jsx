@@ -13,88 +13,89 @@ export default function AuditorProfilePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12">
-      <div className="flex items-center gap-8">
-        <div className="w-32 h-32 rounded-3xl bg-indigo-600 flex items-center justify-center text-white text-5xl font-black shadow-2xl shadow-indigo-200">
+    <div className="max-w-5xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center gap-6 border-b border-zinc-100 pb-6">
+        <div className="w-24 h-24 rounded-2xl bg-zinc-900 flex items-center justify-center text-white text-4xl font-bold shadow-md">
           {profile.name.charAt(0)}
         </div>
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">{profile.name}</h1>
-            <span className="badge bg-indigo-50 text-indigo-600 border border-indigo-100">
-              <ShieldCheck size={12} /> Verified Auditor
-            </span>
+        <div className="space-y-1.5 flex-1">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">{profile.name}</h1>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold uppercase tracking-wider border border-emerald-100 shadow-sm">
+              <ShieldCheck size={16} /> Verified Auditor
+            </div>
           </div>
-          <p className="text-lg font-medium text-slate-500 italic">{profile.role}</p>
+          <p className="text-sm font-medium text-zinc-500">{profile.role} &bull; Joined {profile.joined}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card space-y-8">
-          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-4">Cryptographic Identity</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-8 space-y-8 shadow-sm">
+          <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest border-b border-zinc-100 pb-4">Cryptographic Identity</h3>
           
           <div className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+              <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 border border-zinc-100">
                 <Landmark size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Bhutan NDI Identifier</p>
-                <p className="text-sm font-bold text-slate-900">{profile.ndi}</p>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Bhutan NDI Identifier</p>
+                <p className="text-sm font-bold text-zinc-900">{profile.ndi}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+              <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 border border-zinc-100">
                 <Wallet size={20} />
               </div>
               <div className="flex-1">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Web3 Wallet Address</p>
-                <p className="text-[10px] font-bold text-indigo-600 font-mono break-all">{profile.wallet}</p>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Web3 Wallet Address</p>
+                <p className="text-xs font-bold text-indigo-600 font-mono break-all">{profile.wallet}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+              <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 border border-zinc-100">
                 <Mail size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Professional Email</p>
-                <p className="text-sm font-bold text-slate-900">{profile.email}</p>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Professional Email</p>
+                <p className="text-sm font-bold text-zinc-900">{profile.email}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-8">
-          <div className="card space-y-6 bg-slate-900 text-white">
-            <h3 className="text-sm font-black uppercase tracking-widest border-b border-slate-700 pb-4">Security Status</h3>
+          <div className="bg-zinc-900 text-white rounded-2xl p-6 sm:p-8 space-y-6 shadow-md">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-100 border-b border-zinc-800 pb-4">Security Status</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Key size={14} className="text-indigo-400" />
-                  <span className="text-xs font-bold">Two-Factor Auth</span>
+                  <Key size={16} className="text-zinc-400" />
+                  <span className="text-sm font-bold text-zinc-100">Two-Factor Auth</span>
                 </div>
-                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Enabled</span>
+                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Enabled</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert size={14} className="text-indigo-400" />
-                  <span className="text-xs font-bold">Session Security</span>
+                  <ShieldAlert size={16} className="text-zinc-400" />
+                  <span className="text-sm font-bold text-zinc-100">Session Security</span>
                 </div>
-                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Secure</span>
+                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Secure</span>
               </div>
             </div>
-            <button className="btn bg-white/10 hover:bg-white/20 text-white w-full border-none">
+            <button className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-sm font-bold text-white rounded-lg transition-colors border border-zinc-700">
               Manage Security Keys
             </button>
           </div>
 
-          <div className="card border-emerald-100 bg-emerald-50/30 flex items-center gap-4">
-            <CheckCircle2 className="text-emerald-500" size={24} />
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 flex items-start sm:items-center gap-4">
+            <CheckCircle2 className="text-emerald-500 shrink-0" size={24} />
             <div>
-              <h4 className="text-xs font-black text-slate-900 uppercase tracking-tight">Active Duty</h4>
-              <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+              <h4 className="text-sm font-bold text-zinc-900 tracking-tight">Active Duty</h4>
+              <p className="text-xs text-zinc-600 font-medium leading-relaxed mt-0.5">
                 You are currently authorized to verify high-value procurement tenders.
               </p>
             </div>
