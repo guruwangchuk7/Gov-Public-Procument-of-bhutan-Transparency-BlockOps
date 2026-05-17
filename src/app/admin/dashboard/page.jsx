@@ -5,9 +5,30 @@ import PendingAgencyTable from '@/components/admin/PendingAgencyTable';
 import PendingSupplierTable from '@/components/admin/PendingSupplierTable';
 import AdminDashboardSummary from '@/components/admin/AdminDashboardSummary';
 import BlockchainVerificationQueue from '@/components/admin/BlockchainVerificationQueue';
-import AddAuditorForm from '@/components/admin/AddAuditorForm';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+  const [wallet, setWallet] = useState(null);
+
+  useEffect(() => {
+    const savedSession = localStorage.getItem('bgps_ndi_session');
+    const savedWallet = localStorage.getItem('bgps_wallet_address');
+    
+    if (!savedSession || !savedWallet) {
+      router.push('/select-role');
+      return;
+    }
+    
+    setSession(JSON.parse(savedSession));
+    setWallet(savedWallet);
+  }, [router]);
+
+  if (!session) return null;
+
   return (
     <div className="space-y-10">
       {/* Header */}
@@ -15,10 +36,22 @@ export default function AdminDashboard() {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-zinc-100 rounded-full mb-3">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Admin Control Center</span>
+            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Verified Admin</span>
           </div>
-          <h1 className="text-4xl font-semibold text-zinc-900 tracking-tightest">System Oversight</h1>
-          <p className="text-zinc-500 mt-2">Manage agency verifications, supplier approvals, and system compliance.</p>
+          <h1 className="text-4xl font-semibold text-zinc-900 tracking-tightest">
+            Hello, {session.fullName || session.full_name?.split(' ')[0] || 'Admin'}
+          </h1>
+          <div className="flex flex-wrap items-center gap-3 mt-3">
+            <code className="text-xs text-indigo-700 font-mono bg-indigo-50 px-2 py-1 rounded border border-indigo-100 flex items-center gap-2 shadow-sm">
+               <ShieldCheck size={14} className="text-indigo-500" />
+              {wallet?.slice(0, 6)}...{wallet?.slice(-4)}
+            </code>
+            <div className="flex gap-2">
+               {session.idNumber && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">{session.idType || 'ID'}: {session.idNumber}</span>}
+               {session.dzongkhag && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">{session.dzongkhag}, {session.gewog}</span>}
+               {session.dateOfBirth && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">DOB: {session.dateOfBirth}</span>}
+            </div>
+          </div>
         </div>
         
         <div className="flex items-center gap-3">
@@ -37,44 +70,11 @@ export default function AdminDashboard() {
       <AdminDashboardSummary />
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        <div className="xl:col-span-8 space-y-8">
+      <div className="grid grid-cols-1 gap-8">
+        <div className="space-y-8">
           <BlockchainVerificationQueue />
           <PendingAgencyTable />
           <PendingSupplierTable />
-        </div>
-        
-        <div className="xl:col-span-4 space-y-8">
-          <AddAuditorForm />
-          
-          <div className="card border-zinc-200 shadow-none bg-zinc-900 text-white">
-            <div className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h4 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">Supabase Health</h4>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-widest">Online</span>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Database size={16} className="text-zinc-400" />
-                    <span className="font-medium">PostgreSQL Database</span>
-                  </div>
-                  <span className="text-xs font-mono text-zinc-500">v15.1</span>
-                </div>
-                <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
-                  <div className="h-full w-full bg-white opacity-90" />
-                </div>
-              </div>
-              
-              <p className="text-[11px] text-zinc-500 leading-relaxed italic">
-                Service Role Key active for administrative operations. Real-time synchronization enabled.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

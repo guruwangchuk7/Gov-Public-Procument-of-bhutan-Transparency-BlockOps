@@ -88,34 +88,34 @@ export default function BlockchainVerificationQueue() {
   if (pendingEvents.length === 0) return null;
 
   return (
-    <div className="card bg-zinc-900 border-zinc-800 p-6 space-y-6">
+    <div className="card bg-white border-zinc-200 p-6 space-y-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-            <Cpu size={16} className="text-emerald-500" />
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+            <Cpu size={16} className="text-emerald-600" />
           </div>
-          <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">Verification Queue</h3>
+          <h3 className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Verification Queue</h3>
         </div>
-        <div className="badge bg-emerald-500/10 text-emerald-400 text-[10px] border border-emerald-500/20">
+        <div className="badge bg-emerald-50 text-emerald-600 text-[10px] border border-emerald-100 font-bold px-2 py-1">
           {pendingEvents.length} Pending Actions
         </div>
       </div>
 
       <div className="space-y-3">
         {pendingEvents.map((event) => (
-          <div key={event.id} className="p-4 bg-zinc-800/40 rounded-xl border border-zinc-800 flex items-center justify-between hover:bg-zinc-800/60 transition-all group">
+          <div key={event.id} className="p-4 bg-zinc-50 rounded-xl border border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white hover:border-zinc-300 hover:shadow-sm transition-all group gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:text-indigo-600 transition-colors shadow-sm">
                 <ShieldCheck size={18} />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-bold text-zinc-900">
                   {event.agencies?.agency_name || event.suppliers?.company_name || 'System Action'}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">{event.event_name}</span>
-                  <div className="w-1 h-1 bg-zinc-700 rounded-full" />
-                  <code className="text-[10px] text-zinc-500 font-mono">
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">{event.event_name}</span>
+                  <div className="w-1 h-1 bg-zinc-300 rounded-full" />
+                  <code className="text-[10px] text-zinc-500 font-mono bg-white px-1.5 py-0.5 rounded border border-zinc-100 shadow-sm">
                     {event.payload_hash?.slice(0, 8)}...
                   </code>
                 </div>
@@ -125,22 +125,22 @@ export default function BlockchainVerificationQueue() {
             <button 
               onClick={() => handleConfirm(event)}
               disabled={verifyingId === event.id}
-              className="btn btn-primary bg-white text-zinc-900 hover:bg-zinc-100 h-9 px-4 text-xs disabled:opacity-50"
+              className="btn btn-primary h-10 px-5 text-xs font-bold disabled:opacity-50 whitespace-nowrap shadow-md shadow-zinc-200"
             >
               {verifyingId === event.id ? (
-                <Loader2 size={14} className="animate-spin" />
+                <Loader2 size={16} className="animate-spin" />
               ) : (
-                <span className="flex items-center gap-2">Sign & Authorize <ArrowRight size={14} /></span>
+                <span className="flex items-center gap-2">Sign & Authorize <ArrowRight size={16} /></span>
               )}
             </button>
           </div>
         ))}
       </div>
 
-      <div className="p-3 bg-zinc-800/20 rounded-lg border border-zinc-800/50 flex items-center gap-3">
-        <AlertCircle size={14} className="text-zinc-500" />
-        <p className="text-[11px] text-zinc-500 font-medium italic">
-          Wallet authorization requires an Admin signature. This commits the registration hash to Ethereum Sepolia.
+      <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start sm:items-center gap-3">
+        <AlertCircle size={16} className="text-blue-500 shrink-0 mt-0.5 sm:mt-0" />
+        <p className="text-[11px] text-blue-700 font-medium">
+          Wallet authorization requires an Admin signature. This securely commits the registration hash to Ethereum Sepolia.
         </p>
       </div>
     </div>

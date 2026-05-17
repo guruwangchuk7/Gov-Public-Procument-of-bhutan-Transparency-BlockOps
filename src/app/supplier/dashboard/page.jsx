@@ -70,12 +70,18 @@ export default function SupplierDashboard() {
             <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Verified Supplier</span>
           </div>
           <h1 className="text-4xl font-semibold text-zinc-900 tracking-tightest">
-            Hello, {session.full_name?.split(' ')[0] || 'Member'}
+            Hello, {session.fullName || session.full_name?.split(' ')[0] || 'Karma'}
           </h1>
-          <div className="flex items-center gap-3 mt-2">
-            <code className="text-xs text-zinc-400 font-mono bg-zinc-50 px-2 py-0.5 rounded border border-zinc-100">
-              {wallet?.slice(0, 18)}...
+          <div className="flex flex-wrap items-center gap-3 mt-3">
+            <code className="text-xs text-indigo-700 font-mono bg-indigo-50 px-2 py-1 rounded border border-indigo-100 flex items-center gap-2 shadow-sm">
+               <ShieldCheck size={14} className="text-indigo-500" />
+              {wallet?.slice(0, 6)}...{wallet?.slice(-4)}
             </code>
+            <div className="flex gap-2">
+               {session.idNumber && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">{session.idType || 'ID'}: {session.idNumber}</span>}
+               {session.dzongkhag && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">{session.dzongkhag}, {session.gewog}</span>}
+               {session.dateOfBirth && <span className="text-[10px] font-bold text-zinc-500 bg-zinc-100 px-2 py-1 rounded uppercase">DOB: {session.dateOfBirth}</span>}
+            </div>
           </div>
         </div>
         <Link href="/supplier/tenders" className="btn btn-primary px-6 h-11">

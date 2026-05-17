@@ -63,19 +63,19 @@ export default function BlockchainEventsPage() {
                 <th className="px-6 py-4 text-right">Proof</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-zinc-100">
               {events.map((event) => (
-                <tr key={event.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={event.id} className="hover:bg-zinc-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                      <span className="text-sm font-bold text-gray-900">{event.event_name}</span>
+                      <span className="text-sm font-bold text-zinc-900">{event.event_name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-xs text-gray-500 font-mono">
-                    {event.tx_hash.slice(0, 16)}...
+                  <td className="px-6 py-4 text-xs text-zinc-500 font-mono">
+                    {event.tx_hash ? `${event.tx_hash.slice(0, 16)}...` : 'Awaiting Signature'}
                   </td>
-                  <td className="px-6 py-4 text-xs font-bold text-gray-700">
+                  <td className="px-6 py-4 text-xs font-bold text-zinc-700">
                     #{event.block_number || 'Pending'}
                   </td>
                   <td className="px-6 py-4">
@@ -86,13 +86,20 @@ export default function BlockchainEventsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <a 
-                      href={`https://sepolia.etherscan.io/tx/${event.tx_hash}`} 
-                      target="_blank"
-                      className="p-2 bg-gray-50 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-all inline-block"
-                    >
-                      <ExternalLink size={14} />
-                    </a>
+                    {event.tx_hash ? (
+                      <a 
+                        href={`https://sepolia.etherscan.io/tx/${event.tx_hash}`} 
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-2 bg-zinc-100 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-all inline-block shadow-sm"
+                      >
+                        <ExternalLink size={14} />
+                      </a>
+                    ) : (
+                      <span className="p-2 bg-zinc-50 rounded-lg text-zinc-300 inline-block">
+                        <ExternalLink size={14} />
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}

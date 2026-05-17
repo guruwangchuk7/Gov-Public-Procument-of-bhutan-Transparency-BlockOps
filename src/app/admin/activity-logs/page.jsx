@@ -13,9 +13,9 @@ export default function ActivityLogsPage() {
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch('/api/public/notifications'); // Reusing the notification API for logs
+      const res = await fetch('/api/admin/logs');
       const data = await res.json();
-      setLogs(data);
+      setLogs(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -32,32 +32,32 @@ export default function ActivityLogsPage() {
         </div>
       </div>
 
-      <div className="card !p-0 overflow-hidden">
+      <div className="card !p-0 overflow-hidden bg-white border-zinc-200 shadow-sm">
         {loading ? (
-          <div className="p-20 text-center text-gray-400">Loading system logs...</div>
+          <div className="p-20 text-center text-zinc-400">Loading system logs...</div>
         ) : (
           <table className="w-full text-left">
             <thead>
-              <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50/50">
+              <tr className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-50/80 border-b border-zinc-100">
                 <th className="px-6 py-4">Timestamp</th>
                 <th className="px-6 py-4">Actor</th>
                 <th className="px-6 py-4">Action</th>
                 <th className="px-6 py-4">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-zinc-100">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-xs text-gray-500 font-mono">
+                <tr key={log.id} className="hover:bg-zinc-50/50 transition-colors">
+                  <td className="px-6 py-4 text-xs text-zinc-500 font-mono">
                     {format(new Date(log.created_at), 'yyyy-MM-dd HH:mm:ss')}
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2 py-1 bg-gray-100 rounded text-[10px] font-bold text-gray-600 uppercase">
+                    <span className="px-2.5 py-1 bg-zinc-100 border border-zinc-200 rounded-md text-[10px] font-bold text-zinc-600 uppercase">
                       {log.actor_type.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-bold text-gray-900">{log.action}</td>
-                  <td className="px-6 py-4 text-xs text-gray-500 italic">
+                  <td className="px-6 py-4 text-sm font-bold text-zinc-900">{log.action}</td>
+                  <td className="px-6 py-4 text-xs text-zinc-500 italic">
                     {JSON.stringify(log.details)}
                   </td>
                 </tr>

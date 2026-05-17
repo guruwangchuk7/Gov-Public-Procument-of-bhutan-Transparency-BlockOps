@@ -29,7 +29,7 @@ export default function DashboardShell({ children, role, navigation }) {
     router.push('/select-role');
   };
 
-  const displayName = ndi_identity?.full_name || 'Verified User';
+  const displayName = ndi_identity?.fullName || ndi_identity?.full_name || 'Verified User';
   const displayWallet = wallet_address ? `${wallet_address.slice(0, 6)}...${wallet_address.slice(-4)}` : 'No Wallet';
 
   return (
