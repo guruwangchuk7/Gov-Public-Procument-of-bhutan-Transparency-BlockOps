@@ -34,13 +34,13 @@ export default function TenderCreatePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-black text-gray-900">Create New Tender</h1>
-        <p className="text-gray-500">Prepare your procurement documents and set submission rules.</p>
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">Create New Tender</h1>
+        <p className="text-zinc-500 mt-1 text-sm">Prepare your procurement documents and set submission rules.</p>
       </div>
 
-      <div className="card">
+      <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-6 sm:p-8">
         <TenderCreateForm onSubmit={handleCreateTender} />
       </div>
     </div>

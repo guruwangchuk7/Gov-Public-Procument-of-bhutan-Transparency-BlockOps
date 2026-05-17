@@ -60,72 +60,72 @@ export default function TenderCreateForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-gray-700">Tender Title</label>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-1.5">
+        <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Tender Title</label>
         <div className="relative">
-          <FileText className="absolute left-3 top-3.5 text-gray-400" size={18} />
+          <FileText className="absolute left-3 top-2.5 text-zinc-400" size={16} />
           <input
             required
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium"
+            className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all font-medium text-sm"
             placeholder="e.g. Rural Road Maintenance Project Phase II"
           />
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-gray-700">Description</label>
+      <div className="space-y-1.5">
+        <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Description</label>
         <textarea
           required
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows={4}
-          className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+          rows={3}
+          className="w-full px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all text-sm"
           placeholder="Briefly describe the procurement requirement..."
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">Estimated Amount (Nu.)</label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Estimated Amount (Nu.)</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
             <input
               required
               type="number"
               name="estimatedAmount"
               value={formData.estimatedAmount}
               onChange={handleChange}
-              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all text-sm"
               placeholder="0.00"
             />
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">Submission Deadline</label>
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Submission Deadline</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
             <input
               required
               type="datetime-local"
               name="submissionDeadline"
               value={formData.submissionDeadline}
               onChange={handleChange}
-              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all text-sm"
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-gray-700">Tender Document (SBD/Technical Spec)</label>
-        <div className={`relative border-2 border-dashed rounded-2xl p-10 transition-all flex flex-col items-center justify-center gap-3 ${
-          file ? 'border-primary-200 bg-primary-50/30' : 'border-gray-200 bg-gray-50/50 hover:border-primary'
+      <div className="space-y-1.5">
+        <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Tender Document (SBD/Technical Spec)</label>
+        <div className={`relative border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center gap-2 ${
+          file ? 'border-indigo-200 bg-indigo-50/50' : 'border-zinc-200 bg-zinc-50/50 hover:border-zinc-300'
         }`}>
           <input
             type="file"
@@ -135,25 +135,25 @@ export default function TenderCreateForm({ onSubmit }) {
           />
           {file ? (
             <>
-              <CheckCircle2 className="text-primary" size={40} />
-              <p className="text-sm font-bold text-gray-900">{file.name}</p>
-              <p className="text-xs text-gray-500 font-mono">Proof Hash will be generated on submit</p>
+              <CheckCircle2 className="text-indigo-600" size={32} />
+              <p className="text-sm font-bold text-zinc-900">{file.name}</p>
+              <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Proof Hash will be generated on submit</p>
             </>
           ) : (
             <>
-              <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center text-gray-400 shadow-sm">
-                <Upload size={28} />
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-zinc-400 shadow-sm border border-zinc-100">
+                <Upload size={20} />
               </div>
-              <p className="text-sm font-bold text-gray-700">Upload PDF Document</p>
-              <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Encrypted & Hashed</p>
+              <p className="text-sm font-bold text-zinc-700 mt-1">Upload PDF Document</p>
+              <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Encrypted & Hashed</p>
             </>
           )}
         </div>
       </div>
 
-      <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
-        <AlertCircle className="text-amber-500" size={20} />
-        <p className="text-xs text-amber-700 font-medium">
+      <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-100">
+        <AlertCircle className="text-amber-500 shrink-0" size={16} />
+        <p className="text-[11px] text-amber-700 font-medium leading-relaxed">
           Saving as draft will not record the tender on the blockchain. 
           You must publish the tender manually after saving to make it official.
         </p>
@@ -161,11 +161,11 @@ export default function TenderCreateForm({ onSubmit }) {
 
       <button
         disabled={loading}
-        className="btn-primary w-full py-4 text-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+        className="btn-primary rounded-lg w-full h-10 text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all"
       >
         {loading ? (
           <>
-            <Loader2 className="animate-spin" size={20} />
+            <Loader2 className="animate-spin" size={16} />
             Creating Tender Draft...
           </>
         ) : (
