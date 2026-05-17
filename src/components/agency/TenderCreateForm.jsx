@@ -1,13 +1,13 @@
 'use client';
 import { useState } from 'react';
-import { 
-  FileText, 
-  DollarSign, 
-  Calendar, 
-  Upload, 
-  Loader2, 
-  CheckCircle2, 
-  AlertCircle 
+import {
+  FileText,
+  DollarSign,
+  Calendar,
+  Upload,
+  Loader2,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { generateDocumentHash } from '@/lib/hash/document-hash';
 
@@ -42,7 +42,7 @@ export default function TenderCreateForm({ onSubmit }) {
       const reader = new FileReader();
       reader.onload = async (event) => {
         const hash = generateDocumentHash(event.target.result);
-        
+
         // 2. Submit
         await onSubmit({
           ...formData,
@@ -124,9 +124,8 @@ export default function TenderCreateForm({ onSubmit }) {
 
       <div className="space-y-1.5">
         <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Tender Document (SBD/Technical Spec)</label>
-        <div className={`relative border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center gap-2 ${
-          file ? 'border-indigo-200 bg-indigo-50/50' : 'border-zinc-200 bg-zinc-50/50 hover:border-zinc-300'
-        }`}>
+        <div className={`relative border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center gap-2 ${file ? 'border-indigo-200 bg-indigo-50/50' : 'border-zinc-200 bg-zinc-50/50 hover:border-zinc-300'
+          }`}>
           <input
             type="file"
             accept=".pdf"
@@ -154,7 +153,7 @@ export default function TenderCreateForm({ onSubmit }) {
       <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-100">
         <AlertCircle className="text-amber-500 shrink-0" size={16} />
         <p className="text-[11px] text-amber-700 font-medium leading-relaxed">
-          Saving as draft will not record the tender on the blockchain. 
+          Saving as draft will not record the tender on the blockchain.
           You must publish the tender manually after saving to make it official.
         </p>
       </div>

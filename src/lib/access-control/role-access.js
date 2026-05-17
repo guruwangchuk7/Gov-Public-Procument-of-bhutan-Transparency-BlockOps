@@ -55,6 +55,9 @@ export async function resolveRoleAccess({
     const data = await res.json();
     if (data.success) {
       record = data.record;
+      if (typeof window !== 'undefined' && record) {
+        localStorage.setItem('bgps_role_record', JSON.stringify(record));
+      }
     } else {
       return {
         allowed: false,

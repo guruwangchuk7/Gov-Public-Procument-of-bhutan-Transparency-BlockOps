@@ -1,14 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  Building2, 
-  Calendar, 
-  DollarSign, 
-  FileText, 
-  ShieldCheck, 
-  Gavel, 
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  DollarSign,
+  FileText,
+  ShieldCheck,
+  Gavel,
   Loader2,
   Clock,
   ExternalLink
@@ -70,9 +70,13 @@ export default function AgencyTenderDetailsPage({ params }) {
       if (!window.ethereum) throw new Error('Wallet not found');
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
+      const contractAddress = process.env.NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS;
+      if (!contractAddress || !/^0x[a-fA-F0-9]{40}$/.test(contractAddress)) {
+        throw new Error("Missing or invalid NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS in .env.local");
+      }
       const contract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-        BGPS_ABI,
+        contractAddress,
+        BGPS_ABI.abi || BGPS_ABI,
         signer
       );
 
@@ -116,7 +120,7 @@ export default function AgencyTenderDetailsPage({ params }) {
           <ArrowLeft size={16} /> Back to Tenders
         </Link>
         {tender.status === 'published' && (
-          <button 
+          <button
             onClick={handleCloseTender}
             disabled={actionLoading}
             className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-red-500 transition-all shadow-lg shadow-gray-200"
@@ -140,7 +144,7 @@ export default function AgencyTenderDetailsPage({ params }) {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className="text-right">
               <p className="text-[10px] text-gray-400 font-bold uppercase">Estimated Budget</p>
@@ -184,10 +188,10 @@ export default function AgencyTenderDetailsPage({ params }) {
 
         <div className="card !p-0 overflow-hidden">
           {bids.length > 0 ? (
-            <BidReviewTable 
-              bids={bids} 
-              tenderStatus={tender.status} 
-              onSelectWinner={handleSelectWinner} 
+            <BidReviewTable
+              bids={bids}
+              tenderStatus={tender.status}
+              onSelectWinner={handleSelectWinner}
             />
           ) : (
             <div className="p-20 text-center">

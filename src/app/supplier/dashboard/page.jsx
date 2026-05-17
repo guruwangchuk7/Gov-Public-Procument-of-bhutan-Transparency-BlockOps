@@ -18,10 +18,14 @@ export default function SupplierDashboard() {
   const router = useRouter();
   const [session, setSession] = useState(null);
   const [wallet, setWallet] = useState(null);
+  const [supplierRecord, setSupplierRecord] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
 
   useEffect(() => {
     const savedSession = localStorage.getItem('bgps_ndi_session');
     const savedWallet = localStorage.getItem('bgps_wallet_address');
+    const savedRecord = localStorage.getItem('bgps_role_record');
     
     if (!savedSession || !savedWallet) {
       router.push('/supplier/login');
@@ -30,27 +34,50 @@ export default function SupplierDashboard() {
     
     setSession(JSON.parse(savedSession));
     setWallet(savedWallet);
+    if (savedRecord) {
+      setSupplierRecord(JSON.parse(savedRecord));
+    }
   }, [router]);
+
+  useEffect(() => {
+    if (!supplierRecord) return;
+    
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch(`/api/supplier/dashboard?supplierId=${supplierRecord.id}`);
+        const data = await res.json();
+        if (data.success) {
+          setDashboardData(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      } finally {
+        setLoadingDashboard(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, [supplierRecord]);
 
   if (!session) return null;
 
   const stats = [
     {
       title: 'Active Bids',
-      value: '3',
-      subtext: 'Nu. 12.4M total value',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.activeBids || 0),
+      subtext: 'Submitted proposals',
       icon: Send
     },
     {
       title: 'Open Tenders',
-      value: '14',
-      subtext: '5 new this week',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.openTenders || 0),
+      subtext: 'Active bidding rounds',
       icon: Search
     },
     {
       title: 'Won Contracts',
-      value: '1',
-      subtext: 'Ministry of Education',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.wonContracts || 0),
+      subtext: 'Awarded on blockchain',
       icon: Trophy
     },
     {
@@ -108,30 +135,33 @@ export default function SupplierDashboard() {
           
           <div className="table-container shadow-none border-zinc-200">
             <div className="divide-y divide-zinc-100">
-              {[
-                { title: 'Rural Road Maintenance', amount: 'Nu. 4,200,000', status: 'On-chain' },
-                { title: 'Bridge Construction Phase I', amount: 'Nu. 8,500,000', status: 'Submitted' },
-              ].map((bid, i) => (
-                <div key={i} className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 transition-colors">
-                      <Send size={18} />
+              {loadingDashboard ? (
+                <div className="p-10 text-center text-zinc-400">Loading bids...</div>
+              ) : (dashboardData?.recentBids || []).length > 0 ? (
+                (dashboardData?.recentBids || []).map((bid, i) => (
+                  <div key={bid.id || i} className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors cursor-pointer group" onClick={() => router.push(`/supplier/bids/${bid.id}`)}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 transition-colors">
+                        <Send size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-zinc-900">{bid.title}</p>
+                        <p className="text-[11px] text-zinc-400 font-medium">{bid.amount}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-zinc-900">{bid.title}</p>
-                      <p className="text-[11px] text-zinc-400 font-medium">{bid.amount}</p>
+                    <div className="flex items-center gap-4">
+                      <span className={`badge ${
+                        bid.status === 'On-chain' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'
+                      }`}>
+                        {bid.status}
+                      </span>
+                      <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500 transition-colors" />
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`badge ${
-                      bid.status === 'On-chain' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'
-                    }`}>
-                      {bid.status}
-                    </span>
-                    <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500 transition-colors" />
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="p-10 text-center text-zinc-400">No bids submitted yet.</div>
+              )}
             </div>
           </div>
         </div>
@@ -140,21 +170,24 @@ export default function SupplierDashboard() {
         <div className="lg:col-span-5 space-y-4">
           <h3 className="text-sm font-semibold text-zinc-900 tracking-tight">Recommended Tenders</h3>
           <div className="space-y-3">
-            {[
-              { title: 'Sewerage Upgrade Works', deadline: '2 days left', budget: 'Nu. 3.2M' },
-              { title: 'Solar Panel Installation', deadline: '5 days left', budget: 'Nu. 1.8M' },
-            ].map((tender, i) => (
-              <div key={i} className="card p-5 border-zinc-200 shadow-none hover:border-zinc-300 transition-all group">
-                <div className="flex justify-between items-start mb-2">
-                  <p className="text-sm font-semibold text-zinc-900 group-hover:text-zinc-950">{tender.title}</p>
-                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider bg-red-50 px-1.5 py-0.5 rounded">{tender.deadline}</p>
+            {loadingDashboard ? (
+              <div className="p-10 text-center text-zinc-400">Loading recommendations...</div>
+            ) : (dashboardData?.recommendedTenders || []).length > 0 ? (
+              (dashboardData?.recommendedTenders || []).map((tender, i) => (
+                <div key={tender.id || i} className="card p-5 border-zinc-200 shadow-none hover:border-zinc-300 transition-all group">
+                  <div className="flex justify-between items-start mb-2">
+                    <p className="text-sm font-semibold text-zinc-900 group-hover:text-zinc-950">{tender.title}</p>
+                    <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider bg-red-50 px-1.5 py-0.5 rounded">{tender.deadline}</p>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 font-medium mb-4">Estimated Budget: {tender.budget}</p>
+                  <Link href="/supplier/tenders" className="inline-flex items-center gap-2 text-[10px] font-bold text-zinc-900 uppercase tracking-widest hover:translate-x-1 transition-transform">
+                    View Details <ArrowRight size={12} />
+                  </Link>
                 </div>
-                <p className="text-[11px] text-zinc-400 font-medium mb-4">Estimated Budget: {tender.budget}</p>
-                <Link href="/supplier/tenders" className="inline-flex items-center gap-2 text-[10px] font-bold text-zinc-900 uppercase tracking-widest hover:translate-x-1 transition-transform">
-                  View Details <ArrowRight size={12} />
-                </Link>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="p-10 text-center text-zinc-400">No new tenders available.</div>
+            )}
           </div>
         </div>
       </div>

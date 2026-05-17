@@ -39,12 +39,12 @@ export const PublicVerificationService = {
         // If not found, check if it's a TX Hash in blockchain_events
         const { data: events } = await (createClient().from('blockchain_events').select('*').eq('tx_hash', query).limit(1));
         if (events && events.length > 0) {
-            event = events[0];
-            // Resolve entity from event
-            if (event.related_tender_id) {
-                tender = await TenderRepository.getById(event.related_tender_id);
-                dbHash = tender?.tender_hash;
-            }
+          event = events[0];
+          // Resolve entity from event
+          if (event.related_tender_id) {
+            tender = await TenderRepository.getById(event.related_tender_id);
+            dbHash = tender?.tender_hash;
+          }
         }
       }
 
@@ -101,6 +101,6 @@ export const PublicVerificationService = {
 
 // Helper for the API
 function createClient() {
-    const { createClient: supabaseCreate } = require('@supabase/supabase-js');
-    return supabaseCreate(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const { createClient: supabaseCreate } = require('@supabase/supabase-js');
+  return supabaseCreate(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 }

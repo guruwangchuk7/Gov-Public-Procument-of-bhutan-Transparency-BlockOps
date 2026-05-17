@@ -3,9 +3,10 @@ import { BlockchainEventRepository, ActivityLogRepository } from '@/repositories
 
 export const TenderPublishService = {
   async publishTender(tenderId, agencyId, txHash) {
-    // 1. Verify Tender Ownership and Status
+    // 1. Verify Tender Status
     const tender = await TenderRepository.getById(tenderId);
-    if (!tender || tender.agency_id !== agencyId) throw new Error('Unauthorized or tender not found');
+    if (!tender) throw new Error('Tender not found');
+    if (agencyId && tender.agency_id !== agencyId) throw new Error('Unauthorized');
     if (tender.status !== 'draft') throw new Error('Only draft tenders can be published');
 
     // 2. Update Tender Status

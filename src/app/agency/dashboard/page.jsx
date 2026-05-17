@@ -18,10 +18,14 @@ export default function AgencyDashboard() {
   const router = useRouter();
   const [session, setSession] = useState(null);
   const [wallet, setWallet] = useState(null);
+  const [agencyRecord, setAgencyRecord] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
 
   useEffect(() => {
     const savedSession = localStorage.getItem('bgps_ndi_session');
     const savedWallet = localStorage.getItem('bgps_wallet_address');
+    const savedRecord = localStorage.getItem('bgps_role_record');
     
     if (!savedSession || !savedWallet) {
       router.push('/agency/login');
@@ -30,33 +34,56 @@ export default function AgencyDashboard() {
     
     setSession(JSON.parse(savedSession));
     setWallet(savedWallet);
+    if (savedRecord) {
+      setAgencyRecord(JSON.parse(savedRecord));
+    }
   }, [router]);
+
+  useEffect(() => {
+    if (!agencyRecord) return;
+    
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch(`/api/agency/dashboard?agencyId=${agencyRecord.id}`);
+        const data = await res.json();
+        if (data.success) {
+          setDashboardData(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      } finally {
+        setLoadingDashboard(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, [agencyRecord]);
 
   if (!session) return null;
 
   const stats = [
     {
       title: 'Active Tenders',
-      value: '4',
-      subtext: '2 closing this week',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.activeTenders || 0),
+      subtext: 'Published on Sepolia',
       icon: FileText
     },
     {
       title: 'Bids Received',
-      value: '18',
-      subtext: 'Avg. 4.5 bids per tender',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.bidsReceived || 0),
+      subtext: 'Encrypted proposals',
       icon: Send
     },
     {
       title: 'Awarded Tenders',
-      value: '8',
-      subtext: 'Nu. 32M total value',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.awardedTenders || 0),
+      subtext: 'On-chain proof stored',
       icon: CheckCircle2
     },
     {
       title: 'Awaiting Publish',
-      value: '2',
-      subtext: 'Drafts ready for blockchain',
+      value: loadingDashboard ? '...' : String(dashboardData?.stats?.awaitingPublish || 0),
+      subtext: 'Draft specifications',
       icon: Clock
     }
   ];
@@ -100,37 +127,39 @@ export default function AgencyDashboard() {
             <Link href="/agency/tenders" className="text-xs font-semibold text-zinc-400 hover:text-zinc-900 transition-colors">View All</Link>
           </div>
           
-          <div className="table-container shadow-none border-zinc-200">
             <div className="divide-y divide-zinc-100">
-              {[
-                { title: 'Rural Road Maintenance Project', status: 'Published', bids: 6, date: '2 days ago' },
-                { title: 'Supply of Office Stationery', status: 'Draft', bids: 0, date: '5 days ago' },
-                { title: 'Bridge Construction Phase I', status: 'Published', bids: 3, date: '1 week ago' },
-              ].map((tender, i) => (
-                <div key={i} className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 transition-colors">
-                      <FileText size={18} />
+              {loadingDashboard ? (
+                <div className="p-10 text-center text-zinc-400">Loading tenders...</div>
+              ) : (dashboardData?.latestTenders || []).length > 0 ? (
+                (dashboardData?.latestTenders || []).map((tender, i) => (
+                  <div key={tender.id || i} className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors cursor-pointer group" onClick={() => router.push(`/agency/tenders/${tender.id}`)}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 transition-colors">
+                        <FileText size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-zinc-900">{tender.title}</p>
+                        <p className="text-[11px] text-zinc-400 font-medium tracking-tight">
+                          {tender.bids} Bids Received • Last updated {tender.date ? new Date(tender.date).toLocaleDateString() : 'N/A'}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-zinc-900">{tender.title}</p>
-                      <p className="text-[11px] text-zinc-400 font-medium tracking-tight">
-                        {tender.bids} Bids Received • Last modified {tender.date}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      <span className={`badge uppercase ${
+                        tender.status === 'published' ? 'bg-sky-50 text-sky-600 border border-sky-100' :
+                        tender.status === 'awarded' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                        'bg-zinc-100 text-zinc-500 border border-zinc-200'
+                      }`}>
+                        {tender.status}
+                      </span>
+                      <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500 transition-colors" />
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`badge ${
-                      tender.status === 'Published' ? 'bg-sky-50 text-sky-600 border border-sky-100' : 'bg-zinc-100 text-zinc-500 border border-zinc-200'
-                    }`}>
-                      {tender.status}
-                    </span>
-                    <ChevronRight size={14} className="text-zinc-300 group-hover:text-zinc-500 transition-colors" />
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="p-10 text-center text-zinc-400">No tenders created yet.</div>
+              )}
             </div>
-          </div>
         </div>
 
         {/* Quick Help / Resources */}

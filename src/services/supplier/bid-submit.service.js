@@ -1,6 +1,5 @@
 import { BidRepository } from '@/repositories/bid.repository';
-import { DocumentRepository } from '@/repositories/document.repository';
-import { ActivityLogRepository, BlockchainEventRepository } from '@/repositories/audit.repository';
+import { DocumentRepository, ActivityLogRepository, BlockchainEventRepository } from '@/repositories/audit.repository';
 
 export const BidSubmitService = {
   async submitBid(supplierId, bidData, documentData) {
@@ -25,7 +24,7 @@ export const BidSubmitService = {
     await BlockchainEventRepository.create({
       event_name: 'BidSubmitted',
       tx_status: 'confirmed',
-      tx_hash: bidData.tx_hash,
+      tx_hash: bidData.blockchain_tx_hash,
       related_tender_id: bidData.tender_id,
       payload_hash: bidData.bid_hash,
       confirmed_at: new Date().toISOString()
@@ -38,7 +37,7 @@ export const BidSubmitService = {
       action: 'Supplier submitted bid',
       entity_type: 'bid',
       entity_id: bid.id,
-      details: `Bid submitted for tender ID: ${bidData.tender_id}. TX: ${bidData.tx_hash}`
+      details: `Bid submitted for tender ID: ${bidData.tender_id}. TX: ${bidData.blockchain_tx_hash}`
     });
 
     return { bid, document };

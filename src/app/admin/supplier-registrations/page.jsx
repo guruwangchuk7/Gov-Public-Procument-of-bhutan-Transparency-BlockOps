@@ -29,17 +29,29 @@ export default function SupplierApprovalsPage() {
   const handleApprove = async (supplier) => {
     try {
       if (!window.ethereum) throw new Error('Wallet not found');
-      
+
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
+
+      // Verify Connected Admin Wallet Address (Case-Insensitive)
+      const connectedWallet = await signer.getAddress();
+      const expectedAdminWallet = "0xaC577ADaC20fDF2EFB428Dd6274CE84024Fd3a39";
+      if (connectedWallet.toLowerCase() !== expectedAdminWallet.toLowerCase()) {
+        throw new Error("Please connect the Admin wallet to authorize supplier on-chain.");
+      }
+
+      const contractAddress = process.env.NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS;
+      if (!contractAddress || !/^0x[a-fA-F0-9]{40}$/.test(contractAddress)) {
+        throw new Error("Missing or invalid NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS in .env.local");
+      }
       const contract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-        BGPS_ABI,
+        contractAddress,
+        BGPS_ABI.abi || BGPS_ABI,
         signer
       );
 
       const proofHash = ethers.utils.id(`${supplier.company_name}-${supplier.license_number}`);
-      
+
       console.log('Sending blockchain transaction...');
       const tx = await contract.authorizeSupplier(supplier.wallet_address, proofHash);
       await tx.wait();
@@ -63,7 +75,32 @@ export default function SupplierApprovalsPage() {
     }
   };
 
-  const filteredSuppliers = suppliers.filter(s => 
+  const handleReject = async (supplier) => {
+    const reason = prompt('Enter rejection reason:');
+    if (!reason) return;
+
+    try {
+      const res = await fetch('/api/admin/reject-supplier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          supplierId: supplier.id,
+          adminId: 'admin-uuid',
+          reason
+        })
+      });
+
+      if (res.ok) {
+        fetchSuppliers();
+        alert('Supplier rejected successfully!');
+      }
+    } catch (err) {
+      console.error('Rejection failed:', err);
+      alert(`Rejection failed: ${err.message}`);
+    }
+  };
+
+  const filteredSuppliers = suppliers.filter(s =>
     s.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.license_number?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -75,11 +112,11 @@ export default function SupplierApprovalsPage() {
           <h1 className="text-2xl font-black text-gray-900">Supplier Registrations</h1>
           <p className="text-gray-500">Review and authorize contractors for the procurement network.</p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
+            <input
               type="text"
               placeholder="Search suppliers..."
               value={searchTerm}
@@ -97,10 +134,10 @@ export default function SupplierApprovalsPage() {
         {loading ? (
           <div className="p-20 text-center text-gray-400">Loading registrations...</div>
         ) : filteredSuppliers.length > 0 ? (
-          <AgencyApprovalTable 
-            agencies={filteredSuppliers.map(s => ({ ...s, agency_name: s.company_name, registration_number: s.license_number }))} 
+          <AgencyApprovalTable
+            agencies={filteredSuppliers.map(s => ({ ...s, agency_name: s.company_name, registration_number: s.license_number }))}
             onApprove={handleApprove}
-            onReject={() => {}} // TODO: Add rejection
+            onReject={handleReject}
           />
         ) : (
           <div className="p-20 text-center">

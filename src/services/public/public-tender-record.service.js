@@ -3,6 +3,7 @@ import { AwardRepository } from '@/repositories/award.repository';
 import { BidRepository } from '@/repositories/bid.repository';
 import { blockchainEventRepository } from '@/repositories/blockchain-event.repository';
 import { PublicTenderViewRepository } from '@/repositories/public-tender-view.repository';
+import { documentRepository } from '@/repositories/document.repository';
 
 export const PublicTenderRecordService = {
   async getTenderRecord(tenderId) {
@@ -35,6 +36,9 @@ export const PublicTenderRecordService = {
       // 5. Log View
       await PublicTenderViewRepository.recordView({ tender_id: tenderId });
 
+      // 6. Fetch Documents
+      const documents = await documentRepository.getDocumentsByEntity(tenderId, 'tender');
+
       // Clean tender for public display
       const publicTender = {
         id: tender.id,
@@ -46,7 +50,8 @@ export const PublicTenderRecordService = {
         published_at: tender.published_at,
         agency_name: tender.agencies?.agency_name,
         tender_hash: tender.tender_hash,
-        blockchain_tx_hash: tender.blockchain_tx_hash
+        blockchain_tx_hash: tender.blockchain_tx_hash,
+        documents: documents || []
       };
 
       return {
@@ -75,6 +80,6 @@ export const PublicTenderRecordService = {
 };
 
 function createClient() {
-    const { createClient: supabaseCreate } = require('@supabase/supabase-js');
-    return supabaseCreate(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const { createClient: supabaseCreate } = require('@supabase/supabase-js');
+  return supabaseCreate(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 }

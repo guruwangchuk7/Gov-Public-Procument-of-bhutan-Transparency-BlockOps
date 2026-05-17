@@ -30,22 +30,34 @@ export default function AgencyApprovalsPage() {
     try {
       // 1. Authorize on Blockchain
       if (!window.ethereum) throw new Error('Wallet not found');
-      
+
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
+
+      // Verify Connected Admin Wallet Address (Case-Insensitive)
+      const connectedWallet = await signer.getAddress();
+      const expectedAdminWallet = "0xaC577ADaC20fDF2EFB428Dd6274CE84024Fd3a39";
+      if (connectedWallet.toLowerCase() !== expectedAdminWallet.toLowerCase()) {
+        throw new Error("Please connect the Admin wallet to authorize agency on-chain.");
+      }
+
+      const contractAddress = process.env.NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS;
+      if (!contractAddress || !/^0x[a-fA-F0-9]{40}$/.test(contractAddress)) {
+        throw new Error("Missing or invalid NEXT_PUBLIC_BGPS_CONTRACT_ADDRESS in .env.local");
+      }
       const contract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-        BGPS_ABI,
+        contractAddress,
+        BGPS_ABI.abi || BGPS_ABI,
         signer
       );
 
       // Create a proof hash (in real case, hash of documents)
       const proofHash = ethers.utils.id(`${agency.agency_name}-${agency.registration_number}`);
-      
+
       console.log('Sending blockchain transaction...');
       const tx = await contract.authorizeAgency(agency.wallet_address, proofHash);
       console.log('Transaction sent:', tx.hash);
-      
+
       // 2. Wait for confirmation
       await tx.wait();
       console.log('Transaction confirmed!');
@@ -92,7 +104,7 @@ export default function AgencyApprovalsPage() {
     }
   };
 
-  const filteredAgencies = agencies.filter(a => 
+  const filteredAgencies = agencies.filter(a =>
     a.agency_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     a.registration_number.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -104,11 +116,11 @@ export default function AgencyApprovalsPage() {
           <h1 className="text-2xl font-black text-gray-900">Agency Registrations</h1>
           <p className="text-gray-500">Review and authorize procuring agencies for the system.</p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
+            <input
               type="text"
               placeholder="Search agencies..."
               value={searchTerm}
@@ -126,8 +138,8 @@ export default function AgencyApprovalsPage() {
         {loading ? (
           <div className="p-20 text-center text-gray-400">Loading registrations...</div>
         ) : filteredAgencies.length > 0 ? (
-          <AgencyApprovalTable 
-            agencies={filteredAgencies} 
+          <AgencyApprovalTable
+            agencies={filteredAgencies}
             onApprove={handleApprove}
             onReject={handleReject}
           />

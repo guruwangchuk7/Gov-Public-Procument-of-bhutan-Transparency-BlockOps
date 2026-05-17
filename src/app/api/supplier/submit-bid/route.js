@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { BidSubmitService } from '@/services/supplier/bid-submit.service';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function POST(request) {
-  const supabase = createClient();
+  const supabase = createAdminClient();
   const formData = await request.formData();
 
   const tenderId = formData.get('tenderId');
@@ -16,7 +16,8 @@ export async function POST(request) {
 
   try {
     // 1. Storage Upload (Handled in API for easier file stream handling)
-    const fileName = `bids/${supplierId}/${tenderId}_${Date.now()}.pdf`;
+    const safeFileName = file.name.replace(/\s+/g, '_');
+    const fileName = `bids/${tenderId}/${supplierId}/${safeFileName}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('documents')
       .upload(fileName, file);
@@ -33,7 +34,7 @@ export async function POST(request) {
       bid_amount: parseFloat(bidAmount),
       proposal_summary: proposalSummary,
       bid_hash: bidHash,
-      tx_hash: txHash
+      blockchain_tx_hash: txHash
     }, {
       file_name: file.name,
       storage_url: publicUrl,

@@ -88,6 +88,7 @@ export function useRoleSession() {
     NDISession.clearSession();
     localStorage.removeItem('bgps_wallet_address');
     localStorage.removeItem('bgps_selected_role');
+    localStorage.removeItem('bgps_role_record');
     setSession({
       selected_role: null,
       ndi_identity: null,

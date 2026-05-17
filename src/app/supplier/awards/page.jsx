@@ -13,7 +13,20 @@ export default function SupplierAwardsPage() {
 
   const fetchAwards = async () => {
     try {
-      const res = await fetch('/api/supplier/awards?supplierId=supplier-uuid'); // In real case, from session
+      let activeSupplierId = 'e1a04187-613e-460a-b33f-db77cadefcd9'; // Default Karma Construction fallback
+      try {
+        const savedRecord = localStorage.getItem('bgps_role_record');
+        if (savedRecord) {
+          const recordObj = JSON.parse(savedRecord);
+          if (recordObj && recordObj.id) {
+            activeSupplierId = recordObj.id;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse bgps_role_record, using default.', e);
+      }
+
+      const res = await fetch(`/api/supplier/awards?supplierId=${activeSupplierId}`);
       const data = await res.json();
       setAwards(data);
     } catch (err) {
