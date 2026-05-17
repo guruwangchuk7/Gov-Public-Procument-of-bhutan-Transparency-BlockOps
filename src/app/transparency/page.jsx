@@ -7,26 +7,26 @@ import {
   Globe, 
   Search,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  FileText
 } from 'lucide-react';
 import { format } from 'date-fns';
-import PublicTrustDashboard from '@/components/public/PublicTrustDashboard';
 
 export default function TransparencyPortalPage() {
-  const [awards, setAwards] = useState([]);
+  const [tenders, setTenders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchAwards();
+    fetchTenders();
   }, []);
 
-  const fetchAwards = async () => {
+  const fetchTenders = async () => {
     try {
-      const res = await fetch('/api/public/winning-bids');
+      const res = await fetch('/api/public/tenders');
       const result = await res.json();
       if (result.success) {
-        setAwards(result.data);
+        setTenders(result.data);
       }
     } catch (err) {
       console.error(err);
@@ -35,9 +35,9 @@ export default function TransparencyPortalPage() {
     }
   };
 
-  const filteredAwards = awards.filter(a => 
-    a.tenders?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    a.suppliers?.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTenders = tenders.filter(t => 
+    t.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    t.agencies?.agency_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -58,25 +58,15 @@ export default function TransparencyPortalPage() {
         </div>
       </nav>
 
-      {/* Trust Explorer Section */}
-      <div className="bg-white border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <PublicTrustDashboard />
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-6 py-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-900 rounded-lg mb-6 shadow-sm">
-              <Trophy size={14} className="text-zinc-300" />
-              <span className="text-[10px] font-bold text-white uppercase tracking-widest">Public Procurement Record</span>
-            </div>
+
             <h1 className="text-5xl font-semibold text-zinc-900 tracking-tightest leading-[1.1]">
               Transparency Dashboard
             </h1>
             <p className="text-lg text-zinc-500 mt-4 leading-relaxed font-medium max-w-xl">
-              Open access to all government contract awards and their corresponding blockchain proofs.
+              Open access to all government tenders and their corresponding blockchain proofs.
             </p>
           </div>
 
@@ -84,7 +74,7 @@ export default function TransparencyPortalPage() {
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" size={18} />
             <input 
               type="text"
-              placeholder="Search contracts, agencies..."
+              placeholder="Search tenders, agencies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-12 pr-6 py-4 bg-white border border-zinc-200 rounded-[20px] text-sm font-medium focus:ring-0 focus:border-zinc-900 outline-none transition-all w-full md:w-96 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.1)]"
@@ -99,23 +89,23 @@ export default function TransparencyPortalPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAwards.map((award) => (
-              <div key={award.id} className="bg-white p-8 rounded-[32px] border border-zinc-200 hover:border-zinc-900 transition-all duration-300 group flex flex-col shadow-[0_12px_40px_-16px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.1)]">
+            {filteredTenders.map((tender) => (
+              <div key={tender.id} className="bg-white p-8 rounded-[32px] border border-zinc-200 hover:border-zinc-900 transition-all duration-300 group flex flex-col shadow-[0_12px_40px_-16px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.1)]">
                 <div className="flex justify-between items-start mb-8">
                   <div className="w-14 h-14 rounded-[16px] bg-zinc-900 flex items-center justify-center text-white shadow-lg">
-                    <Trophy size={24} />
+                    <FileText size={24} />
                   </div>
                   <div className="text-right">
-                    <div className="flex items-center justify-end gap-1.5 text-[10px] text-zinc-900 font-bold uppercase tracking-widest mb-1.5">
-                      <CheckCircle2 size={14} className="text-emerald-500" /> Verified
+                    <div className={`flex items-center justify-end gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-1.5 ${tender.status === 'awarded' ? 'text-emerald-600' : 'text-zinc-900'}`}>
+                      <CheckCircle2 size={14} className={tender.status === 'awarded' ? 'text-emerald-500' : 'text-zinc-400'} /> {tender.status}
                     </div>
-                    <code className="text-[10px] text-zinc-400 font-bold tracking-wider">#{award.id.slice(0, 8).toUpperCase()}</code>
+                    <code className="text-[10px] text-zinc-400 font-bold tracking-wider">#{tender.id.slice(0, 8).toUpperCase()}</code>
                   </div>
                 </div>
 
                 <div className="flex-1 space-y-8 mb-10">
                   <h3 className="text-xl font-semibold text-zinc-900 leading-snug">
-                    {award.tenders?.title}
+                    {tender.title}
                   </h3>
                   
                   <div className="space-y-5">
@@ -124,19 +114,19 @@ export default function TransparencyPortalPage() {
                         <Building2 size={18} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-0.5">Winning Supplier</p>
-                        <p className="text-sm font-semibold text-zinc-900">{award.suppliers?.company_name}</p>
+                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-0.5">Procuring Agency</p>
+                        <p className="text-sm font-semibold text-zinc-900">{tender.agencies?.agency_name}</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Award Amount</p>
-                        <p className="text-lg font-bold text-zinc-900 tracking-tight">Nu. {award.bids?.bid_amount?.toLocaleString()}</p>
+                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Est. Amount</p>
+                        <p className="text-lg font-bold text-zinc-900 tracking-tight">Nu. {tender.estimated_amount?.toLocaleString() || 'N/A'}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Finalized On</p>
-                        <p className="text-sm font-semibold text-zinc-900">{award.awarded_at ? format(new Date(award.awarded_at), 'MMM dd, yyyy') : 'N/A'}</p>
+                        <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Published On</p>
+                        <p className="text-sm font-semibold text-zinc-900">{tender.created_at ? format(new Date(tender.created_at), 'MMM dd, yyyy') : 'N/A'}</p>
                       </div>
                     </div>
                   </div>
@@ -144,25 +134,31 @@ export default function TransparencyPortalPage() {
 
                 <div className="space-y-3 mt-auto">
                   <Link
-                    href={`/transparency/tenders/${award.tenders?.id}`}
+                    href={`/transparency/tenders/${tender.id}`}
                     className="w-full h-14 bg-zinc-900 text-white rounded-[20px] flex items-center justify-center gap-2 text-sm font-bold hover:bg-black transition-colors group/btn shadow-md"
                   >
                     Read Full Record <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
-                  <a 
-                    href={`https://sepolia.etherscan.io/tx/${award.blockchain_tx_hash}`}
-                    target="_blank"
-                    className="w-full h-14 bg-white border border-zinc-200 text-zinc-900 rounded-[20px] flex items-center justify-center gap-2 text-sm font-bold hover:border-zinc-900 transition-colors"
-                  >
-                    <Globe size={16} className="text-zinc-400" /> Verify on Blockchain
-                  </a>
+                  {tender.blockchain_tx_hash ? (
+                    <a 
+                      href={`https://sepolia.etherscan.io/tx/${tender.blockchain_tx_hash}`}
+                      target="_blank"
+                      className="w-full h-14 bg-white border border-zinc-200 text-zinc-900 rounded-[20px] flex items-center justify-center gap-2 text-sm font-bold hover:border-zinc-900 transition-colors"
+                    >
+                      <Globe size={16} className="text-zinc-400" /> Verify on Blockchain
+                    </a>
+                  ) : (
+                    <button disabled className="w-full h-14 bg-zinc-50 border border-zinc-100 text-zinc-400 rounded-[20px] flex items-center justify-center gap-2 text-sm font-bold cursor-not-allowed">
+                      <Globe size={16} /> Blockchain Pending
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
 
-            {filteredAwards.length === 0 && (
+            {filteredTenders.length === 0 && (
               <div className="col-span-full py-24 text-center border-2 border-dashed border-zinc-200 bg-white rounded-[40px]">
-                <Trophy size={48} className="mx-auto text-zinc-300 mb-6" />
+                <FileText size={48} className="mx-auto text-zinc-300 mb-6" />
                 <p className="text-[13px] text-zinc-500 font-bold uppercase tracking-widest">No procurement records found</p>
               </div>
             )}
