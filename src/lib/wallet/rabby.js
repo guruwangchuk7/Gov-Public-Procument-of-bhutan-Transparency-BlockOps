@@ -62,6 +62,30 @@ export const RabbyWallet = {
   },
 
   /**
+   * Forces a reconnect prompt to allow switching accounts by requesting permissions first.
+   */
+  async reconnect() {
+    if (!this.isInstalled()) {
+      throw new Error('Rabby Wallet or compatible provider not found.');
+    }
+    const ethereum = window.rabby || window.ethereum;
+    try {
+      await ethereum.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+    } catch (err) {
+      if (err.code === 4001) {
+        throw new Error('Connection rejected. Please approve the request in your wallet.');
+      }
+      // If wallet_requestPermissions is not supported
+      throw new Error('wallet_requestPermissions_not_supported');
+    }
+    
+    return await this.connect();
+  },
+
+  /**
    * Gets the currently connected wallet address without prompting.
    */
   async getAccount() {

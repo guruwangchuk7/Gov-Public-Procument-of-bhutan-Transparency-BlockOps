@@ -22,7 +22,7 @@ export function useNDI() {
     try {
       const res = await fetch('/api/auth/ndi/request');
       const data = await res.json();
-      
+
       if (data.threadId) {
         setProofRequest(data);
         toast.info('Scan the QR code with your Bhutan NDI app');
@@ -62,7 +62,7 @@ export function useNDI() {
         try {
           const res = await fetch(`/api/auth/ndi/status?threadId=${proofRequest.threadId}`);
           if (!res.ok) throw new Error('Status check failed');
-          
+
           const result = await res.json();
 
           // Handle transition to processing

@@ -2,20 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Fingerprint,
-  Wallet,
-  ShieldCheck,
-  ArrowRight,
-  Loader2,
   AlertCircle,
   ChevronRight,
-  CheckCircle2
+  CheckCircle2,
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useNDI } from '@/hooks/useNDI';
 import { useRabbyWallet } from '@/hooks/useRabbyWallet';
 import { useRoleSession } from '@/hooks/useRoleSession';
 import { useRouter } from 'next/navigation';
 import IdentityLinkingCard from './IdentityLinkingCard';
+import { WalletLinking } from '@/lib/wallet/wallet-linking';
+import { getRoleWalletConfig } from '@/config/demoRoleWallets';
+import DemoWalletGuide from './DemoWalletGuide';
 
 /**
  * Step-by-step UI for Multi-Factor Identity and Wallet Verification.
@@ -30,11 +31,14 @@ export default function IdentityWalletVerifier({
   const {
     address: walletAddress,
     connect: connectWallet,
+    reconnect: reconnectWallet,
     isConnecting: isConnectingWallet,
     isConnected,
-    walletStatus
+    walletStatus,
+    forceMockState
   } = useRabbyWallet();
-  const { updateNDI, updateWallet, verifyRoleAccess, access_status, error_message, redirect_target } = useRoleSession();
+  const { updateNDI, updateWallet, verifyRoleAccess, access_status, error_message } = useRoleSession();
+  
   const [isFinalizing, setIsFinalizing] = useState(false);
 
   useEffect(() => {
@@ -47,8 +51,12 @@ export default function IdentityWalletVerifier({
     }
   }, [walletAddress, updateWallet, isConnected]);
 
+  const expectedConfig = getRoleWalletConfig(role);
+  const expectedWallet = expectedConfig?.expectedWallet;
+  const isMismatch = isConnected && expectedWallet && !WalletLinking.isSameWallet(walletAddress, expectedWallet);
+
   const handleVerifyAccess = async () => {
-    if (!isConnected) return;
+    if (!isConnected || isMismatch) return;
     setIsFinalizing(true);
     const result = await verifyRoleAccess(mockRecords);
     if (result.allowed || result.status === 'registration_required' || result.status === 'pending') {
@@ -64,12 +72,17 @@ export default function IdentityWalletVerifier({
   return (
     <div className="space-y-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <IdentityLinkingCard
+        role={role}
         ndiProfile={ndiProfile}
         walletAddress={walletAddress}
+        expectedWallet={expectedWallet}
+        expectedConfig={expectedConfig}
+        isMismatch={isMismatch}
         isVerifyingNDI={isVerifyingNDI}
         isConnectingWallet={isConnectingWallet}
         onVerifyNDI={verifyIdentity}
         onConnectWallet={connectWallet}
+        onReconnectWallet={reconnectWallet}
         ndiStatus={ndiStatus}
         proofRequest={proofRequest}
         walletStatus={walletStatus}
@@ -85,7 +98,7 @@ export default function IdentityWalletVerifier({
 
       <button
         onClick={handleVerifyAccess}
-        disabled={!ndiProfile || !isConnected || isFinalizing}
+        disabled={!ndiProfile || !isConnected || isFinalizing || isMismatch}
         className="w-full h-14 bg-zinc-900 hover:bg-black text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-20 disabled:grayscale shadow-xl shadow-zinc-200"
       >
         {isFinalizing ? (
@@ -101,9 +114,12 @@ export default function IdentityWalletVerifier({
       {/* Modern Horizontal Stepper */}
       <div className="flex items-center justify-center gap-2">
         <div className={`h-1 w-8 rounded-full transition-colors ${ndiProfile ? 'bg-blue-600' : 'bg-zinc-200'}`} />
-        <div className={`h-1 w-8 rounded-full transition-colors ${isConnected ? 'bg-indigo-600' : 'bg-zinc-200'}`} />
+        <div className={`h-1 w-8 rounded-full transition-colors ${isConnected && !isMismatch ? 'bg-indigo-600' : 'bg-zinc-200'}`} />
         <div className={`h-1 w-8 rounded-full transition-colors ${access_status === 'allowed' ? 'bg-zinc-900' : 'bg-zinc-200'}`} />
       </div>
+
+      {/* Collapsible Demo Guide */}
+      <DemoWalletGuide />
     </div>
   );
 }

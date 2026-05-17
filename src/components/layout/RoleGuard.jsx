@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoleSession } from '@/hooks/useRoleSession';
+import { resolveRoleAccess } from '@/lib/access-control/role-access';
 import { Loader2, ShieldAlert, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -18,6 +19,8 @@ export default function RoleGuard({
   const router = useRouter();
   const { 
     selected_role, 
+    ndi_identity,
+    wallet_address,
     role_verified, 
     access_status, 
     ndi_verified, 
@@ -37,7 +40,7 @@ export default function RoleGuard({
       return;
     }
 
-    const checkAccess = () => {
+    const checkAccess = async () => {
       // 1. Basic role match
       if (selected_role !== requiredRole) {
         setChecking(false);
@@ -53,7 +56,26 @@ export default function RoleGuard({
       }
 
       // 3. Status checks
-      if (requireApproved && access_status !== 'allowed') {
+      if (requireApproved) {
+        if (access_status === 'allowed') {
+          setChecking(false);
+          setIsAuthorized(true);
+          return;
+        }
+
+        // Dynamic verification on mount/reload since state is lost across navigation
+        const result = await resolveRoleAccess({
+          selected_role,
+          ndi_profile: ndi_identity,
+          wallet_address
+        });
+
+        if (result.status === 'allowed') {
+          setChecking(false);
+          setIsAuthorized(true);
+          return;
+        }
+
         setChecking(false);
         setIsAuthorized(false);
         return;
@@ -66,7 +88,7 @@ export default function RoleGuard({
     // Small delay to allow session hydration
     const timer = setTimeout(checkAccess, 500);
     return () => clearTimeout(timer);
-  }, [selected_role, requiredRole, ndi_verified, wallet_connected, access_status, requireApproved]);
+  }, [selected_role, requiredRole, ndi_verified, wallet_connected, access_status, requireApproved, ndi_identity, wallet_address]);
 
   if (checking) {
     return (

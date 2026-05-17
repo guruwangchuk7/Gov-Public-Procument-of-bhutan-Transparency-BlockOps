@@ -24,14 +24,16 @@ export function useRoleSession() {
   useEffect(() => {
     const savedNdi = NDISession.getSession();
     const savedRole = localStorage.getItem('bgps_selected_role');
+    const savedWallet = localStorage.getItem('bgps_wallet_address');
 
-    if (savedNdi || savedRole) {
+    if (savedNdi || savedRole || savedWallet) {
       setSession(prev => ({
         ...prev,
         ndi_identity: savedNdi,
         ndi_verified: !!savedNdi,
-        // wallet_address is NO LONGER auto-loaded to ensure explicit connection
-        selected_role: savedRole
+        wallet_address: savedWallet,
+        wallet_connected: !!savedWallet,
+        selected_role: savedRole || prev.selected_role
       }));
     }
   }, []);

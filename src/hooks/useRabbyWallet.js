@@ -127,6 +127,57 @@ export function useRabbyWallet() {
     }
   }, []);
 
+  const reconnect = useCallback(async () => {
+    if (!RabbyWallet.isInstalled()) return null;
+    const oldAddr = address; // Capture current address to detect silent auto-resolves
+    setWalletStatus('connecting');
+    setIsConnecting(true);
+    setError(null);
+    const loadingToast = toast.loading('Requesting Wallet Switch...');
+
+    try {
+      if (process.env.NEXT_PUBLIC_WALLET_MODE === 'mock') {
+        const mockAddr = '0x' + Math.random().toString(16).slice(2, 42);
+        setAddress(mockAddr);
+        setWalletStatus('connected');
+        toast.dismiss(loadingToast);
+        toast.success('Wallet Switched (Mock Mode)');
+        return mockAddr;
+      }
+
+      const addr = await RabbyWallet.reconnect();
+      setAddress(addr);
+
+      // Detect if Rabby auto-resolved without showing the account picker
+      if (addr && oldAddr && addr.toLowerCase() === oldAddr.toLowerCase()) {
+        setWalletStatus('manual_switch_required');
+        toast.dismiss(loadingToast);
+        toast.error('Rabby auto-connected the same account. Please switch manually.');
+        return addr;
+      }
+
+      setWalletStatus('connected');
+      toast.dismiss(loadingToast);
+      toast.success('Rabby Wallet connected.');
+      return addr;
+    } catch (err) {
+      toast.dismiss(loadingToast);
+      if (err.message === 'wallet_requestPermissions_not_supported') {
+        setWalletStatus('manual_switch_required');
+      } else if (err.code === 4001 || err.message.toLowerCase().includes('rejected')) {
+        setWalletStatus('rejected');
+        toast.error('Wallet switch was rejected.');
+      } else {
+        setWalletStatus('error');
+        toast.error(err.message || 'Connection failed.');
+      }
+      setError(err.message);
+      return null;
+    } finally {
+      setIsConnecting(false);
+    }
+  }, [address]);
+
   const disconnect = useCallback(() => {
     setAddress(null);
     setWalletStatus('detected');
@@ -141,6 +192,7 @@ export function useRabbyWallet() {
     error,
     walletStatus,
     connect,
+    reconnect,
     disconnect,
     isConnected: walletStatus === 'connected',
     isInstalled: RabbyWallet.isInstalled()
