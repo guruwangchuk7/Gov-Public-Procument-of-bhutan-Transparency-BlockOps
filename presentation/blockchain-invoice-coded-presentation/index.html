@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blockchain-Based Invoice Management System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+    <main id="deck" class="deck" aria-live="polite">
+      <section class="slide cover active" data-title="Cover">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="reticle" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <header class="masthead">
+          <span class="label">Project Proposal</span>
+          <span class="label muted">No. 001 &bull; May 2026</span>
+          <span class="label muted hide-sm">Payment Authentication &bull; Audit</span>
+        </header>
+        <div class="cover-grid">
+          <div class="cover-copy">
+            <span class="label muted">Prepared by Ngawang Gyeltshen</span>
+            <h1>
+              <span>Blockchain-Based</span>
+              <span>Invoice</span>
+              <span>Management System</span>
+            </h1>
+            <div class="rule"></div>
+            <p>Payment Authentication &bull; Duplicate Prevention &bull; Hyperledger Fabric Audit</p>
+          </div>
+          <aside class="issue-box">
+            <span class="label muted">This Issue</span>
+            <strong>Secure records. Clear ownership. Verified payments.</strong>
+            <small>Built as an audit-grade foundation for invoice management.</small>
+          </aside>
+        </div>
+        <span class="ghost-number">001</span>
+      </section>
+
+      <section class="slide agenda" data-title="Agenda">
+        <header class="slide-head">
+          <span class="label muted">Agenda</span>
+          <h2>Three moves from problem to launch</h2>
+        </header>
+        <div class="agenda-grid">
+          <button class="agenda-card" data-go="2">
+            <span class="agenda-num">01</span>
+            <strong>The Challenge</strong>
+            <p>Understanding current invoice management pain points and why blockchain technology is the right solution.</p>
+          </button>
+          <button class="agenda-card" data-go="4">
+            <span class="agenda-num">02</span>
+            <strong>Our Solution</strong>
+            <p>A comprehensive blockchain-integrated platform for invoice management and payment authentication.</p>
+          </button>
+          <button class="agenda-card" data-go="8">
+            <span class="agenda-num">03</span>
+            <strong>Implementation</strong>
+            <p>Security framework, development timeline, and expected outcomes for successful delivery.</p>
+          </button>
+        </div>
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee-track">
+            <span>Duplicate prevention</span><span>Payment status</span><span>Hyperledger Fabric</span><span>Audit trail</span>
+            <span>Duplicate prevention</span><span>Payment status</span><span>Hyperledger Fabric</span><span>Audit trail</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide chapter ink" data-title="The Challenge">
+        <span class="chapter-num">01</span>
+        <div>
+          <span class="label muted">The Challenge</span>
+          <h2>Current invoice workflows create weak proof.</h2>
+          <p>Understanding the current invoice management pain points and why blockchain is the answer.</p>
+        </div>
+      </section>
+
+      <section class="slide pain" data-title="Pain Points">
+        <header class="slide-head">
+          <span class="label muted">Current Pain Points</span>
+          <h2>Four issues make every payment harder to trust.</h2>
+        </header>
+        <div class="poster-grid">
+          <article class="poster large" tabindex="0">
+            <div class="poster-face electric">
+              <span class="label">01</span>
+              <h3>Duplicate Journal Numbers</h3>
+            </div>
+            <div class="poster-overlay">
+              <p>Staff repeatedly use the same journal numbers, causing double entries, data conflicts, and confusion in financial records across departments.</p>
+            </div>
+          </article>
+          <article class="poster" tabindex="0">
+            <div class="poster-face burgundy">
+              <span class="label">02</span>
+              <h3>Unclear Payment Ownership</h3>
+            </div>
+            <div class="poster-overlay">
+              <p>No clear record of who sent a payment, who verified it, or whether the invoice should be marked as Paid, Unpaid, or Pending.</p>
+            </div>
+          </article>
+          <article class="poster" tabindex="0">
+            <div class="poster-face neon">
+              <span class="label">03</span>
+              <h3>Weak Audit Control</h3>
+            </div>
+            <div class="poster-overlay">
+              <p>Manual processes create weak evidence trails, making it difficult to prove who entered or verified a record during audits.</p>
+            </div>
+          </article>
+          <article class="poster wide" tabindex="0">
+            <div class="poster-face terracotta">
+              <span class="label">04</span>
+              <h3>Spreadsheet Dependency</h3>
+            </div>
+            <div class="poster-overlay">
+              <p>Disconnected spreadsheets and paper files lead to inconsistent data, repeated entries, and difficulty filtering by country, status, or payment history.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide chapter cream" data-title="Our Solution">
+        <span class="chapter-num">02</span>
+        <div>
+          <span class="label muted">Our Solution</span>
+          <h2>A blockchain-integrated invoice management and payment authentication platform.</h2>
+          <p>A comprehensive platform designed for controlled entry, verification, storage, and audit-grade payment evidence.</p>
+        </div>
+      </section>
+
+      <section class="slide architecture" data-title="Architecture">
+        <header class="slide-head">
+          <span class="label muted">System Architecture</span>
+          <h2>Four-layer design for separation of concerns, testability, and scalability.</h2>
+        </header>
+        <div class="architecture-layout">
+          <div class="layer-stack" role="list" aria-label="Architecture layers">
+            <button class="layer-node active" data-layer="presentation">
+              <span>PRESENTATION</span>
+              <small>React.js web interface for forms, dashboards, and search</small>
+            </button>
+            <button class="layer-node" data-layer="api">
+              <span>API LAYER</span>
+              <small>Node.js/Express for validation, auth, and business rules</small>
+            </button>
+            <button class="layer-node" data-layer="data">
+              <span>DATA LAYER</span>
+              <small>PostgreSQL for invoice, client, finance, and audit data</small>
+            </button>
+            <button class="layer-node" data-layer="blockchain">
+              <span>BLOCKCHAIN</span>
+              <small>Hyperledger Fabric for verified paid invoice records</small>
+            </button>
+          </div>
+          <aside class="detail-panel">
+            <span class="label muted">Security Layer</span>
+            <h3 id="archTitle">Presentation</h3>
+            <p id="archDetail">React.js keeps invoice forms, dashboards, and search in one controlled interface before data reaches the backend.</p>
+            <ul class="benefit-list">
+              <li>Layered separation for easy testing and maintenance</li>
+              <li>Role-based access control across all layers</li>
+              <li>Only paid invoices written to immutable blockchain</li>
+              <li>Full operational data stays in PostgreSQL for flexibility</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide workflow" data-title="Workflow">
+        <header class="slide-head">
+          <span class="label muted">Payment Verification Workflow</span>
+          <h2>10-step controlled process from invoice entry to blockchain commitment.</h2>
+        </header>
+        <div class="workflow-layout">
+          <div class="step-grid" aria-label="Workflow steps">
+            <button class="step-node active" data-step="0">1<span>Login</span></button>
+            <button class="step-node" data-step="1">2<span>Entry</span></button>
+            <button class="step-node" data-step="2">3<span>Validate</span></button>
+            <button class="step-node" data-step="3">4<span>Duplicate Check</span></button>
+            <button class="step-node" data-step="4">5<span>Save Status</span></button>
+            <button class="step-node" data-step="5">6<span>Review Evidence</span></button>
+            <button class="step-node paid-path" data-step="6">7<span>Mark Paid</span></button>
+            <button class="step-node paid-path" data-step="7">8<span>Submit Fabric</span></button>
+            <button class="step-node paid-path" data-step="8">9<span>Commit</span></button>
+            <button class="step-node paid-path" data-step="9">10<span>Store Tx ID</span></button>
+          </div>
+          <aside class="workflow-panel">
+            <div class="segmented">
+              <button class="active" data-path="paid">Paid Path</button>
+              <button data-path="pending">Unpaid / Pending Path</button>
+            </div>
+            <h3 id="workflowTitle">Step 1: Employee logs in with authorized account</h3>
+            <p id="workflowDetail">The process begins with a controlled user identity before any invoice data is entered.</p>
+            <div class="principle">
+              <span class="label">Key Principle</span>
+              <p>Only verified Paid invoices are written to the blockchain. The immutable ledger contains confirmed, audit-grade payment records while PostgreSQL keeps operational flexibility.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide requirements" data-title="Requirements">
+        <header class="slide-head">
+          <span class="label muted">Key Features &amp; Requirements</span>
+          <h2>Core requirements tie access, status, blockchain, and reporting into one system.</h2>
+        </header>
+        <div class="filter-bar" role="group" aria-label="Filter requirements">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="High">High</button>
+          <button class="filter" data-filter="Medium">Medium</button>
+        </div>
+        <div class="requirements-layout">
+          <div class="req-table" role="table" aria-label="Requirements table">
+            <button class="req-row active" data-priority="High" data-id="FR-01" data-detail="Secure login with authorized credentials before system access."><span>FR-01</span><strong>User Authentication</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-02" data-detail="Separate permissions for employee, verifier, admin, and auditor."><span>FR-02</span><strong>Role-Based Access</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-03" data-detail="Structured forms for client, invoice, journal, and finance data."><span>FR-03</span><strong>Invoice Entry</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-04" data-detail="Automatic backend validation blocks existing journal numbers."><span>FR-04</span><strong>Duplicate Journal Check</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-05" data-detail="Authorized staff update status as Paid, Unpaid, or Pending."><span>FR-05</span><strong>Payment Status Update</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-06" data-detail="Only Paid and verified invoices submitted to Hyperledger Fabric."><span>FR-06</span><strong>Blockchain Submission</strong><em>High</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-07" data-detail="Blockchain Tx ID stored in PostgreSQL and shown on dashboard."><span>FR-07</span><strong>Transaction Reference</strong><em>High</em></button>
+            <button class="req-row" data-priority="Medium" data-id="FR-08" data-detail="Search by journal number, client, date, status, and transaction ID."><span>FR-08</span><strong>Search &amp; Filters</strong><em>Medium</em></button>
+            <button class="req-row" data-priority="High" data-id="FR-09" data-detail="Record who created, updated, verified, or corrected each invoice."><span>FR-09</span><strong>Audit Trail</strong><em>High</em></button>
+            <button class="req-row" data-priority="Medium" data-id="FR-10" data-detail="Generate status, audit, and blockchain-committed invoice reports."><span>FR-10</span><strong>Reports</strong><em>Medium</em></button>
+          </div>
+          <aside class="req-detail">
+            <span class="label muted" id="reqId">FR-01</span>
+            <h3 id="reqTitle">User Authentication</h3>
+            <p id="reqDetail">Secure login with authorized credentials before system access.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide chapter ink" data-title="Implementation">
+        <span class="chapter-num">03</span>
+        <div>
+          <span class="label muted">Implementation</span>
+          <h2>Security framework, development timeline, and expected outcomes.</h2>
+          <p>The build path protects identity, data quality, auditability, and deployment readiness.</p>
+        </div>
+      </section>
+
+      <section class="slide security" data-title="Security">
+        <div class="stars" aria-hidden="true"></div>
+        <header class="slide-head">
+          <span class="label muted">Security &amp; Audit Control</span>
+          <h2>Good security begins before blockchain submission.</h2>
+          <p>Controlled login, validation, authorization, audit logs, backups, and careful data minimization create the foundation.</p>
+        </header>
+        <div class="security-grid">
+          <button class="security-tile active" data-security="Authentication" data-detail="Secure login with password hashing, JWT expiration, refresh strategy, and account lockout for repeated failed attempts.">Authentication</button>
+          <button class="security-tile" data-security="Authorization" data-detail="Role-based access control so only verifiers can mark Paid and only admins manage users and system configuration.">Authorization</button>
+          <button class="security-tile" data-security="Data Validation" data-detail="Validate journal numbers, amounts, dates, and status values on both frontend and backend with mandatory field checks.">Data Validation</button>
+          <button class="security-tile" data-security="Blockchain Identity" data-detail="Fabric CA certificates and MSP policies for secure application identities on the blockchain network.">Blockchain Identity</button>
+          <button class="security-tile" data-security="Audit Logging" data-detail="Log every create, update, status change, verification, blockchain commit, and correction action with timestamps.">Audit Logging</button>
+          <button class="security-tile" data-security="Backup & Recovery" data-detail="Scheduled PostgreSQL backups, tested restore procedures, and secure storage of Fabric crypto material.">Backup &amp; Recovery</button>
+        </div>
+        <aside class="security-detail">
+          <span class="label muted">Selected Control</span>
+          <h3 id="securityTitle">Authentication</h3>
+          <p id="securityDetail">Secure login with password hashing, JWT expiration, refresh strategy, and account lockout for repeated failed attempts.</p>
+        </aside>
+      </section>
+
+      <section class="slide timeline" data-title="Timeline">
+        <header class="slide-head">
+          <span class="label muted">Development Timeline</span>
+          <h2>Seven phases move from workflow clarity to launch.</h2>
+        </header>
+        <div class="timeline-rail" aria-label="Development phases">
+          <button class="phase active" data-phase="design"><span>01</span><strong>Requirements</strong><small>Confirm workflow and fields</small></button>
+          <button class="phase" data-phase="design"><span>02</span><strong>System Design</strong><small>UI, DB schema, API design</small></button>
+          <button class="phase" data-phase="build"><span>03</span><strong>Development</strong><small>Frontend and backend build</small></button>
+          <button class="phase" data-phase="build"><span>04</span><strong>Verification</strong><small>Payment workflow</small></button>
+          <button class="phase" data-phase="integrate"><span>05</span><strong>Blockchain</strong><small>Fabric network and chaincode</small></button>
+          <button class="phase" data-phase="integrate"><span>06</span><strong>Integration</strong><small>Backend-Fabric Gateway</small></button>
+          <button class="phase" data-phase="deploy"><span>07</span><strong>Launch</strong><small>Testing, training, deploy</small></button>
+        </div>
+        <div class="deliverables">
+          <article class="deliverable active" data-phase-card="design">
+            <span class="label">Design</span>
+            <p>Requirements, UI wireframes, DB schema, API plan.</p>
+            <strong>Design pack and prototype screens</strong>
+          </article>
+          <article class="deliverable" data-phase-card="build">
+            <span class="label">Build</span>
+            <p>Frontend, backend, auth, payment, audit modules.</p>
+            <strong>Working prototype with core features</strong>
+          </article>
+          <article class="deliverable" data-phase-card="integrate">
+            <span class="label">Integrate</span>
+            <p>Fabric network, chaincode, Gateway connection.</p>
+            <strong>End-to-end blockchain commit flow</strong>
+          </article>
+          <article class="deliverable" data-phase-card="deploy">
+            <span class="label">Deploy</span>
+            <p>Testing, bug fixes, training, go-live.</p>
+            <strong>Live system with user and admin guides</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide impact" data-title="Impact">
+        <div class="impact-image" aria-hidden="true"></div>
+        <header class="slide-head">
+          <span class="label muted">Expected Results &amp; Impact</span>
+          <h2>A secure, transparent, and scalable invoice management foundation.</h2>
+        </header>
+        <div class="impact-grid">
+          <article><span>01</span><p>Web-based invoice form with structured data entry for all employees.</p></article>
+          <article><span>02</span><p>Automatic prevention of duplicate journal numbers across the system.</p></article>
+          <article><span>03</span><p>Clear payment status tracking: Paid, Unpaid, and Pending categories.</p></article>
+          <article><span>04</span><p>Hyperledger Fabric storage for verified paid invoice summaries.</p></article>
+        </div>
+        <footer class="finale">
+          <strong>Reduced confusion &bull; Improved audit trails &bull; Better client management &bull; Scalable foundation for future analytics</strong>
+          <h2>Let's Build This Together</h2>
+          <p>Ngawang Gyeltshen | May 2026</p>
+        </footer>
+      </section>
+    </main>
+
+    <nav class="deck-controls" aria-label="Presentation controls">
+      <button id="prevBtn" class="icon-btn" aria-label="Previous slide">&lt;</button>
+      <div id="dots" class="dots" aria-label="Slide navigation"></div>
+      <button id="nextBtn" class="icon-btn" aria-label="Next slide">&gt;</button>
+      <button id="fullscreenBtn" class="icon-btn" aria-label="Fullscreen">[]</button>
+    </nav>
+
+    <script src="script.js"></script>
+  </body>
+</html>
