@@ -54,8 +54,10 @@ function goToSlide(index) {
   const bounded = Math.max(0, Math.min(index, slides.length - 1));
   const previous = activeIndex;
   activeIndex = bounded;
+  window.scrollTo(0, 0);
 
   slides.forEach((slide, i) => {
+    slide.scrollTop = 0;
     slide.classList.toggle("active", i === activeIndex);
     slide.classList.toggle("prev-out", i === previous && previous > activeIndex);
   });
@@ -68,6 +70,9 @@ function goToSlide(index) {
   progressBar.style.width = `${((activeIndex + 1) / slides.length) * 100}%`;
   prevBtn.disabled = activeIndex === 0;
   nextBtn.disabled = activeIndex === slides.length - 1;
+  if (slides[activeIndex]?.dataset.title === "Workflow") {
+    resetWorkflowState();
+  }
   window.location.hash = `slide-${activeIndex + 1}`;
 }
 
@@ -163,6 +168,22 @@ function initWorkflow() {
       }
     });
   });
+}
+
+function resetWorkflowState() {
+  const title = document.getElementById("workflowTitle");
+  const detail = document.getElementById("workflowDetail");
+  document.querySelectorAll(".step-node").forEach((node, index) => {
+    node.classList.toggle("active", index === 0);
+    node.classList.remove("dimmed");
+  });
+  document.querySelectorAll("[data-path]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.path === "paid");
+  });
+  if (title && detail) {
+    title.textContent = workflowSteps[0][0];
+    detail.textContent = workflowSteps[0][1];
+  }
 }
 
 function initRequirements() {
